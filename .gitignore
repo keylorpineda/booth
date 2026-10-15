@@ -57,3 +57,7 @@ desktop.ini
 
 # Claude Code (local only)
 .claude/settings.local.json
+
+# Lockfiles from other package managers (pnpm only)
+package-lock.json
+yarn.lock

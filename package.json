@@ -1,0 +1,49 @@
+{
+  "name": "booth",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Multi-tenant online catalog with WhatsApp ordering",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.28.6",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
+  },
+  "scripts": {
+    "preinstall": "npx --yes only-allow pnpm",
+    "prepare": "husky",
+    "dev": "pnpm --filter @booth/shared build && pnpm --parallel --recursive --filter \"./apps/*\" --filter @booth/shared dev",
+    "build": "pnpm --recursive build",
+    "build:shared": "pnpm --filter @booth/shared build",
+    "lint": "pnpm build:shared && eslint . --max-warnings 0",
+    "lint:fix": "pnpm build:shared && eslint . --fix",
+    "typecheck": "pnpm build:shared && pnpm --recursive typecheck",
+    "test": "pnpm build:shared && pnpm --recursive test",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@commitlint/types": "^21.2.3",
+    "@eslint-react/eslint-plugin": "^5.26.8",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-jsx-a11y-x": "^0.2.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.2"
+  }
+}
