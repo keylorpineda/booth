@@ -24,3 +24,30 @@ One entry per phase: what was built, key decisions, problems solved.
 **Problems solved**
 
 - None yet.
+
+---
+
+## Phase 0 — Setup & tooling — 2026-10-15
+
+**Built**
+
+- pnpm workspace with `apps/api`, `apps/web` and `packages/shared`; Node 24, pnpm 11.28.6 pinned in `packageManager`.
+- Strict TypeScript base, ESLint 10 flat config (type-checked typescript-eslint, import order, `@eslint-react`, react-hooks, jsx-a11y-x), Prettier with Tailwind class sorting.
+- Husky hooks: lint-staged on pre-commit, commitlint with the project's scopes on commit-msg.
+- `@booth/shared` (Zod, dual ESM/CJS build with tsup), `@booth/api` (NestJS 12 + SWC, `GET /health`, Jest + Supertest), `@booth/web` (Vite 8, React 19, Tailwind 4, Vitest + Testing Library).
+- GitHub: public repository, `develop` as default branch, rulesets for `develop` (squash only) and `main` (merge commits from release PRs only), both requiring the `ci` and `pr-title` checks; labels, secret scanning with push protection, Dependabot alerts and updates targeting `develop`.
+- CI: format → lint → typecheck → test (Postgres 17 service) → build.
+
+**Key decisions**
+
+- **TypeScript 6.0.3, not 7.** TypeScript 7 is the latest release, but typescript-eslint (<6.1), ts-jest (<7) and the Nest CLI (bundles 6.0) do not support it yet. Dependabot ignores TypeScript major updates until they do.
+- **pnpm 11, not 12.** pnpm 12 is a native (Rust) rewrite; the automatic version switch from pnpm 11 failed on Windows because the native binary was not linked. pnpm 11.28.6 is the mature line.
+- **`@swc/jest` instead of ts-jest** for API tests: no TypeScript version coupling, same SWC config as the build.
+- **No Turborepo.** `pnpm -r` already builds in dependency order; root `lint`, `typecheck` and `test` build `@booth/shared` first so type-aware tools see its declarations.
+- **ESLint 10** with plugins that support it (`@eslint-react`, `eslint-plugin-jsx-a11y-x`) instead of downgrading to ESLint 9 for the older `eslint-plugin-react` / `jsx-a11y`.
+
+**Problems solved**
+
+- **Nest 12 is ESM-only, Jest runs CommonJS.** Jest failed with "Must use import to load ES Module". Node 24 supports `require(esm)`, and Jest uses it when run with `--experimental-vm-modules`, so the API test script runs Jest through Node with that flag. The API stays CommonJS (decorator metadata via SWC).
+- **`npm install` installed packages before `only-allow` rejected it**, leaving `node_modules` and a `package-lock.json`. Unsatisfiable `engines.npm`/`engines.yarn` with `engine-strict=true` make npm and yarn fail before writing anything; `package-lock.json` and `yarn.lock` are also gitignored.
+- **A heredoc dropped a backslash** in the Jest transform regex (`'^.+\.ts$'` became "any character before ts"). ESLint's `no-useless-escape` caught it; the pattern now uses `String.raw`.

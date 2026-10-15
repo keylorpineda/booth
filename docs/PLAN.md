@@ -20,19 +20,19 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 0 — Setup & tooling
 
-- [ ] Root `package.json` with `packageManager` (pnpm), `engines` (Node 24), `preinstall: npx only-allow pnpm`, workspace scripts (`dev`, `lint`, `typecheck`, `test`, `build`, `format`, `db:up`, `db:down`)
-- [ ] `pnpm-workspace.yaml` (`apps/*`, `packages/*`)
-- [ ] `tsconfig.base.json` (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
-- [ ] ESLint flat config (typescript-eslint strict, react, react-hooks, jsx-a11y, import order) + Prettier (+ Tailwind plugin)
-- [ ] Husky: `pre-commit` → lint-staged, `commit-msg` → commitlint (Conventional Commits, scopes from CONTRIBUTING)
-- [ ] `packages/shared` skeleton (Zod, build with tsup, Vitest)
-- [ ] `apps/api` skeleton (NestJS, `/health` returning `{ status: 'ok' }`)
-- [ ] `apps/web` skeleton (Vite + React + Tailwind, renders a placeholder page)
-- [ ] GitHub Actions `ci.yml`: install (pnpm cache) → lint → typecheck → test (Postgres service) → build, on push and PR
-- [ ] GitHub Actions `pr-title.yml`: PR title must be a Conventional Commit
-- [ ] Dependabot (npm via pnpm lockfile + GitHub Actions, weekly, grouped)
-- [ ] Create GitHub repository (public), `main` + `develop` (default); rulesets: `develop` (PR + CI, squash only), `main` (PR + CI, merge commit only, releases only), no force push or deletion; auto-delete branches, labels, secret scanning + push protection
-- [ ] DEVLOG entry
+- [x] Root `package.json` with `packageManager` (pnpm), `engines` (Node 24), npm/yarn blocked (`engines` + `engine-strict`, `only-allow`), workspace scripts (`dev`, `lint`, `typecheck`, `test`, `build`, `format`, `db:up`, `db:down`)
+- [x] `pnpm-workspace.yaml` (`apps/*`, `packages/*`)
+- [x] `tsconfig.base.json` (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)
+- [x] ESLint flat config (typescript-eslint strict, react, react-hooks, jsx-a11y, import order) + Prettier (+ Tailwind plugin)
+- [x] Husky: `pre-commit` → lint-staged, `commit-msg` → commitlint (Conventional Commits, scopes from CONTRIBUTING)
+- [x] `packages/shared` skeleton (Zod, build with tsup, Vitest)
+- [x] `apps/api` skeleton (NestJS, `/health` returning `{ status: 'ok' }`)
+- [x] `apps/web` skeleton (Vite + React + Tailwind, renders a placeholder page)
+- [x] GitHub Actions `ci.yml`: install (pnpm cache) → lint → typecheck → test (Postgres service) → build, on push and PR
+- [x] GitHub Actions `pr-title.yml`: PR title must be a Conventional Commit
+- [x] Dependabot (npm via pnpm lockfile + GitHub Actions, weekly, grouped)
+- [x] Create GitHub repository (public), `main` + `develop` (default); rulesets: `develop` (PR + CI, squash only), `main` (PR + CI, merge commit only, releases only), no force push or deletion; auto-delete branches, labels, secret scanning + push protection
+- [x] DEVLOG entry
 
 **Done when**
 
