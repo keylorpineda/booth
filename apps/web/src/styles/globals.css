@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+/* Design tokens are expanded in Phase 5 (store theming, motion, dark mode). */
+@theme {
+  --color-brand: #e85d3a;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
