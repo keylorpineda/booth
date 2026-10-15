@@ -27,98 +27,98 @@ Every error response has the same shape:
 }
 ```
 
-| Status | Typical codes                                                          |
-| ------ | ---------------------------------------------------------------------- |
-| 400    | `VALIDATION_ERROR` (with `details.fields`), `STORE_CLOSED`             |
-| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`       |
-| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                |
-| 404    | `NOT_FOUND` (also returned for other stores' resources)                |
+| Status | Typical codes                                                            |
+| ------ | ------------------------------------------------------------------------ |
+| 400    | `VALIDATION_ERROR` (with `details.fields`), `STORE_CLOSED`               |
+| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`         |
+| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                  |
+| 404    | `NOT_FOUND` (also returned for other stores' resources)                  |
 | 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `INVALID_STATUS_TRANSITION` |
-| 413    | `FILE_TOO_LARGE`                                                       |
-| 415    | `UNSUPPORTED_FILE_TYPE`                                                |
-| 429    | `RATE_LIMITED`                                                         |
-| 500    | `INTERNAL_ERROR` (no internals leaked)                                 |
+| 413    | `FILE_TOO_LARGE`                                                         |
+| 415    | `UNSUPPORTED_FILE_TYPE`                                                  |
+| 429    | `RATE_LIMITED`                                                           |
+| 500    | `INTERNAL_ERROR` (no internals leaked)                                   |
 
 `message` is in English for developers; the web app maps `code` to a localized string.
 
 ## Health
 
-| Method | Path      | Description                         |
-| ------ | --------- | ----------------------------------- |
+| Method | Path      | Description                               |
+| ------ | --------- | ----------------------------------------- |
 | GET    | `/health` | `200 { status: 'ok', db: 'up' }` or `503` |
 
 ## Auth — rate limit: `auth`
 
-| Method | Path                 | Description                                                  |
-| ------ | -------------------- | ------------------------------------------------------------ |
-| POST   | `/api/auth/register` | Create owner account → access token + refresh cookie         |
-| POST   | `/api/auth/login`    | Email + password → access token + refresh cookie             |
-| POST   | `/api/auth/refresh`  | Rotate refresh cookie → new access token                     |
-| POST   | `/api/auth/logout`   | Revoke refresh token family, clear cookie                    |
+| Method | Path                 | Description                                                       |
+| ------ | -------------------- | ----------------------------------------------------------------- |
+| POST   | `/api/auth/register` | Create owner account → access token + refresh cookie              |
+| POST   | `/api/auth/login`    | Email + password → access token + refresh cookie                  |
+| POST   | `/api/auth/refresh`  | Rotate refresh cookie → new access token                          |
+| POST   | `/api/auth/logout`   | Revoke refresh token family, clear cookie                         |
 | GET    | `/api/auth/me`       | Current user + store summary (or `store: null` before onboarding) |
 
 ## Owner — store
 
-| Method | Path                         | Description                                          |
-| ------ | ---------------------------- | ---------------------------------------------------- |
-| POST   | `/api/me/store`              | Onboarding: create the store (one per owner)         |
-| GET    | `/api/me/store`              | Full store settings                                  |
-| PATCH  | `/api/me/store`              | Update info, ordering options, localization, privacy |
-| POST   | `/api/me/store/logo`         | Upload logo (multipart)                              |
-| POST   | `/api/me/store/cover`        | Upload cover image (multipart)                       |
-| DELETE | `/api/me/store/logo`, `/cover` | Remove image                                       |
-| GET    | `/api/me/store/slug-availability?slug=` | Check slug                                |
+| Method | Path                                    | Description                                          |
+| ------ | --------------------------------------- | ---------------------------------------------------- |
+| POST   | `/api/me/store`                         | Onboarding: create the store (one per owner)         |
+| GET    | `/api/me/store`                         | Full store settings                                  |
+| PATCH  | `/api/me/store`                         | Update info, ordering options, localization, privacy |
+| POST   | `/api/me/store/logo`                    | Upload logo (multipart)                              |
+| POST   | `/api/me/store/cover`                   | Upload cover image (multipart)                       |
+| DELETE | `/api/me/store/logo`, `/cover`          | Remove image                                         |
+| GET    | `/api/me/store/slug-availability?slug=` | Check slug                                           |
 
 ## Owner — catalog
 
-| Method | Path                                      | Description                     |
-| ------ | ----------------------------------------- | ------------------------------- |
-| GET    | `/api/me/categories`                      | List                            |
-| POST   | `/api/me/categories`                      | Create                          |
-| PATCH  | `/api/me/categories/:id`                  | Update                          |
+| Method | Path                                      | Description                            |
+| ------ | ----------------------------------------- | -------------------------------------- |
+| GET    | `/api/me/categories`                      | List                                   |
+| POST   | `/api/me/categories`                      | Create                                 |
+| PATCH  | `/api/me/categories/:id`                  | Update                                 |
 | DELETE | `/api/me/categories/:id`                  | Delete (products become uncategorized) |
-| PUT    | `/api/me/categories/order`                | Reorder `{ ids: [] }`           |
-| GET    | `/api/me/products?categoryId=&q=&cursor=` | List                            |
-| POST   | `/api/me/products`                        | Create                          |
-| GET    | `/api/me/products/:id`                    | Detail                          |
+| PUT    | `/api/me/categories/order`                | Reorder `{ ids: [] }`                  |
+| GET    | `/api/me/products?categoryId=&q=&cursor=` | List                                   |
+| POST   | `/api/me/products`                        | Create                                 |
+| GET    | `/api/me/products/:id`                    | Detail                                 |
 | PATCH  | `/api/me/products/:id`                    | Update (price, stock, trackStock, ...) |
-| DELETE | `/api/me/products/:id`                    | Delete                          |
-| PUT    | `/api/me/products/order`                  | Reorder                         |
-| POST   | `/api/me/products/:id/images`             | Upload image (multipart)        |
-| DELETE | `/api/me/products/:id/images/:imageId`    | Delete image                    |
-| PUT    | `/api/me/products/:id/images/order`       | Reorder images                  |
+| DELETE | `/api/me/products/:id`                    | Delete                                 |
+| PUT    | `/api/me/products/order`                  | Reorder                                |
+| POST   | `/api/me/products/:id/images`             | Upload image (multipart)               |
+| DELETE | `/api/me/products/:id/images/:imageId`    | Delete image                           |
+| PUT    | `/api/me/products/:id/images/order`       | Reorder images                         |
 
 ## Owner — delivery, hours, payments
 
-| Method | Path                               | Description                                  |
-| ------ | ---------------------------------- | -------------------------------------------- |
-| GET/POST | `/api/me/delivery-zones`         | List / create                                |
-| PATCH/DELETE | `/api/me/delivery-zones/:id` | Update / delete                              |
-| GET    | `/api/me/business-hours`           | Weekly intervals                             |
-| PUT    | `/api/me/business-hours`           | Replace the whole week                       |
-| GET/POST | `/api/me/payment-methods`        | List / create (from preset or custom)        |
-| PATCH/DELETE | `/api/me/payment-methods/:id` | Update / delete                             |
-| PUT    | `/api/me/payment-methods/order`    | Reorder                                      |
+| Method       | Path                            | Description                           |
+| ------------ | ------------------------------- | ------------------------------------- |
+| GET/POST     | `/api/me/delivery-zones`        | List / create                         |
+| PATCH/DELETE | `/api/me/delivery-zones/:id`    | Update / delete                       |
+| GET          | `/api/me/business-hours`        | Weekly intervals                      |
+| PUT          | `/api/me/business-hours`        | Replace the whole week                |
+| GET/POST     | `/api/me/payment-methods`       | List / create (from preset or custom) |
+| PATCH/DELETE | `/api/me/payment-methods/:id`   | Update / delete                       |
+| PUT          | `/api/me/payment-methods/order` | Reorder                               |
 
 ## Owner — orders
 
-| Method | Path                                | Description                                                       |
-| ------ | ----------------------------------- | ----------------------------------------------------------------- |
-| GET    | `/api/me/orders`                    | Filters: `status`, `paymentStatus`, `from`, `to`, `q` (code/name/phone). Runs lazy expiry first |
-| GET    | `/api/me/orders/:id`                | Detail with items, events, receipt metadata                       |
-| PATCH  | `/api/me/orders/:id/status`         | `{ status, note? }`; validates allowed transitions; cancel releases stock |
-| PATCH  | `/api/me/orders/:id/payment`        | `{ paymentStatus: 'PAID' }`                                       |
-| POST   | `/api/me/orders/:id/reactivate`     | EXPIRED → PENDING, re-reserves stock or `409 OUT_OF_STOCK`        |
-| GET    | `/api/me/orders/:id/receipt-url`    | Short-lived signed URL for the receipt                            |
+| Method | Path                             | Description                                                                                     |
+| ------ | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GET    | `/api/me/orders`                 | Filters: `status`, `paymentStatus`, `from`, `to`, `q` (code/name/phone). Runs lazy expiry first |
+| GET    | `/api/me/orders/:id`             | Detail with items, events, receipt metadata                                                     |
+| PATCH  | `/api/me/orders/:id/status`      | `{ status, note? }`; validates allowed transitions; cancel releases stock                       |
+| PATCH  | `/api/me/orders/:id/payment`     | `{ paymentStatus: 'PAID' }`                                                                     |
+| POST   | `/api/me/orders/:id/reactivate`  | EXPIRED → PENDING, re-reserves stock or `409 OUT_OF_STOCK`                                      |
+| GET    | `/api/me/orders/:id/receipt-url` | Short-lived signed URL for the receipt                                                          |
 
 ## Public — storefront
 
-| Method | Path                                 | Description                                                          |
-| ------ | ------------------------------------ | -------------------------------------------------------------------- |
-| GET    | `/api/public/stores/:slug`           | Branding, localization, open now + next opening, zones, payment methods (public fields), privacy notice |
-| GET    | `/api/public/stores/:slug/catalog`   | Active categories and products with availability                     |
-| POST   | `/api/public/stores/:slug/quote`     | Server-computed totals for a cart (no side effects)                  |
-| POST   | `/api/public/stores/:slug/orders`    | Create order — rate limit `public-orders`                            |
+| Method | Path                               | Description                                                                                             |
+| ------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/public/stores/:slug`         | Branding, localization, open now + next opening, zones, payment methods (public fields), privacy notice |
+| GET    | `/api/public/stores/:slug/catalog` | Active categories and products with availability                                                        |
+| POST   | `/api/public/stores/:slug/quote`   | Server-computed totals for a cart (no side effects)                                                     |
+| POST   | `/api/public/stores/:slug/orders`  | Create order — rate limit `public-orders`                                                               |
 
 `POST /orders` request:
 
@@ -154,13 +154,13 @@ Response `201`:
 
 ## Public — tracking
 
-| Method | Path                                   | Description                                                   |
-| ------ | -------------------------------------- | ------------------------------------------------------------- |
-| GET    | `/api/public/orders/:token`            | Status, timeline, items, totals, payment instructions         |
-| POST   | `/api/public/orders/:token/receipt`    | Upload receipt (multipart, `file`) — pauses expiration; rate limit `public-orders` |
+| Method | Path                                | Description                                                                        |
+| ------ | ----------------------------------- | ---------------------------------------------------------------------------------- |
+| GET    | `/api/public/orders/:token`         | Status, timeline, items, totals, payment instructions                              |
+| POST   | `/api/public/orders/:token/receipt` | Upload receipt (multipart, `file`) — pauses expiration; rate limit `public-orders` |
 
 ## Internal
 
-| Method | Path                              | Description                                                         |
-| ------ | --------------------------------- | ------------------------------------------------------------------- |
+| Method | Path                               | Description                                                         |
+| ------ | ---------------------------------- | ------------------------------------------------------------------- |
 | POST   | `/api/internal/jobs/expire-orders` | Called by a scheduled GitHub Action; requires `X-Job-Secret` header |

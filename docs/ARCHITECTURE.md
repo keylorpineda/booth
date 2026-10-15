@@ -113,17 +113,17 @@ Order items store `productName` and `unitPriceMinor`; orders store currency, zon
 - **Cash** on pickup/delivery (store toggle).
 - **Transfer with receipt**: generic method with `label`, `accountHolder`, `accountIdentifier` (account number, phone, email or handle), `instructions` and optional `paymentUrl`. Presets live in `packages/shared/payments/presets.ts` and only prefill these fields:
 
-| Country | Presets                          |
-| ------- | -------------------------------- |
+| Country | Presets                              |
+| ------- | ------------------------------------ |
 | CR      | SINPE Móvil (default), IBAN transfer |
-| MX      | SPEI                             |
-| CO      | Nequi, Daviplata                 |
-| PE      | Yape, Plin                       |
-| BR      | Pix                              |
-| US      | Zelle, Venmo, Cash App           |
-| ES      | Bizum                            |
-| PT      | MB WAY                           |
-| any     | Custom, PayPal link              |
+| MX      | SPEI                                 |
+| CO      | Nequi, Daviplata                     |
+| PE      | Yape, Plin                           |
+| BR      | Pix                                  |
+| US      | Zelle, Venmo, Cash App               |
+| ES      | Bizum                                |
+| PT      | MB WAY                               |
+| any     | Custom, PayPal link                  |
 
 - The optional `paymentUrl` lets a store accept cards through its own provider (Stripe Payment Link, Mercado Pago, PayPal) without Booth handling money or charging commission.
 - Receipts are uploaded from the tracking page, validated (JPEG, PNG, WebP, HEIC, PDF; max 5 MB; magic-byte check) and stored as **authenticated** Cloudinary assets. Owners get short-lived signed URLs (default 5 min).
