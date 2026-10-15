@@ -1,0 +1,42 @@
+# Local PostgreSQL for development (5432) and tests (5433).
+# Usage: pnpm db:up  (or: docker compose up -d)
+name: booth
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: booth
+      POSTGRES_PASSWORD: booth
+      POSTGRES_DB: booth_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - booth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U booth -d booth_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  db-test:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: booth
+      POSTGRES_PASSWORD: booth
+      POSTGRES_DB: booth_test
+    ports:
+      - '5433:5432'
+    # Test data is disposable: keep it in memory for speed.
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U booth -d booth_test']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  booth-db-data:
