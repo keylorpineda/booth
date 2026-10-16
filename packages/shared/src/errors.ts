@@ -29,6 +29,11 @@ export const ERROR_CODES = [
   'FILE_TOO_LARGE',
   'UNSUPPORTED_FILE_TYPE',
   'MEDIA_NOT_CONFIGURED',
+  // Orders
+  'STORE_CLOSED',
+  'PRODUCT_UNAVAILABLE',
+  'OUT_OF_STOCK',
+  'ORDER_NOT_PAYABLE',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
