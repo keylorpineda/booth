@@ -11,6 +11,7 @@ import { useOwnerMoney } from '../features/dashboard/use-owner-money';
 import { useOwnerOrder } from '../features/owner-orders/api';
 import { CustomerCard } from '../features/owner-orders/components/customer-card';
 import { FulfillmentCard } from '../features/owner-orders/components/fulfillment-card';
+import { OrderActionsCard } from '../features/owner-orders/components/order-actions-card';
 import { OrderItemsCard } from '../features/owner-orders/components/order-items-card';
 import { OrderStatusBadge } from '../features/owner-orders/components/order-status-badge';
 import { OrderTimeline } from '../features/owner-orders/components/order-timeline';
@@ -83,7 +84,9 @@ export function OrderDetailPage() {
           <OrderItemsCard order={data} formatMoney={formatMoney} />
           <OrderTimeline order={data} />
         </div>
-        <div className="flex flex-col gap-4">
+        {/* Actions come first on phones, where the owner acts from the top of the page. */}
+        <div className="order-first flex flex-col gap-4 lg:order-none">
+          <OrderActionsCard order={data} />
           <CustomerCard order={data} />
           <FulfillmentCard order={data} />
         </div>

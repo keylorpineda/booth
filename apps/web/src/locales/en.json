@@ -177,7 +177,8 @@
     "EMAIL_TAKEN": "An account with that email already exists.",
     "INVALID_CREDENTIALS": "Wrong email or password.",
     "SLUG_TAKEN": "That address is already taken.",
-    "STORE_ALREADY_EXISTS": "Your account already has a store."
+    "STORE_ALREADY_EXISTS": "Your account already has a store.",
+    "INVALID_STATUS_TRANSITION": "The order changed in the meantime. Reload and try again."
   },
   "auth": {
     "email": "Email",
@@ -346,6 +347,35 @@
         "system": "Automatic"
       },
       "reactivatedNote": "Order reactivated"
+    },
+    "actions": {
+      "title": "Actions",
+      "to": {
+        "CONFIRMED": "Confirm order",
+        "PREPARING": "Start preparing",
+        "READY": "Mark as ready",
+        "COMPLETED": "Mark as delivered"
+      },
+      "statusChanged": "Order updated: {{status}}",
+      "cancel": "Cancel order",
+      "cancelTitle": "Cancel order #{{code}}?",
+      "cancelText": "Reserved stock goes back to the catalog and the customer will see the order as cancelled. This cannot be undone.",
+      "cancelConfirm": "Yes, cancel",
+      "viewReceipt": "View receipt",
+      "markPaid": "Mark as paid",
+      "markUnpaid": "Mark as unpaid",
+      "payment": {
+        "PAID": "Payment confirmed",
+        "UNPAID": "Payment marked as pending"
+      },
+      "expiredHint": "This order expired before it was confirmed. Reactivate it if the customer still wants it: stock is reserved again.",
+      "reactivate": "Reactivate order",
+      "reactivated": "Order reactivated",
+      "reactivateSoldOut": "Not enough stock of: {{items}}. The order stays expired.",
+      "finished": {
+        "COMPLETED": "Order delivered. No more steps.",
+        "CANCELLED": "Order cancelled. Its stock is back in the catalog."
+      }
     }
   }
 }
