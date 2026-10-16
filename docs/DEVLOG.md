@@ -85,3 +85,30 @@ One entry per phase: what was built, key decisions, problems solved.
 - A commit accidentally included files staged earlier and had a type error that the pre-commit hook (lint only) did not catch. It was undone before pushing and redone as two commits.
 - `exactOptionalPropertyTypes` rejected `datasource: { url: undefined }` in `prisma.config.ts`; the datasource is now only added when `DATABASE_URL` is set, so `prisma generate` still works without a database.
 - Swagger UI was checked in a real browser to confirm Helmet's default CSP does not break it.
+
+---
+
+## Phase 2 — Auth & store onboarding — 2026-10-16
+
+**Built**
+
+- Register, login, refresh, logout and `/me`. Argon2id password hashes, 15-minute HS256 access tokens, opaque refresh tokens in an `HttpOnly; Secure; SameSite=Lax; Path=/api/auth` cookie.
+- Refresh rotation with token families: replaying a rotated token revokes the family. Rotation uses a conditional update so concurrent refreshes cannot both succeed.
+- Global `JwtAuthGuard` (secure by default, `@Public()` to opt out), `@CurrentUser()`, `@CurrentStore()` (store id only from the authenticated user), global `DemoReadOnlyGuard`.
+- Onboarding: `POST /api/me/store` with country-profile defaults, slug rules (pattern, length, reserved words), slug availability check, one store per owner.
+- `TenantResolver` chain with `PathTenantResolver`, `TenantGuard` and `@CurrentTenant()` for public routes; a subdomain resolver plugs into the same list.
+- Shared Zod schemas for auth, sessions, store onboarding and `slugify` for the web forms.
+
+**Key decisions**
+
+- **Opaque refresh tokens instead of JWTs**: they are looked up in the database anyway (rotation, revocation), so a signature adds nothing; only a SHA-256 hash is stored. `JWT_REFRESH_SECRET` was dropped from the env.
+- **Load the user on every authenticated request** instead of trusting token claims: the store id appears after onboarding and `isDemo` can change, and it costs one indexed query.
+- **`@node-rs/argon2`** over `argon2`: prebuilt binaries, no install script to allow.
+- **Production refuses the example JWT secret** (`change-me…`), on top of the 32-character minimum.
+- Same error message for "wrong password" and "unknown email", plus a dummy-hash verification, so the login endpoint does not reveal registered emails.
+
+**Problems solved**
+
+- The `express-serve-static-core` module augmentation failed under pnpm's strict layout (the package is not a direct dependency); `req.auth` / `req.tenant` now augment `express`'s `Request` instead.
+- commitlint rejected the new `stores` scope, and the failed commit's staged files slipped into the next commit. The local commit was undone, `stores` was added to commitlint, the PR-title check and CONTRIBUTING, and the commits were redone.
+- GitHub's rebase merge rewrites SHAs, so the Phase 2 branch (cut from the unmerged Phase 1 branch) was rebased onto `develop`; git skipped the already-merged commits automatically.

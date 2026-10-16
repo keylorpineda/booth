@@ -65,14 +65,14 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 2 — Auth & store onboarding
 
-- [ ] Register / login (argon2 password hashing), access JWT (15 min) in response body
-- [ ] Rotating refresh token in httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored hashed, token-family reuse detection
-- [ ] Logout (revoke family), `GET /auth/me`
-- [ ] `JwtAuthGuard`, `@CurrentUser()`, `@CurrentStore()` (store id from the authenticated user only)
-- [ ] Onboarding: `POST /me/store` (one store per owner), slug validation and reserved slugs
-- [ ] `TenantResolver` interface + `PathTenantResolver` (`/s/:slug`) and a resolver chain ready for a subdomain strategy
-- [ ] `isDemo` flag + global `DemoReadOnlyGuard` blocking non-GET owner requests with a clear error
-- [ ] Stricter rate limit on auth endpoints
+- [x] Register / login (argon2 password hashing), access JWT (15 min) in response body
+- [x] Rotating refresh token in httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored hashed, token-family reuse detection
+- [x] Logout (revoke family), `GET /auth/me`
+- [x] `JwtAuthGuard`, `@CurrentUser()`, `@CurrentStore()` (store id from the authenticated user only)
+- [x] Onboarding: `POST /me/store` (one store per owner), slug validation and reserved slugs
+- [x] `TenantResolver` interface + `PathTenantResolver` (`/s/:slug`) and a resolver chain ready for a subdomain strategy
+- [x] `isDemo` flag + global `DemoReadOnlyGuard` blocking non-GET owner requests with a clear error
+- [x] Stricter rate limit on auth endpoints
 
 **Done when**
 
