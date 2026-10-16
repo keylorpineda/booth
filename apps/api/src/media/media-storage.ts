@@ -7,6 +7,14 @@ export interface StoredImage {
   bytes: number;
 }
 
+/** Receipt formats accepted from customers (phone screenshots, bank PDFs, iPhone HEIC). */
+export type PrivateFileFormat = 'jpg' | 'png' | 'webp' | 'heic' | 'pdf';
+
+export interface StoredPrivateFile {
+  publicId: string;
+  bytes: number;
+}
+
 export type ImageUrls = ProductImage['urls'];
 
 /** Image hosting behind an interface: Cloudinary in production, a fake in tests. */
@@ -16,6 +24,15 @@ export interface MediaStorage {
   deleteImage(publicId: string): Promise<void>;
   /** Optimized delivery URLs (auto format and quality, limited width). */
   imageUrls(publicId: string): ImageUrls;
+  /** Private upload (payment receipts): only reachable through short-lived signed URLs. */
+  uploadPrivate(
+    file: Buffer,
+    folder: string,
+    format: PrivateFileFormat,
+  ): Promise<StoredPrivateFile>;
+  deletePrivate(publicId: string): Promise<void>;
+  /** Signed URL that stops working after `ttlSeconds`. */
+  privateUrl(publicId: string, format: PrivateFileFormat, ttlSeconds: number): string;
 }
 
 export const MEDIA_STORAGE = Symbol('MEDIA_STORAGE');
