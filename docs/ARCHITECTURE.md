@@ -181,11 +181,20 @@ apps/web/src/
 ### Design system and motion
 
 - **Tokens** as CSS variables (`--color-*`, `--radius-*`, `--shadow-*`, `--space-*`, `--ease-*`, `--duration-*`) mapped into the Tailwind theme. Dashboard supports light/dark.
-- **Store theming**: the brand color is converted to OKLCH and a 50–950 scale is derived with CSS relative colors / `color-mix()`. Foreground on brand surfaces is chosen automatically to keep WCAG AA contrast.
+- **Store theming**: the API sends `brandColor` and `brandForeground` (black or white, whichever passes WCAG AA). `useStoreTheme` sets them on `<html>` while a store page is mounted (so portals such as sheets and toasts follow), and `tokens.css` derives `--brand-soft`, `--brand-strong` and `--brand-ink` with OKLCH `color-mix()`.
 - **Micro-interactions** (Motion): press scale on buttons, add-to-cart item flying to the cart button and a count bump, quantity stepper number roll, sheet/drawer springs, list stagger on load, skeleton shimmer, toast enter/exit, route transitions (View Transitions API with fallback).
-- **Vector animations**: animated SVG icons and paths (`pathLength`) for the order-placed check, the tracking timeline and status changes; Lottie (`.lottie`, lazy loaded) for empty states and success illustrations.
+- **Vector animations**: animated SVG paths (`pathLength`) for the checkbox tick, the order-placed check and the tracking timeline; hand-made animated SVG illustrations (empty bag, store sign) instead of Lottie: they inherit the store color and add no runtime.
+- **Motion is lazy**: components use `m.*` inside `<LazyMotion strict>`; the animation engine (`domMax`) loads after first paint.
 - Every animation checks `useReducedMotion()`; under reduced motion only opacity changes remain.
 - Mobile-first: designed at 360px, bottom sheets instead of modals on small screens, sticky cart and checkout actions within thumb reach.
+
+### First-load performance
+
+- **Prefetch from HTML**: on `/s/:slug`, an inline script in `index.html` starts the store and catalog requests while the JS downloads; the first queries reuse those responses (`lib/prefetch.ts`).
+- **Static placeholder** in `index.html` paints before the app boots.
+- **Code splitting**: checkout and tracking are lazy routes; toasts and Motion features load lazily.
+- **No Zod on the first load**: storefront responses are typed but not validated at runtime; checkout and tracking validate with the shared schemas, and the API's e2e tests guard the public contract. `@booth/shared` is built one file per module and keeps schemas apart from pure helpers, so the bundler drops what the storefront does not use (e.g. libphonenumber only ships with checkout).
+- Main bundle: 180 KB gzipped (from 277 KB before these changes).
 
 ## API conventions
 

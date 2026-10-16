@@ -39,7 +39,8 @@ pnpm --filter api db:seed          # idempotent demo seed (Phase 7)
 - Small components: one component per file, ~150 lines max; split by responsibility (`ui/` primitives → `features/*/components` → `pages/`).
 - Logic in hooks (`use*.ts`), API calls in `features/*/api.ts` with TanStack Query; no fetch inside components.
 - Mobile-first (design at 360px first). Store theme via CSS variables only.
-- Animations with Motion; every animation respects `prefers-reduced-motion`.
+- Animations with Motion using `m.*` (never `motion.*`: `<LazyMotion strict>` loads the engine lazily); every animation respects `prefers-reduced-motion`.
+- Storefront first-load code must not import Zod schemas (keep `@booth/shared` imports to helpers and types there).
 
 ## Testing rules
 
