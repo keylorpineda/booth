@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { StoreSignIllustration } from '../components/illustrations/store-sign';
 import { EmptyState } from '../components/ui/empty-state';
 
-type Section = 'orders' | 'catalog' | 'settings';
+type Section = 'catalog' | 'settings';
 
-/** Placeholder for the sections that land in the next issues (#19 orders, #20 catalog, #21 settings). */
+/** Placeholder for the sections that land in the next issues (#20 catalog, #21 settings). */
 export function DashboardSectionPage({ section }: { section: Section }) {
   const { t } = useTranslation();
 
@@ -24,6 +24,5 @@ export function DashboardSectionPage({ section }: { section: Section }) {
   );
 }
 
-export const OrdersSectionPage = () => <DashboardSectionPage section="orders" />;
 export const CatalogSectionPage = () => <DashboardSectionPage section="catalog" />;
 export const SettingsSectionPage = () => <DashboardSectionPage section="settings" />;

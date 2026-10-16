@@ -277,5 +277,51 @@
     "light": "Claro",
     "dark": "Oscuro",
     "system": "Según el sistema"
+  },
+  "orders": {
+    "tabs": {
+      "active": "Activos",
+      "completed": "Entregados",
+      "closed": "Cancelados y vencidos",
+      "all": "Todos"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "CONFIRMED": "Confirmado",
+      "PREPARING": "En preparación",
+      "READY": "Listo",
+      "COMPLETED": "Entregado",
+      "CANCELLED": "Cancelado",
+      "EXPIRED": "Vencido"
+    },
+    "payment": {
+      "UNPAID": "Sin pagar",
+      "RECEIPT_SUBMITTED": "Comprobante por revisar",
+      "PAID": "Pagado",
+      "cash": "Efectivo al entregar"
+    },
+    "fulfillment": {
+      "PICKUP": "Retiro",
+      "DELIVERY": "Envío"
+    },
+    "items_one": "{{count}} producto",
+    "items_other": "{{count}} productos",
+    "minutesLeft_one": "Vence en {{count}} min",
+    "minutesLeft_other": "Vence en {{count}} min",
+    "search": "Buscar pedidos",
+    "searchPlaceholder": "Código, nombre o teléfono",
+    "clearSearch": "Borrar búsqueda",
+    "paymentFilter": "Filtrar por pago",
+    "anyPayment": "Cualquier pago",
+    "loadMore": "Cargar más",
+    "empty": {
+      "active": "No hay pedidos activos",
+      "completed": "Aún no hay pedidos entregados",
+      "closed": "No hay pedidos cancelados ni vencidos",
+      "all": "Todavía no tienes pedidos"
+    },
+    "emptyHint": "Los pedidos nuevos aparecen aquí solos, sin recargar la página.",
+    "noMatches": "Ningún pedido coincide",
+    "noMatchesHint": "Prueba con otro código, nombre o teléfono, o quita el filtro de pago."
   }
 }
