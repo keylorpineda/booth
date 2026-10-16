@@ -73,12 +73,83 @@ describe('store settings and branding', () => {
     expect(errorCode(response.body)).toBe('VALIDATION_ERROR');
   });
 
-  it('cannot change the slug, owner or currency through settings', async () => {
-    await patch({ slug: 'hijacked', ownerId: 'someone', currency: 'USD', name: 'Ok' }).expect(200);
+  it('cannot change the slug or owner through settings', async () => {
+    await patch({ slug: 'hijacked', ownerId: 'someone', name: 'Ok' }).expect(200);
 
     const store = await prisma.store.findUniqueOrThrow({ where: { id: owner.store.id } });
-    expect(store).toMatchObject({ slug: owner.store.slug, currency: 'CRC', name: 'Ok' });
+    expect(store).toMatchObject({ slug: owner.store.slug, name: 'Ok' });
     expect(store.ownerId).toBe(owner.body.user.id);
+  });
+
+  it('changes localization while the store is empty', async () => {
+    expect(owner.store.canChangeCurrency).toBe(true);
+
+    const response = await patch({
+      country: 'US',
+      currency: 'USD',
+      timezone: 'America/Chicago',
+      locale: 'en',
+    }).expect(200);
+
+    expect(response.body).toMatchObject({
+      country: 'US',
+      currency: 'USD',
+      timezone: 'America/Chicago',
+      locale: 'en',
+    });
+  });
+
+  it('locks the currency once the store has products', async () => {
+    await prisma.product.create({
+      data: { storeId: owner.store.id, name: 'Pan', priceMinor: 100000n },
+    });
+
+    const response = await patch({ currency: 'USD' }).expect(409);
+    expect(errorCode(response.body)).toBe('CURRENCY_LOCKED');
+
+    const store = await http().get('/api/me/store').set('Authorization', owner.auth).expect(200);
+    expect(store.body).toMatchObject({ currency: 'CRC', canChangeCurrency: false });
+    // Sending the same currency is not a change.
+    await patch({ currency: 'CRC', timezone: 'America/Costa_Rica' }).expect(200);
+  });
+
+  it('updates ordering options and refuses to disable both pickup and delivery', async () => {
+    const ok = await patch({
+      acceptOrdersWhenClosed: true,
+      orderExpirationMinutes: 45,
+      pickupAddress: 'Avenida Central',
+      deliveryEnabled: true,
+      cashEnabled: false,
+    }).expect(200);
+    expect(ok.body).toMatchObject({
+      acceptOrdersWhenClosed: true,
+      orderExpirationMinutes: 45,
+      pickupAddress: 'Avenida Central',
+      deliveryEnabled: true,
+      cashEnabled: false,
+    });
+
+    await patch({ pickupEnabled: false, deliveryEnabled: false }).expect(400);
+    await patch({ orderExpirationMinutes: 1 }).expect(400);
+  });
+
+  it('versions the privacy notice when its text changes', async () => {
+    expect(owner.store).toMatchObject({ privacyNotice: null, privacyNoticeVersion: 1 });
+    expect(owner.store.effectivePrivacyNotice).toContain('Ley N.° 8968');
+
+    const custom = 'Usamos tu nombre y teléfono solo para entregar tu pedido. Nada más.';
+    const first = await patch({ privacyNotice: custom }).expect(200);
+    expect(first.body).toMatchObject({
+      privacyNotice: custom,
+      effectivePrivacyNotice: custom,
+      privacyNoticeVersion: 2,
+    });
+
+    const same = await patch({ privacyNotice: custom }).expect(200);
+    expect(same.body).toMatchObject({ privacyNoticeVersion: 2 });
+
+    const reset = await patch({ privacyNotice: null }).expect(200);
+    expect(reset.body).toMatchObject({ privacyNotice: null, privacyNoticeVersion: 3 });
   });
 
   it('uploads a logo and replaces it, deleting the previous asset', async () => {
