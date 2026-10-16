@@ -4,7 +4,8 @@
     "retry": "Try again",
     "copied": "Copied",
     "copyNamed": "Copy {{name}}",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "language": {
     "label": "Language"
@@ -178,7 +179,8 @@
     "INVALID_CREDENTIALS": "Wrong email or password.",
     "SLUG_TAKEN": "That address is already taken.",
     "STORE_ALREADY_EXISTS": "Your account already has a store.",
-    "INVALID_STATUS_TRANSITION": "The order changed in the meantime. Reload and try again."
+    "INVALID_STATUS_TRANSITION": "The order changed in the meantime. Reload and try again.",
+    "CATEGORY_NAME_TAKEN": "You already have a category with that name."
   },
   "auth": {
     "email": "Email",
@@ -376,6 +378,34 @@
         "COMPLETED": "Order delivered. No more steps.",
         "CANCELLED": "Order cancelled. Its stock is back in the catalog."
       }
+    }
+  },
+  "catalog": {
+    "tabs": {
+      "products": "Products",
+      "categories": "Categories"
+    },
+    "moveUp": "Move {{name}} up",
+    "moveDown": "Move {{name}} down",
+    "categories": {
+      "hint": "Categories are the tabs of your store, in this order. Hide one to keep it without deleting it.",
+      "newLabel": "New category",
+      "newPlaceholder": "Bread, Drinks, Desserts…",
+      "add": "Add",
+      "created": "Category \"{{name}}\" created",
+      "empty": "No categories yet. Products without a category show at the end of the store.",
+      "productCount_one": "{{count}} product",
+      "productCount_other": "{{count}} products",
+      "hidden": "Hidden",
+      "visible": "Show {{name}} in the store",
+      "rename": "New name",
+      "renameNamed": "Rename {{name}}",
+      "delete": "Delete {{name}}",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteText_one": "Its product becomes uncategorized; it is not deleted.",
+      "deleteText_other": "Its {{count}} products become uncategorized; they are not deleted.",
+      "deleteConfirm": "Yes, delete",
+      "deleted": "Category \"{{name}}\" deleted"
     }
   }
 }
