@@ -141,3 +141,36 @@ One entry per phase: what was built, key decisions, problems solved.
 - The first contrast test only sampled grays (stepping by `0x0f0f0f` keeps R, G and B equal) and the first foreground (`#111111`) fell to 4.42:1 on some mid-tones. Both were fixed: the test walks the RGB cube and the dark foreground is `#000000`.
 - Prettier un-escaped `\|` inside a Markdown table cell in `API.md`, breaking the table; the cell was reworded without pipes.
 - A commit command used a lockfile path relative to the wrong directory, so nothing was committed; it was rerun from the repository root.
+
+---
+
+## Phase 4 — Public API, orders & stock reservations — 2026-10-16
+
+**Built**
+
+- Public storefront API (no auth, store resolved from the slug): store info with open/closed status in the store time zone, pickup and delivery zones, payment methods, default privacy notice per country; catalog with availability; server-side quote.
+- Checkout: the order is saved as `PENDING` with item snapshots and reserved stock before WhatsApp opens. Totals, delivery fee and payment label are computed and snapshotted on the server.
+- Stock reservation in one transaction with conditional updates in product-id order; release adds reserved quantities back and clears the `stockReserved` flags in the same transaction.
+- Expiration: lazy (before checkout and when the tracking page is opened), every 5 minutes in-process (`@nestjs/schedule`), and `POST /api/internal/jobs/expire-orders` protected by `JOB_SECRET` for an external cron. A status-guarded `UPDATE … RETURNING` makes it exactly-once under concurrency.
+- Localized WhatsApp message (store language and currency) and `wa.me` link; short Crockford base32 order codes; 256-bit tracking tokens.
+- Tracking page API and receipt upload (JPEG, PNG, WebP, HEIC, PDF) to private Cloudinary storage; a receipt sets `RECEIPT_SUBMITTED` and pauses expiration.
+- Shared contracts: business hours (time-zone aware), privacy notices (es/en, citing each country's law), order, quote, tracking and public store schemas.
+
+**Key decisions**
+
+- **A store without business hours is always open**, so a new store can sell immediately.
+- **Payment choice is `{ type: 'CASH' }` or `{ type: 'TRANSFER', methodId }`** instead of a bare `paymentMethodId`: cash is a store toggle, not a payment method row.
+- **Concurrency is tested for real**: two parallel orders for the last unit (exactly one succeeds) and 12 parallel orders against 5 units (exactly 5 succeed), repeated runs stable.
+- **Tracking never exposes the customer phone**; the token is the only key, the order code is just a payment reference.
+- **Receipts are stored as private ("authenticated") assets**; PDFs use the image resource type so one signed-URL path serves every format. The Spanish guide explains enabling PDF delivery in Cloudinary.
+- **Hidden categories do not hide their products**: they move to `uncategorized`, so an owner hiding a category does not silently stop sales.
+- The unused `ORDER_EXPIRATION_MINUTES` env variable was removed: the window is a per-store setting.
+
+**Deferred to Phase 6 (by design)**
+
+- Cancelling orders and the owner order list. Both reuse `StockService.release` and `OrderExpirationService.expireStale`, which are already tested here.
+
+**Problems solved**
+
+- A closed-store test only asserted inside `if (!openNow)`, so it could pass without checking anything. It now sets hours on a weekday that is never "today" in the store time zone, so the assertions always run.
+- Two long shell heredocs failed on quoting again; scripted edits are now written as files in the scratchpad and run with Node.

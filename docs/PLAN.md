@@ -98,16 +98,16 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 4 — Public API, orders & stock reservations
 
-- [ ] Public store endpoint by slug: store info, branding, open/closed now (store timezone), zones, public payment methods
-- [ ] Public catalog endpoint (active categories and products, availability)
-- [ ] `POST /public/stores/:slug/orders`: server-computed totals, snapshots, privacy consent required, store open check (unless accepting while closed)
-- [ ] Stock reservation in one transaction: conditional `UPDATE` per tracked product, ordered by product id
-- [ ] Order code (short, per store) + unguessable tracking token
-- [ ] WhatsApp message builder (localized, includes code, items, totals, delivery, payment instructions, tracking link) → `wa.me` URL
-- [ ] Expiration: `expiresAt` = now + store window (default 30 min); lazy expiry before order creation and owner listing; scheduled job (`@nestjs/schedule`)
-- [ ] Tracking endpoint by token with status timeline
-- [ ] Receipt upload by token (type/size validation, private Cloudinary asset) → pauses expiration
-- [ ] Stricter rate limit on public order and receipt endpoints
+- [x] Public store endpoint by slug: store info, branding, open/closed now (store timezone), zones, public payment methods
+- [x] Public catalog endpoint (active categories and products, availability)
+- [x] `POST /public/stores/:slug/orders`: server-computed totals, snapshots, privacy consent required, store open check (unless accepting while closed)
+- [x] Stock reservation in one transaction: conditional `UPDATE` per tracked product, ordered by product id
+- [x] Order code (short, per store) + unguessable tracking token
+- [x] WhatsApp message builder (localized, includes code, items, totals, delivery, payment instructions, tracking link) → `wa.me` URL
+- [x] Expiration: `expiresAt` = now + store window (default 30 min); lazy expiry before order creation and owner listing; scheduled job (`@nestjs/schedule`)
+- [x] Tracking endpoint by token with status timeline
+- [x] Receipt upload by token (type/size validation, private Cloudinary asset) → pauses expiration
+- [x] Stricter rate limit on public order and receipt endpoints
 
 **Done when**
 
