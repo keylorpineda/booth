@@ -27,25 +27,27 @@ Every error response has the same shape:
 }
 ```
 
-| Status | Typical codes                                                            |
-| ------ | ------------------------------------------------------------------------ |
-| 400    | `VALIDATION_ERROR` (with `details.fields`), `STORE_CLOSED`               |
-| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`         |
-| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                  |
-| 404    | `NOT_FOUND` (also returned for other stores' resources)                  |
-| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `INVALID_STATUS_TRANSITION` |
-| 413    | `FILE_TOO_LARGE`                                                         |
-| 415    | `UNSUPPORTED_FILE_TYPE`                                                  |
-| 429    | `RATE_LIMITED`                                                           |
-| 500    | `INTERNAL_ERROR` (no internals leaked)                                   |
+| Status | Typical codes                                                                                                        |
+| ------ | -------------------------------------------------------------------------------------------------------------------- |
+| 400    | `VALIDATION_ERROR` (with `details.fields: [{ path, message }]`), `BAD_REQUEST` (e.g. malformed JSON), `STORE_CLOSED` |
+| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`                                                     |
+| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                                                              |
+| 404    | `NOT_FOUND` (also returned for other stores' resources)                                                              |
+| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `INVALID_STATUS_TRANSITION`                                             |
+| 413    | `FILE_TOO_LARGE`, `PAYLOAD_TOO_LARGE`                                                                                |
+| 415    | `UNSUPPORTED_FILE_TYPE`, `UNSUPPORTED_MEDIA_TYPE`                                                                    |
+| 429    | `RATE_LIMITED` (with a `Retry-After` header)                                                                         |
+| 500    | `INTERNAL_ERROR` (no internals leaked)                                                                               |
 
-`message` is in English for developers; the web app maps `code` to a localized string.
+`message` is in English for developers; the web app maps `code` to a localized string. Codes live in `@booth/shared` (`ERROR_CODES`, `apiErrorSchema`); domain codes are added as each phase needs them.
+
+Every response carries an `X-Request-Id` header (a valid incoming one is reused); the same id is in `error.requestId` and in the API logs.
 
 ## Health
 
-| Method | Path      | Description                               |
-| ------ | --------- | ----------------------------------------- |
-| GET    | `/health` | `200 { status: 'ok', db: 'up' }` or `503` |
+| Method | Path      | Description                                                                                   |
+| ------ | --------- | --------------------------------------------------------------------------------------------- |
+| GET    | `/health` | `200 { status: 'ok', db: 'up' }` or `503 { status: 'error', db: 'down' }`. Never rate limited |
 
 ## Auth — rate limit: `auth`
 

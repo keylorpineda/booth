@@ -18,7 +18,7 @@ pnpm typecheck          # tsc --noEmit (all workspaces)
 pnpm test               # Jest (api, uses test DB) + Vitest (web, shared)
 pnpm build              # build all workspaces
 pnpm --filter api prisma:migrate   # create/apply a migration
-pnpm --filter api db:seed          # idempotent demo seed
+pnpm --filter api db:seed          # idempotent demo seed (Phase 7)
 ```
 
 ## Non-negotiable rules
@@ -43,7 +43,7 @@ pnpm --filter api db:seed          # idempotent demo seed
 
 ## Testing rules
 
-- API: Jest + Supertest against the test DB (port 5433), reset between suites. Web: Vitest + Testing Library.
+- API: Jest + Supertest against the test DB (port 5433; `pnpm db:up`). Boot apps with `test/utils/create-test-app.ts` (same setup as production) and call `resetDatabase()` in `beforeEach`. Web: Vitest + Testing Library.
 - Fix failures at the root. Never disable lint rules, skip tests or use `--no-verify`.
 - Required tests: tenant isolation, concurrent last-unit order (exactly one succeeds), expiration/stock release, demo write guard.
 

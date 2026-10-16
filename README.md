@@ -44,7 +44,7 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 pnpm db:up
 pnpm --filter api prisma:migrate
-pnpm --filter api db:seed
+pnpm --filter api db:seed   # available from Phase 7
 pnpm dev
 ```
 
