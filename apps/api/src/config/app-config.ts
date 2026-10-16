@@ -14,6 +14,8 @@ export interface AppConfig {
     accessTtlSeconds: number;
     refreshTtlDays: number;
   };
+  /** null disables the internal jobs endpoint. */
+  jobSecret: string | null;
   /** null when uploads are not configured (development only). */
   cloudinary: { cloudName: string; apiKey: string; apiSecret: string } | null;
   rateLimit: {
@@ -59,6 +61,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
       accessTtlSeconds: env.JWT_ACCESS_TTL_MINUTES * 60,
       refreshTtlDays: env.REFRESH_TOKEN_TTL_DAYS,
     },
+    jobSecret: env.JOB_SECRET ?? null,
     cloudinary:
       env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET
         ? {

@@ -48,6 +48,8 @@ export const envSchema = z
     RATE_LIMIT_AUTH: positiveInt.default(10),
     RATE_LIMIT_PUBLIC_ORDERS: positiveInt.default(20),
     // Optional in development (uploads answer 503 MEDIA_NOT_CONFIGURED), required in production.
+    /** Enables POST /api/internal/jobs/expire-orders for an external cron. */
+    JOB_SECRET: optionalString.pipe(z.string().min(32).optional()),
     CLOUDINARY_CLOUD_NAME: optionalString,
     CLOUDINARY_API_KEY: optionalString,
     CLOUDINARY_API_SECRET: optionalString,
