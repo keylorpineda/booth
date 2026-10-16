@@ -206,3 +206,29 @@ One entry per phase: what was built, key decisions, problems solved.
 - **The cover overlapped the logo**: the header content needed its own stacking context.
 - **Derived brand shades did not update** when `--brand` was overridden on a child: custom properties resolve where declared, so the shades are re-declared on every `[data-brand]` element.
 - The strict React lint rules caught `Date.now()` during render, setState in an effect, `forwardRef`, `cloneElement` and `form.watch` (incompatible with the React Compiler); replaced with `useNow`, cleanup-based state, ref-as-prop, a render-prop `Field` and `useWatch`.
+
+---
+
+## Phase 6 (part 1) — Owner API — 2026-10-16
+
+**Built**
+
+- Store settings: ordering options (accept orders while closed, expiration window, pickup with address, delivery, cash), localization (country, currency, time zone, language) and the privacy notice.
+- Transfer payment methods with presets for 13 methods across CR, MX, CO, PE, BR, US, ES, PT and anywhere (PayPal), fully custom methods and an optional https payment link.
+- Delivery zones and weekly business hours (split shifts, overlap check, empty week = always open).
+- Owner orders: list with status, payment, date and text filters (cursor pagination), detail with timeline, status flow, mark paid / unpaid, reactivation, signed receipt URLs.
+
+**Key decisions**
+
+- **Currency lock**: prices are minor units of the store currency, so the currency only changes while the store has no products or orders (`canChangeCurrency` tells the dashboard).
+- **Privacy notice versioning**: a new text bumps `privacyNoticeVersion`; each order stores the version the customer accepted.
+- **Status flow in `@booth/shared`** (`ORDER_TRANSITIONS`), so the dashboard only offers valid actions and the API enforces the same table.
+- **Expire before acting**: status changes run lazy expiry first, so an order whose window passed cannot be confirmed; updates are conditional on the status that was read, so concurrent changes cannot both apply.
+- **Paid orders never expire**; cancelling releases stock through the same exactly-once release used by expiry.
+- Cash stays a store toggle, not a payment method row.
+
+**Problems solved**
+
+- A test built all Supertest requests up front; Supertest closes the ephemeral server after the first request, so the rest failed with "Cannot read properties of null (reading 'address')". Requests are now built lazily.
+- The Docker containers had stopped mid-session; `pnpm db:up` restored them and the in-memory test database was re-migrated by the test setup.
+- The unused `RECEIPT_MAX_BYTES` env variable was removed (the 5 MB limit is a constant).

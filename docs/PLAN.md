@@ -143,6 +143,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 6 — Owner dashboard, payments, zones, hours & localization
 
+- [x] Owner API: store settings (ordering options, localization with currency lock, privacy notice versioning), payment methods with presets, delivery zones, weekly hours, orders (list with filters and lazy expiry, status flow, payment, reactivation, signed receipt URLs), all with tenant isolation tests
 - [ ] Auth screens (register, login) and onboarding wizard (store → branding → payment → hours)
 - [ ] Remaining UI primitives: Select, Combobox (currency, time zone), Tabs, Switch, Tooltip, Dialog
 - [ ] Dashboard layout: responsive sidebar / bottom nav on mobile, command palette (optional)
@@ -158,8 +159,8 @@ The original target is Latin America with Costa Rica first. To work in any count
 **Done when**
 
 - A new owner can go from registration to a working storefront without touching the database.
-- Orders list reflects lazy expiry on load.
-- Reactivating an expired order fails with a clear message when stock is no longer available (tested).
+- [x] Orders list reflects lazy expiry on load (API, tested).
+- [x] Reactivating an expired order fails with a clear message when stock is no longer available (tested).
 - All dashboard screens usable at 360px.
 
 ## Phase 7 — Testing, security hardening & deployment (MVP done)
