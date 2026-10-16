@@ -61,3 +61,6 @@ desktop.ini
 # Lockfiles from other package managers (pnpm only)
 package-lock.json
 yarn.lock
+
+# Prisma generated client (built by `prisma generate` on install)
+apps/api/src/generated/
