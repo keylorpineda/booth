@@ -177,7 +177,8 @@
     "EMAIL_TAKEN": "Ya existe una cuenta con ese correo.",
     "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
     "SLUG_TAKEN": "Esa dirección ya está en uso.",
-    "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda."
+    "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda.",
+    "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar."
   },
   "auth": {
     "email": "Correo electrónico",
@@ -346,6 +347,35 @@
         "system": "Automático"
       },
       "reactivatedNote": "Pedido reactivado"
+    },
+    "actions": {
+      "title": "Acciones",
+      "to": {
+        "CONFIRMED": "Confirmar pedido",
+        "PREPARING": "Empezar a preparar",
+        "READY": "Marcar como listo",
+        "COMPLETED": "Marcar como entregado"
+      },
+      "statusChanged": "Pedido actualizado: {{status}}",
+      "cancel": "Cancelar pedido",
+      "cancelTitle": "¿Cancelar el pedido #{{code}}?",
+      "cancelText": "El stock reservado vuelve al catálogo y el cliente verá el pedido como cancelado. No se puede deshacer.",
+      "cancelConfirm": "Sí, cancelar",
+      "viewReceipt": "Ver comprobante",
+      "markPaid": "Marcar como pagado",
+      "markUnpaid": "Marcar como no pagado",
+      "payment": {
+        "PAID": "Pago confirmado",
+        "UNPAID": "Pago marcado como pendiente"
+      },
+      "expiredHint": "Este pedido venció sin confirmarse. Reactívalo si el cliente aún lo quiere: se reserva el stock otra vez.",
+      "reactivate": "Reactivar pedido",
+      "reactivated": "Pedido reactivado",
+      "reactivateSoldOut": "No hay stock suficiente de: {{items}}. El pedido sigue vencido.",
+      "finished": {
+        "COMPLETED": "Pedido entregado. No hay más pasos.",
+        "CANCELLED": "Pedido cancelado. El stock ya volvió al catálogo."
+      }
     }
   }
 }
