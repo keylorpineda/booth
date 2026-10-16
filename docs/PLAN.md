@@ -2,7 +2,7 @@
 
 Booth is built one phase at a time, in order. Each phase has checkbox tasks and "Done when" criteria. A phase is closed only when every criterion is verified, lint/typecheck/test/build pass, and a DEVLOG entry exists.
 
-- **MVP milestone = Phases 0–7** → tagged `v1.0.0`.
+- **Release milestones**: `v0.5` Storefront (Phases 0–5), `v0.6` Owner dashboard (Phase 6), `v0.7` Demo & hardening and `v1.0.0` Launch (Phase 7) → tagged `v1.0.0`.
 - **v1.1** = items in the v1.1 section → tagged `v1.1.0`.
 - Anything else goes to the Backlog.
 
@@ -145,9 +145,10 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 - [x] Owner API: store settings (ordering options, localization with currency lock, privacy notice versioning), payment methods with presets, delivery zones, weekly hours, orders (list with filters and lazy expiry, status flow, payment, reactivation, signed receipt URLs), all with tenant isolation tests
 - [x] Auth screens (register, login), session restore with single-flight refresh, route guards and onboarding (store name, URL with live availability, country, WhatsApp)
-- [ ] Guided setup after onboarding: branding → payment → hours (from Settings)
-- [ ] Remaining UI primitives: Select, Combobox (currency, time zone), Tabs, Switch, Tooltip, Dialog
-- [ ] Dashboard layout: responsive sidebar / bottom nav on mobile, command palette (optional)
+- [x] Setup checklist on the dashboard home from real data (products, a way to get paid, hours, delivery zones when delivery is on) plus a share-your-store card
+- [x] UI primitives: Select (native), Switch, Tabs, ConfirmDialog
+- [ ] Combobox (currency, time zone) and Tooltip, with the settings screens
+- [x] Dashboard layout: sidebar from `md`, bottom navigation on phones, header with the store link and account menu, light/dark theme (command palette later)
 - [ ] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)
 - [ ] Localization: country, currency, timezone (from `Intl.supportedValuesOf`), language
 - [ ] Payment methods: cash toggle, transfer methods from presets or custom, optional payment link, reorder
@@ -155,7 +156,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [ ] Business hours editor (multiple intervals per day), accept-orders-while-closed setting
 - [ ] Categories & products management UI (drag to reorder, image upload, stock and `trackStock`)
 - [ ] Orders: list with filters (status, payment, date, search), detail with timeline, status changes, mark paid, view receipt (signed URL), reactivate expired order
-- [ ] Demo mode banner and disabled write actions for `isDemo`
+- [x] Demo mode banner and disabled write actions for `isDemo` (`useCanWrite()`)
 
 **Done when**
 
