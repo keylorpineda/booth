@@ -19,6 +19,9 @@ export const orderDetailInclude = {
   receipt: true,
 } as const;
 
+/** "+506 7777", "(415) 555-2671", "7777": digits with phone punctuation, at least three digits. */
+const PHONE_QUERY = /^\+?[\d\s().-]*\d{3}[\d\s().-]*$/;
+
 /** Read side of the owner's orders. Every query is scoped by the caller's storeId. */
 @Injectable()
 export class OwnerOrdersService {
@@ -32,7 +35,9 @@ export class OwnerOrdersService {
     await this.expiration.expireStale(storeId);
 
     const search = query.q?.trim();
-    const digits = search?.replace(/\D/g, '');
+    // Phones are searched only for phone-like queries: the digits of a code such as "SW12CJ"
+    // would otherwise match any phone containing "12".
+    const digits = search && PHONE_QUERY.test(search) ? search.replace(/\D/g, '') : '';
     const where: Prisma.OrderWhereInput = {
       storeId,
       ...(query.status?.length && { status: { in: query.status } }),
