@@ -52,3 +52,36 @@ One entry per phase: what was built, key decisions, problems solved.
 - **`npm install` installed packages before `only-allow` rejected it**, leaving `node_modules` and a `package-lock.json`. Unsatisfiable `engines.npm`/`engines.yarn` with `engine-strict=true` make npm and yarn fail before writing anything; `package-lock.json` and `yarn.lock` are also gitignored.
 - **Squash merge hid the progressive history.** PR #1 was first squash-merged, collapsing its 8 commits into one on `develop`. Because the tree was identical, `develop` was reset to the original 8 commits (rule paused for the force-push, then re-enabled) and `develop` now allows only rebase merges.
 - **A heredoc dropped a backslash** in the Jest transform regex (`'^.+\.ts$'` became "any character before ts"). ESLint's `no-useless-escape` caught it; the pattern now uses `String.raw`.
+
+---
+
+## Phase 1 — API foundation — 2026-10-16
+
+**Built**
+
+- `@booth/shared`: money helpers (ISO 4217 exponents, exact string-based `toMinor`/`fromMinor`, `formatMoney` with `Intl.NumberFormat`), E.164 phone helpers (libphonenumber-js), country profiles (defaults for 22 countries, generic fallback), app locales, time zone validation, the API error contract and the health schema.
+- Config: Zod-validated environment, typed `AppConfig`, fails before Nest starts with a list of every invalid variable.
+- Prisma 7 with the PostgreSQL driver adapter; full MVP schema and the first migration, plus CHECK constraints Prisma cannot express (non-negative stock and amounts, valid business hours, positive quantities).
+- `/health` checks the database (200 / 503), sits outside the `/api` prefix and is never rate limited.
+- Global `/api` prefix, Swagger at `/api/docs`, Helmet, CORS allowlist with credentials, `trust proxy`.
+- One error format for everything (`AppException` + `AllExceptionsFilter`), request ids in headers, error bodies and logs.
+- Zod validation pipe and decorators shared with the web forms.
+- Rate limiting: default bucket plus opt-in `auth` and `public-orders` buckets, keyed by the real client IP.
+- Structured logging with pino (pretty in development, redacted auth headers).
+- Test harness: separate test database, migrations applied once per run, `createTestApp()` with the production HTTP setup, `resetDatabase()`.
+
+**Key decisions**
+
+- **Own Zod pipe instead of `nestjs-zod`**: it does not support Nest 12 yet. Zod 4's `z.toJSONSchema` covers Swagger, so the replacement is ~40 lines.
+- **Prisma 7.10.0, not 7.10.1**: 7.10.1 was published the same day, and pnpm 11's `minimumReleaseAge` policy (supply-chain protection) rejects packages younger than a day. The policy stays on; pnpm had auto-added exclusions, which were removed.
+- **Money**: `toMinor` parses the decimal string instead of multiplying floats (`0.1 + 0.2` → 30 cents). `formatMoney` hands Intl a decimal string so large amounts stay exact, and hides a zero fraction by default ("₡3 500").
+- **ISO 4217 over CLDR** for minor units, with an explicit table for the 0-, 3- and 4-decimal currencies.
+- **Rate-limit storage in memory**: correct for a single Render instance; documented as a prerequisite to change before scaling out.
+- **`@scarf/scarf` blocked** in `allowBuilds`: it is install-time telemetry pulled in by Swagger UI.
+
+**Problems solved**
+
+- A long shell heredoc broke on quoting; source files are now written with the editor tool, not shell heredocs.
+- A commit accidentally included files staged earlier and had a type error that the pre-commit hook (lint only) did not catch. It was undone before pushing and redone as two commits.
+- `exactOptionalPropertyTypes` rejected `datasource: { url: undefined }` in `prisma.config.ts`; the datasource is now only added when `DATABASE_URL` is set, so `prisma generate` still works without a database.
+- Swagger UI was checked in a real browser to confirm Helmet's default CSP does not break it.
