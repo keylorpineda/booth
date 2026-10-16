@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AuthModule } from './auth/auth.module';
 import { CatalogModule } from './catalog/catalog.module';
@@ -9,15 +10,21 @@ import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
 import { MediaModule } from './media/media.module';
+import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { PublicModule } from './public/public.module';
 import { StoresModule } from './stores/stores.module';
 import { TenancyModule } from './tenancy/tenancy.module';
+
+// Scheduled jobs are off in tests, which call the services directly.
+const scheduler = process.env.NODE_ENV === 'test' ? [] : [ScheduleModule.forRoot()];
 
 @Module({
   imports: [
     ConfigModule,
     LoggingModule,
     RateLimitModule,
+    ...scheduler,
     PrismaModule,
     MediaModule,
     AuthModule,
@@ -25,6 +32,8 @@ import { TenancyModule } from './tenancy/tenancy.module';
     HealthModule,
     StoresModule,
     CatalogModule,
+    OrdersModule,
+    PublicModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
