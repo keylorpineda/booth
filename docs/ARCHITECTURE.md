@@ -190,11 +190,15 @@ apps/web/src/
 - Error format and status codes: see [API.md](API.md).
 - IDs are cuid2 strings. Timestamps are UTC ISO 8601; display conversion uses the store timezone.
 - Pagination: cursor-based (`?cursor=&limit=`) for order lists.
+- Validation: `@ZodBody(schema)` / `@ZodQuery(schema)` run the shared Zod schemas through `ZodValidationPipe`; `@ApiZodBody(schema)` documents them in Swagger via `z.toJSONSchema` (OpenAPI 3.0). `nestjs-zod` was not used because it does not support Nest 12.
+- Errors: throw `AppException(code, message, status, details?)`; `AllExceptionsFilter` renders everything else (HTTP exceptions, throttling, unknown errors) in the same shape and never leaks internals on 5xx.
+- Config: `apps/api/src/config` validates `process.env` with Zod before Nest starts; `apps/api/.env` is loaded only for local development and never overrides real environment variables.
+- Logging: `nestjs-pino` (JSON in production, pretty in development), request id on every line, auth headers and cookies redacted, `/health` not logged.
 
 ## Security
 
 - Helmet with a strict CSP on the API; CORS allowlist from `CORS_ORIGINS`.
-- Rate limits: default bucket, stricter `auth` and `public-orders`/`receipt` buckets, keyed by the real client IP.
+- Rate limits (`@nestjs/throttler`): every route counts against the `default` bucket; `@RateLimit('auth')` and `@RateLimit('public-orders')` add a stricter bucket. Keyed by `req.ip` (real client IP via `trust proxy`). Storage is in memory because the API runs as one instance; a shared store (e.g. Redis) is needed before scaling out.
 - Uploads: MIME + magic-byte validation, size limits, server-generated public ids, receipts never public.
 - Tracking tokens: 256-bit random, base64url. Order codes are short and only used as payment references.
 - Privacy: customer name and phone are stored only after explicit consent; consent timestamp and notice version are recorded.

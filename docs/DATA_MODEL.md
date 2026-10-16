@@ -25,16 +25,17 @@ User 1──1 Store 1──* Category 1──* Product 1──* ProductImage
 
 ## Schema draft
 
-The `generator` and `datasource` blocks are placeholders: they are finalized in Phase 1 against the current Prisma major version (newer versions move the connection URL to `prisma.config.ts`).
+The live schema is [`apps/api/prisma/schema.prisma`](../apps/api/prisma/schema.prisma) (Prisma 7). It uses the `prisma-client` generator (CommonJS output in `apps/api/src/generated/prisma`, gitignored and generated on install), `@prisma/adapter-pg`, and `apps/api/prisma.config.ts` for the connection URL. Timestamps are `timestamptz(3)`. The draft below shows the models; see the schema file for exact attributes.
 
 ```prisma
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ---------- Identity ----------
