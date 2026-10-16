@@ -1,11 +1,7 @@
 import { z } from 'zod';
 
-import {
-  quoteLineSchema,
-  fulfillmentSchema,
-  orderStatusSchema,
-  paymentStatusSchema,
-} from './order';
+import { quoteLineSchema } from './quote';
+import { fulfillmentSchema, orderStatusSchema, paymentStatusSchema } from './status';
 
 /** Public order view reached with the unguessable tracking token. No customer phone. */
 export const trackingSchema = z.object({
