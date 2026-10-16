@@ -89,6 +89,20 @@ describe('owner orders', () => {
     }
   });
 
+  it('does not match phones with the digits of a code search', async () => {
+    const order = await placeOrder({ customer: { name: 'Ana Mora', phone: '+50661112222' } });
+    const list = paginatedSchema(ownerOrderSummarySchema);
+    const search = async (q: string) =>
+      list.parse(
+        (await as(owner, (h) => h.get(`/api/me/orders?q=${encodeURIComponent(q)}`)).expect(200))
+          .body,
+      ).data;
+
+    // "12" appears in the phone, but a code-like query must not search phones.
+    expect(await search('SW12CJ')).toEqual([]);
+    expect((await search('6111 2222')).map((o) => o.code)).toEqual([order.code]);
+  });
+
   it('shows the detail with customer data, snapshot lines and timeline', async () => {
     const order = await placeOrder({
       customer: { name: 'Ana', phone: '+50677776666', note: 'Sin azúcar' },
