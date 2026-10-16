@@ -256,3 +256,24 @@ One entry per phase: what was built, key decisions, problems solved.
 - `jsx-a11y` rejects `autoFocus`; the forms rely on the natural focus order instead.
 - A country field typed as the ISO code union needed separate form input and output types (`useForm<Input, unknown, Output>`).
 - Docker Desktop was not running, so the API could not reach Postgres until it was started.
+
+---
+
+## Visual identity: indigo and dark mode — 2026-10-16
+
+**Built**
+
+- New default brand color (indigo `#4F46E5`) on a white base with cool slate neutrals; Plus Jakarta Sans for headings.
+- Dark mode that follows the system, with a light / system / dark switch saved per device and applied before first paint.
+- Redesigned landing (hero with an animated WhatsApp order preview, how-it-works cards) and a split auth layout with a brand panel on large screens.
+- Data migration: stores still on the old default orange move to indigo; stores with a custom color keep it.
+
+**Key decisions**
+
+- Brand shades mix in **OKLab**, not OKLCH: white has hue 0 in OKLCH, so mixing indigo with it drifted toward pink.
+- The theme lives on `<html data-theme>`; without it the CSS follows `prefers-color-scheme`, so "system" reacts live.
+- Store pages still override `--brand`, so every storefront keeps its own color in both themes.
+
+**Problems solved**
+
+- Prisma 7 does not run `generate` after `migrate dev`, so the client kept the old column default until it was regenerated.
