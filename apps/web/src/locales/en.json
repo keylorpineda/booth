@@ -277,5 +277,51 @@
     "light": "Light",
     "dark": "Dark",
     "system": "Match system"
+  },
+  "orders": {
+    "tabs": {
+      "active": "Active",
+      "completed": "Completed",
+      "closed": "Cancelled & expired",
+      "all": "All"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PREPARING": "Preparing",
+      "READY": "Ready",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "EXPIRED": "Expired"
+    },
+    "payment": {
+      "UNPAID": "Unpaid",
+      "RECEIPT_SUBMITTED": "Receipt to review",
+      "PAID": "Paid",
+      "cash": "Cash on delivery"
+    },
+    "fulfillment": {
+      "PICKUP": "Pickup",
+      "DELIVERY": "Delivery"
+    },
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "minutesLeft_one": "Expires in {{count}} min",
+    "minutesLeft_other": "Expires in {{count}} min",
+    "search": "Search orders",
+    "searchPlaceholder": "Code, name or phone",
+    "clearSearch": "Clear search",
+    "paymentFilter": "Filter by payment",
+    "anyPayment": "Any payment",
+    "loadMore": "Load more",
+    "empty": {
+      "active": "No active orders",
+      "completed": "No completed orders yet",
+      "closed": "No cancelled or expired orders",
+      "all": "No orders yet"
+    },
+    "emptyHint": "New orders show up here on their own, no reload needed.",
+    "noMatches": "No orders match",
+    "noMatchesHint": "Try another code, name or phone, or remove the payment filter."
   }
 }
