@@ -1,7 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { v2 as cloudinary, type UploadApiResponse } from 'cloudinary';
 
-import { IMAGE_WIDTHS, type ImageUrls, type MediaStorage, type StoredImage } from './media-storage';
+import {
+  IMAGE_WIDTHS,
+  type ImageUrls,
+  type MediaStorage,
+  type PrivateFileFormat,
+  type StoredImage,
+  type StoredPrivateFile,
+} from './media-storage';
 
 interface CloudinaryCredentials {
   cloudName: string;
@@ -66,6 +73,45 @@ export class CloudinaryStorage implements MediaStorage {
       medium: url(IMAGE_WIDTHS.medium),
       large: url(IMAGE_WIDTHS.large),
     };
+  }
+
+  uploadPrivate(file: Buffer, folder: string): Promise<StoredPrivateFile> {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        // PDFs are stored as "image" resources too, which keeps one delivery path.
+        { ...this.auth(), folder, resource_type: 'image', type: 'authenticated' },
+        (error, result?: UploadApiResponse) => {
+          if (error || !result) {
+            reject(error instanceof Error ? error : new Error('Cloudinary upload failed'));
+            return;
+          }
+          resolve({ publicId: result.public_id, bytes: result.bytes });
+        },
+      );
+      stream.end(file);
+    });
+  }
+
+  async deletePrivate(publicId: string): Promise<void> {
+    try {
+      await cloudinary.uploader.destroy(publicId, {
+        ...this.auth(),
+        type: 'authenticated',
+        resource_type: 'image',
+        invalidate: true,
+      });
+    } catch (error) {
+      this.logger.warn({ err: error, publicId }, 'Could not delete private file');
+    }
+  }
+
+  privateUrl(publicId: string, format: PrivateFileFormat, ttlSeconds: number): string {
+    return cloudinary.utils.private_download_url(publicId, format, {
+      ...this.auth(),
+      resource_type: 'image',
+      type: 'authenticated',
+      expires_at: Math.floor(Date.now() / 1000) + ttlSeconds,
+    });
   }
 
   private auth() {

@@ -23,8 +23,51 @@ export function detectImageType(buffer: Buffer): ImageType | null {
   return null;
 }
 
+export type ReceiptType = 'jpg' | 'png' | 'webp' | 'heic' | 'pdf';
+
+const RECEIPT_FROM_IMAGE = { jpeg: 'jpg', png: 'png', webp: 'webp' } as const;
+const HEIC_BRANDS = ['heic', 'heix', 'heim', 'heis', 'mif1', 'msf1'];
+
+/** Receipts: JPEG, PNG, WebP, HEIC (iPhone photos) or PDF (bank statements). */
+export function detectReceiptType(buffer: Buffer): ReceiptType | null {
+  const image = detectImageType(buffer);
+  if (image && image !== 'avif') return RECEIPT_FROM_IMAGE[image];
+  if (ascii(buffer, 4, 8) === 'ftyp' && HEIC_BRANDS.includes(ascii(buffer, 8, 12))) return 'heic';
+  if (ascii(buffer, 0, 5) === '%PDF-') return 'pdf';
+  return null;
+}
+
+/** Validates an uploaded receipt and returns its detected format. */
+export function assertReceiptFile(file: Express.Multer.File | undefined): {
+  buffer: Buffer;
+  format: ReceiptType;
+} {
+  const buffer = assertPresentAndSmall(file);
+  const format = detectReceiptType(buffer);
+  if (!format) {
+    throw new AppException(
+      'UNSUPPORTED_FILE_TYPE',
+      'Use a photo (JPEG, PNG, WebP, HEIC) or a PDF',
+      HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+    );
+  }
+  return { buffer, format };
+}
+
 /** Validates an uploaded image: present, not too large, and really an image. */
 export function assertImageFile(file: Express.Multer.File | undefined): Buffer {
+  const buffer = assertPresentAndSmall(file);
+  if (!detectImageType(buffer)) {
+    throw new AppException(
+      'UNSUPPORTED_FILE_TYPE',
+      'Use a JPEG, PNG, WebP or AVIF image',
+      HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+    );
+  }
+  return buffer;
+}
+
+function assertPresentAndSmall(file: Express.Multer.File | undefined): Buffer {
   if (!file) {
     throw new AppException('VALIDATION_ERROR', 'Missing file', HttpStatus.BAD_REQUEST, {
       fields: [{ path: 'file', message: 'Required' }],
@@ -35,13 +78,6 @@ export function assertImageFile(file: Express.Multer.File | undefined): Buffer {
       'FILE_TOO_LARGE',
       `Images must be ${MAX_IMAGE_BYTES / 1024 / 1024} MB or smaller`,
       HttpStatus.PAYLOAD_TOO_LARGE,
-    );
-  }
-  if (!detectImageType(file.buffer)) {
-    throw new AppException(
-      'UNSUPPORTED_FILE_TYPE',
-      'Use a JPEG, PNG, WebP or AVIF image',
-      HttpStatus.UNSUPPORTED_MEDIA_TYPE,
     );
   }
   return file.buffer;
