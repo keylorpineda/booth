@@ -10,13 +10,30 @@
   },
   "home": {
     "tagline": "Online catalog with WhatsApp ordering",
-    "title": "Your online catalog, your orders on WhatsApp",
-    "subtitle": "Customers build their order on the web and send it to you on WhatsApp. No commissions, no monthly fees.",
+    "title": "Your online catalog, your orders <accent>on WhatsApp</accent>",
+    "subtitle": "Customers build their order in your catalog and it reaches your WhatsApp complete and tidy, with the total computed and the payment ready to confirm.",
     "demoBakery": "See the demo bakery",
-    "demoCafe": "See the demo café",
-    "step1": "Customers pick products from your catalog",
-    "step2": "They send you the full order on WhatsApp",
-    "step3": "They pay by transfer or cash and track their order"
+    "step1": "Customers pick products from your catalog on their phone.",
+    "step2": "The full order, with total and code, straight to your chat.",
+    "step3": "Transfer or cash, with receipts and order tracking.",
+    "badge": "No commissions, no monthly fees",
+    "ctaCreate": "Create my store for free",
+    "noFees": "Ready in 2 minutes · No card needed",
+    "howTitle": "As simple as this",
+    "step1Title": "They build the order",
+    "step2Title": "It lands on WhatsApp",
+    "step3Title": "Get paid and deliver",
+    "footer": "Made for small businesses in Latin America and beyond.",
+    "preview": {
+      "store": "Corner Bakery",
+      "online": "online",
+      "order": "Order",
+      "item1": "Sourdough loaf",
+      "item2": "Carrot cake",
+      "item3": "Croissant",
+      "total": "Total",
+      "reply": "Got it! Ready at 11:00"
+    }
   },
   "storefront": {
     "openNow": "Open now",
@@ -178,7 +195,11 @@
     "registerSubtitle": "Free. Get tidy orders on WhatsApp.",
     "noAccount": "No account yet? <link>Create one</link>",
     "haveAccount": "Already have an account? <link>Sign in</link>",
-    "restoring": "Restoring your session…"
+    "restoring": "Restoring your session…",
+    "panelTitle": "Sell on WhatsApp without losing orders in the chat.",
+    "perk1": "A catalog with your brand and colors",
+    "perk2": "Orders with computed totals and reserved stock",
+    "perk3": "Transfer payments with receipts"
   },
   "onboarding": {
     "heading": "Your store",
@@ -205,5 +226,11 @@
   "dashboard": {
     "welcome": "Your store is ready. Orders, catalog and settings will live here very soon.",
     "viewStore": "View my store"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Match system"
   }
 }
