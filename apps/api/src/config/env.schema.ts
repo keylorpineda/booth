@@ -22,6 +22,13 @@ const trustProxy = z.string().transform((value): boolean | number | string => {
 
 const positiveInt = z.coerce.number().int().positive();
 
+/** Empty strings (as in `KEY=` lines of .env files) count as unset. */
+const optionalString = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => (value === '' ? undefined : value));
+
 export const envSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -40,6 +47,10 @@ export const envSchema = z
     RATE_LIMIT_DEFAULT: positiveInt.default(120),
     RATE_LIMIT_AUTH: positiveInt.default(10),
     RATE_LIMIT_PUBLIC_ORDERS: positiveInt.default(20),
+    // Optional in development (uploads answer 503 MEDIA_NOT_CONFIGURED), required in production.
+    CLOUDINARY_CLOUD_NAME: optionalString,
+    CLOUDINARY_API_KEY: optionalString,
+    CLOUDINARY_API_SECRET: optionalString,
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && env.JWT_ACCESS_SECRET.startsWith('change-me')) {
@@ -47,6 +58,26 @@ export const envSchema = z
         code: 'custom',
         path: ['JWT_ACCESS_SECRET'],
         message: 'Replace the example value with a random secret',
+      });
+    }
+    const cloudinary = [
+      env.CLOUDINARY_CLOUD_NAME,
+      env.CLOUDINARY_API_KEY,
+      env.CLOUDINARY_API_SECRET,
+    ];
+    const configured = cloudinary.filter(Boolean).length;
+    if (configured > 0 && configured < 3) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['CLOUDINARY_CLOUD_NAME'],
+        message: 'Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET together',
+      });
+    }
+    if (env.NODE_ENV === 'production' && configured === 0) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['CLOUDINARY_CLOUD_NAME'],
+        message: 'Cloudinary credentials are required in production',
       });
     }
   });
