@@ -13,6 +13,7 @@ import { MediaModule } from './media/media.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PublicModule } from './public/public.module';
+import { SettingsModule } from './settings/settings.module';
 import { StoresModule } from './stores/stores.module';
 import { TenancyModule } from './tenancy/tenancy.module';
 
@@ -32,6 +33,7 @@ const scheduler = process.env.NODE_ENV === 'test' ? [] : [ScheduleModule.forRoot
     HealthModule,
     StoresModule,
     CatalogModule,
+    SettingsModule,
     OrdersModule,
     PublicModule,
   ],
