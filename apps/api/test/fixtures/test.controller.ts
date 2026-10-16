@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { minorUnitsSchema } from '@booth/shared';
 
+import { Public } from '../../src/auth/decorators/public.decorator';
 import { AppException } from '../../src/common/errors/app.exception';
 import { RateLimit } from '../../src/common/rate-limit/rate-limit.decorator';
 import { ZodBody } from '../../src/common/validation/zod.decorators';
@@ -13,6 +14,7 @@ export const echoSchema = z.object({
 });
 
 /** Routes that exercise cross-cutting behavior. Mounted only in e2e tests. */
+@Public()
 @Controller('test')
 export class TestController {
   @Post('echo')
