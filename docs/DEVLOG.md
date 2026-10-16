@@ -277,3 +277,27 @@ One entry per phase: what was built, key decisions, problems solved.
 **Problems solved**
 
 - Prisma 7 does not run `generate` after `migrate dev`, so the client kept the old column default until it was regenerated.
+
+---
+
+## Phase 6 (part 3) — Dashboard shell — 2026-10-16
+
+**Built**
+
+- Dashboard shell: sidebar from `md` up, a bottom navigation within thumb reach on phones, a sticky header with the store name, a "view store" link and an account menu.
+- Dashboard home: a setup checklist computed from the owner endpoints (products, cash or a transfer method, hours, delivery zones when delivery is on) and a card to copy or share the store link on WhatsApp.
+- Primitives: Switch, Tabs and ConfirmDialog on Radix, animated with Motion.
+- Demo mode: a banner on the read-only account and `useCanWrite()` for disabling save actions.
+- Orders, catalog and settings routes exist with a placeholder until their issues land.
+
+**Key decisions**
+
+- The shell lives in `features/dashboard` (not `components/layout`) because it reads the session; `components/` stays free of feature imports.
+- The checklist logic is a pure function (`setupChecklist`) with its own tests; the hook only gathers data.
+- Owner queries share the `['owner', ...]` key prefix, so signing out drops all of them.
+- Release milestones replaced the single MVP milestone: v0.5 Storefront, v0.6 Owner dashboard, v0.7 Demo & hardening, v1.0.0 Launch.
+
+**Problems solved**
+
+- Bash heredocs with long JSX failed to parse in this Windows shell; files are written directly instead.
+- The shell test needed a `QueryClientProvider` because the account menu uses the logout mutation.
