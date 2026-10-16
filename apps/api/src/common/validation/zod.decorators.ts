@@ -1,4 +1,4 @@
-import { Body, Query } from '@nestjs/common';
+import { Body, Param, Query } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 import { type SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { z, type ZodType } from 'zod';
@@ -7,6 +7,10 @@ import { ZodValidationPipe } from './zod-validation.pipe';
 
 /** Validated request body: `create(@ZodBody(createProductSchema) dto: CreateProduct)`. */
 export const ZodBody = (schema: ZodType): ParameterDecorator => Body(new ZodValidationPipe(schema));
+
+/** Validated route parameter: `@ZodParam('kind', storeImageKindSchema) kind: StoreImageKind`. */
+export const ZodParam = (name: string, schema: ZodType): ParameterDecorator =>
+  Param(name, new ZodValidationPipe(schema));
 
 /** Validated query string. */
 export const ZodQuery = (schema: ZodType): ParameterDecorator =>
