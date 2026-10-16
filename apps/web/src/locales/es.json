@@ -322,6 +322,30 @@
     },
     "emptyHint": "Los pedidos nuevos aparecen aquí solos, sin recargar la página.",
     "noMatches": "Ningún pedido coincide",
-    "noMatchesHint": "Prueba con otro código, nombre o teléfono, o quita el filtro de pago."
+    "noMatchesHint": "Prueba con otro código, nombre o teléfono, o quita el filtro de pago.",
+    "detail": {
+      "back": "Pedidos",
+      "customer": "Cliente",
+      "whatsapp": "Escribir por WhatsApp",
+      "whatsappGreeting": "¡Hola! Te escribimos por tu pedido {{code}}.",
+      "call": "Llamar",
+      "items": "Productos",
+      "subtotal": "Subtotal",
+      "deliveryFee": "Envío",
+      "total": "Total",
+      "delivery": "Entrega y pago",
+      "pickupHint": "El cliente retira el pedido en la tienda.",
+      "timeline": "Historial",
+      "notFound": "No encontramos este pedido",
+      "notFoundHint": "Puede que el enlace esté mal o que el pedido sea de otra tienda."
+    },
+    "timeline": {
+      "actor": {
+        "customer": "Cliente",
+        "owner": "Tú",
+        "system": "Automático"
+      },
+      "reactivatedNote": "Pedido reactivado"
+    }
   }
 }
