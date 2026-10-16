@@ -357,3 +357,18 @@ One entry per phase: what was built, key decisions, problems solved.
 **Not verified live**
 
 - "View receipt" needs an uploaded receipt, which needs Cloudinary; it is not configured locally.
+
+---
+
+## Catalog categories (#47) — 2026-10-16
+
+**Built**
+
+- Catalog page with Products and Categories tabs (tab kept in the URL); the products tab arrives with #48.
+- Categories: create, rename inline (Enter saves, Escape cancels), show/hide with a switch, delete behind a confirmation that says the products stay, reorder with up/down buttons.
+
+**Key decisions**
+
+- Reordering is optimistic: the list moves at once and rolls back if the API refuses.
+- Up/down buttons instead of drag and drop: they work with a keyboard, a screen reader and one thumb.
+- Icon-only buttons always carry an `aria-label` (also fixed for the header's "view store" link on phones).
