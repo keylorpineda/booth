@@ -144,7 +144,8 @@ The original target is Latin America with Costa Rica first. To work in any count
 ## Phase 6 — Owner dashboard, payments, zones, hours & localization
 
 - [x] Owner API: store settings (ordering options, localization with currency lock, privacy notice versioning), payment methods with presets, delivery zones, weekly hours, orders (list with filters and lazy expiry, status flow, payment, reactivation, signed receipt URLs), all with tenant isolation tests
-- [ ] Auth screens (register, login) and onboarding wizard (store → branding → payment → hours)
+- [x] Auth screens (register, login), session restore with single-flight refresh, route guards and onboarding (store name, URL with live availability, country, WhatsApp)
+- [ ] Guided setup after onboarding: branding → payment → hours (from Settings)
 - [ ] Remaining UI primitives: Select, Combobox (currency, time zone), Tabs, Switch, Tooltip, Dialog
 - [ ] Dashboard layout: responsive sidebar / bottom nav on mobile, command palette (optional)
 - [ ] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)

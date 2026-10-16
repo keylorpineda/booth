@@ -232,3 +232,27 @@ One entry per phase: what was built, key decisions, problems solved.
 - A test built all Supertest requests up front; Supertest closes the ephemeral server after the first request, so the rest failed with "Cannot read properties of null (reading 'address')". Requests are now built lazily.
 - The Docker containers had stopped mid-session; `pnpm db:up` restored them and the in-memory test database was re-migrated by the test setup.
 - The unused `RECEIPT_MAX_BYTES` env variable was removed (the 5 MB limit is a constant).
+
+---
+
+## Phase 6 (part 2) — Dashboard sign in and onboarding — 2026-10-16
+
+**Built**
+
+- Sign up and sign in pages, a session restored from the refresh cookie on load, and an owner API client that refreshes an expired access token and retries once.
+- Route guards: signed-out owners go to `/login?redirect=…` and come back; owners without a store go to onboarding; signed-in owners skip the auth pages.
+- Onboarding: store name, public URL suggested from the name with a live availability check, country (guessed from the browser, names in the interface language) and the WhatsApp number normalized to E.164 for that country.
+- Every owner page is a lazy chunk, so shoppers never download the dashboard.
+
+**Key decisions**
+
+- **Access token in memory only** (Zustand, not persisted); a reload calls `/auth/refresh` with the httpOnly cookie.
+- **Single-flight refresh**: refresh tokens rotate and a replayed one revokes the family, so parallel 401s share one refresh request (covered by tests).
+- **Same-origin redirects only** after sign in (`//evil.com` and absolute URLs fall back to `/dashboard`).
+- Form schemas mirror the shared API rules with i18n keys as messages; the server stays the source of truth (`SLUG_TAKEN` is mapped back onto the URL field).
+
+**Problems solved**
+
+- `jsx-a11y` rejects `autoFocus`; the forms rely on the natural focus order instead.
+- A country field typed as the ISO code union needed separate form input and output types (`useForm<Input, unknown, Output>`).
+- Docker Desktop was not running, so the API could not reach Postgres until it was started.
