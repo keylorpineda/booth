@@ -23,6 +23,12 @@ export const ERROR_CODES = [
   'ONBOARDING_REQUIRED',
   'STORE_ALREADY_EXISTS',
   'SLUG_TAKEN',
+  // Catalog and media
+  'CATEGORY_NAME_TAKEN',
+  'TOO_MANY_IMAGES',
+  'FILE_TOO_LARGE',
+  'UNSUPPORTED_FILE_TYPE',
+  'MEDIA_NOT_CONFIGURED',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];

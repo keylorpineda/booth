@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { appLocaleSchema, countryCodeSchema, timeZoneSchema } from '../countries';
 import { currencyCodeSchema } from '../money';
 import { e164PhoneSchema } from '../phone';
+import { hexColorSchema } from './branding';
 import { slugSchema } from './slug';
 
 /**
@@ -32,6 +33,23 @@ export const slugAvailabilitySchema = z.object({
 
 export type SlugAvailability = z.infer<typeof slugAvailabilitySchema>;
 
+/** Settings and branding editable by the owner (localization changes come in Phase 6). */
+export const updateStoreSchema = z
+  .object({
+    name: z.string().trim().min(2).max(80),
+    description: z.string().trim().max(500).nullable(),
+    whatsappPhone: e164PhoneSchema,
+    brandColor: hexColorSchema,
+    /** Free text such as "Sales tax not included". The system never calculates taxes. */
+    pricesNote: z.string().trim().max(160).nullable(),
+  })
+  .partial();
+
+export type UpdateStoreInput = z.infer<typeof updateStoreSchema>;
+
+export const storeImageKindSchema = z.enum(['logo', 'cover']);
+export type StoreImageKind = z.infer<typeof storeImageKindSchema>;
+
 /** Owner view of the store settings (grows with each phase). */
 export const storeSchema = z.object({
   id: z.string(),
@@ -40,6 +58,10 @@ export const storeSchema = z.object({
   description: z.string().nullable(),
   whatsappPhone: z.string(),
   brandColor: z.string(),
+  /** Text color to use on top of brandColor (WCAG AA). */
+  brandForeground: z.string(),
+  logoUrl: z.string().nullable(),
+  coverUrl: z.string().nullable(),
   country: z.string(),
   currency: z.string(),
   timezone: z.string(),
