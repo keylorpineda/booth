@@ -61,11 +61,14 @@ booth/
 
 ## Auth
 
-- Passwords hashed with argon2id.
-- Access token: JWT, 15 min, returned in the body and kept in memory by the web app (never in localStorage).
-- Refresh token: random 256-bit value in an httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored as a SHA-256 hash. Rotated on every refresh. Tokens share a `familyId`; reusing a rotated token revokes the whole family (theft detection).
+- Passwords hashed with argon2id (`@node-rs/argon2`, prebuilt binaries). Unknown emails are verified against a dummy hash so login timing does not reveal which emails exist.
+- **Secure by default**: `JwtAuthGuard` is global. Routes opt out with `@Public()`. The guard loads the user, `isDemo` and store id from the database on every request, so `req.auth` never trusts token claims beyond the user id.
+- Access token: HS256 JWT (`sub` only, issuer and audience checked), 15 min, returned in the body and kept in memory by the web app (never in localStorage).
+- Refresh token: random 256-bit value in an httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored as a SHA-256 hash. Rotated on every refresh with a conditional update, so two concurrent refreshes with the same token cannot both succeed. Tokens share a `familyId`; reusing a rotated token revokes the whole family (theft detection). The web app must therefore send one refresh at a time (a shared in-flight promise).
 - On page load the web app calls `POST /api/auth/refresh` to restore the session.
-- `DemoReadOnlyGuard` (global) rejects any non-safe method from an `isDemo` user with `403 DEMO_READ_ONLY`.
+- `DemoReadOnlyGuard` (global, after the auth guard) rejects any non-safe method from an `isDemo` user with `403 DEMO_READ_ONLY`; `@AllowDemo()` exempts a route. Public auth routes (refresh, logout) keep working for the demo.
+- `@CurrentUser()` gives the auth context; `@CurrentStore()` gives the owner's store id or answers `403 ONBOARDING_REQUIRED`.
+- The `Secure` cookie works on `http://localhost` in Chrome and Firefox (localhost is a secure context).
 
 ## Orders
 
