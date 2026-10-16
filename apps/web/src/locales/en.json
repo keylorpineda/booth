@@ -3,7 +3,8 @@
     "close": "Close",
     "retry": "Try again",
     "copied": "Copied",
-    "copyNamed": "Copy {{name}}"
+    "copyNamed": "Copy {{name}}",
+    "cancel": "Cancel"
   },
   "language": {
     "label": "Language"
@@ -224,8 +225,52 @@
     "submit": "Create my store"
   },
   "dashboard": {
-    "welcome": "Your store is ready. Orders, catalog and settings will live here very soon.",
-    "viewStore": "View my store"
+    "welcome": "Here is what is left before your store is ready to sell.",
+    "viewStore": "View my store",
+    "greeting": "Hi {{name}}!",
+    "navLabel": "Dashboard sections",
+    "account": "Your account",
+    "nav": {
+      "home": "Home",
+      "orders": "Orders",
+      "catalog": "Catalog",
+      "settings": "Settings"
+    },
+    "demo": {
+      "text": "You are viewing a read-only demo account: explore everything, but changes are not saved.",
+      "cta": "Create your store"
+    },
+    "setup": {
+      "title": "Get your store ready",
+      "progress": "{{done}} of {{total}}",
+      "products": {
+        "title": "Add products",
+        "hint": "Upload your catalog with prices and photos."
+      },
+      "payments": {
+        "title": "Choose how you get paid",
+        "hint": "Turn on cash or add a transfer method."
+      },
+      "hours": {
+        "title": "Set your hours",
+        "hint": "Without hours, the store always shows as open."
+      },
+      "delivery": {
+        "title": "Create delivery zones",
+        "hint": "Delivery is on but there are no zones."
+      }
+    },
+    "share": {
+      "title": "Share your store",
+      "text": "Add this link to your WhatsApp, Instagram or Facebook profile.",
+      "link": "store link",
+      "whatsapp": "Share on WhatsApp",
+      "message": "Order from {{name}}: {{url}}"
+    },
+    "soon": {
+      "title": "Coming soon",
+      "text": "This section is being built and will show up here in the next version."
+    }
   },
   "theme": {
     "label": "Theme",

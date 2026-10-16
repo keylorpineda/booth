@@ -59,8 +59,38 @@ export const router = createBrowserRouter([
               {
                 path: '/dashboard',
                 lazy: async () => ({
-                  Component: (await import('../pages/dashboard-page')).DashboardPage,
+                  Component: (await import('../features/dashboard/components/dashboard-shell'))
+                    .DashboardShell,
                 }),
+                children: [
+                  {
+                    index: true,
+                    lazy: async () => ({
+                      Component: (await import('../pages/dashboard-page')).DashboardPage,
+                    }),
+                  },
+                  {
+                    path: 'orders',
+                    lazy: async () => ({
+                      Component: (await import('../pages/dashboard-section-page'))
+                        .OrdersSectionPage,
+                    }),
+                  },
+                  {
+                    path: 'catalog',
+                    lazy: async () => ({
+                      Component: (await import('../pages/dashboard-section-page'))
+                        .CatalogSectionPage,
+                    }),
+                  },
+                  {
+                    path: 'settings',
+                    lazy: async () => ({
+                      Component: (await import('../pages/dashboard-section-page'))
+                        .SettingsSectionPage,
+                    }),
+                  },
+                ],
               },
             ],
           },
