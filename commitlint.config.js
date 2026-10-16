@@ -12,6 +12,7 @@ export default {
         'db',
         'auth',
         'catalog',
+        'stores',
         'orders',
         'storefront',
         'dashboard',

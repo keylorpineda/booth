@@ -36,6 +36,7 @@ jobs:
             db
             auth
             catalog
+            stores
             orders
             storefront
             dashboard
