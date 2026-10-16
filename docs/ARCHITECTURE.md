@@ -202,7 +202,14 @@ apps/web/src/
 
 - Helmet with a strict CSP on the API; CORS allowlist from `CORS_ORIGINS`.
 - Rate limits (`@nestjs/throttler`): every route counts against the `default` bucket; `@RateLimit('auth')` and `@RateLimit('public-orders')` add a stricter bucket. Keyed by `req.ip` (real client IP via `trust proxy`). Storage is in memory because the API runs as one instance; a shared store (e.g. Redis) is needed before scaling out.
-- Uploads: MIME + magic-byte validation, size limits, server-generated public ids, receipts never public.
+- Uploads: the real type is detected from magic bytes (the client MIME type and file name are ignored), 5 MB limit, server-generated public ids, receipts never public. SVG is not accepted (it can carry scripts).
+
+## Media
+
+- `MediaStorage` interface (`apps/api/src/media`): `CloudinaryStorage` in production, `DisabledStorage` when the `CLOUDINARY_*` variables are unset (uploads answer `503 MEDIA_NOT_CONFIGURED`), and a fake in tests.
+- Signed server-side uploads, credentials passed per call (no global SDK state). Assets live in `booth/<storeId>/products` and `booth/<storeId>/branding`. Originals are capped at 2400 px and stripped of metadata (phone GPS data).
+- The API returns ready-to-use URLs (`thumb` 320 px, `medium` 800 px, `large` 1600 px) with automatic format and quality, so the web app never needs Cloudinary details.
+- Deleting a product or replacing a logo deletes the old asset; a failed deletion is logged and never fails the request.
 - Tracking tokens: 256-bit random, base64url. Order codes are short and only used as payment references.
 - Privacy: customer name and phone are stored only after explicit consent; consent timestamp and notice version are recorded.
 

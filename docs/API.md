@@ -27,17 +27,17 @@ Every error response has the same shape:
 }
 ```
 
-| Status | Typical codes                                                                                                        |
-| ------ | -------------------------------------------------------------------------------------------------------------------- |
-| 400    | `VALIDATION_ERROR` (with `details.fields: [{ path, message }]`), `BAD_REQUEST` (e.g. malformed JSON), `STORE_CLOSED` |
-| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `INVALID_REFRESH_TOKEN`, `REFRESH_TOKEN_REUSED`                            |
-| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                                                              |
-| 404    | `NOT_FOUND` (also returned for other stores' resources)                                                              |
-| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `STORE_ALREADY_EXISTS`, `INVALID_STATUS_TRANSITION`                     |
-| 413    | `FILE_TOO_LARGE`, `PAYLOAD_TOO_LARGE`                                                                                |
-| 415    | `UNSUPPORTED_FILE_TYPE`, `UNSUPPORTED_MEDIA_TYPE`                                                                    |
-| 429    | `RATE_LIMITED` (with a `Retry-After` header)                                                                         |
-| 500    | `INTERNAL_ERROR` (no internals leaked)                                                                               |
+| Status | Typical codes                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 400    | `VALIDATION_ERROR` (with `details.fields: [{ path, message }]`), `BAD_REQUEST` (e.g. malformed JSON), `STORE_CLOSED`                       |
+| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `INVALID_REFRESH_TOKEN`, `REFRESH_TOKEN_REUSED`                                                  |
+| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                                                                                    |
+| 404    | `NOT_FOUND` (also returned for other stores' resources)                                                                                    |
+| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `STORE_ALREADY_EXISTS`, `CATEGORY_NAME_TAKEN`, `TOO_MANY_IMAGES`, `INVALID_STATUS_TRANSITION` |
+| 413    | `FILE_TOO_LARGE`, `PAYLOAD_TOO_LARGE`                                                                                                      |
+| 415    | `UNSUPPORTED_FILE_TYPE`, `UNSUPPORTED_MEDIA_TYPE`                                                                                          |
+| 429    | `RATE_LIMITED` (with a `Retry-After` header)                                                                                               |
+| 500    | `INTERNAL_ERROR` (no internals leaked)                                                                                                     |
 
 `message` is in English for developers; the web app maps `code` to a localized string. Codes live in `@booth/shared` (`ERROR_CODES`, `apiErrorSchema`); domain codes are added as each phase needs them.
 
@@ -76,32 +76,35 @@ and set the refresh cookie `booth_rt` (`HttpOnly; Secure; SameSite=Lax; Path=/ap
 
 | Method | Path                                    | Description                                                                                                                                                                 |
 | ------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/api/me/store`                         | Onboarding: `{ name, slug, whatsappPhone, country?, currency?, timezone?, locale? }`; missing localization comes from the country profile (default CR). One store per owner |
-| GET    | `/api/me/store`                         | Full store settings                                                                                                                                                         |
-| PATCH  | `/api/me/store`                         | Update info, ordering options, localization, privacy                                                                                                                        |
-| POST   | `/api/me/store/logo`                    | Upload logo (multipart)                                                                                                                                                     |
-| POST   | `/api/me/store/cover`                   | Upload cover image (multipart)                                                                                                                                              |
-| DELETE | `/api/me/store/logo`, `/cover`          | Remove image                                                                                                                                                                |
-| GET    | `/api/me/store/slug-availability?slug=` | `{ slug, available, reason?: invalid                                                                                                                                        | reserved | taken }` |
+| POST   | `/api/me/store`                         | Onboarding: `{ name, slug, whatsappPhone, country?, currency?, timezone?, locale? }`. Missing localization comes from the country profile (default CR). One store per owner |
+| GET    | `/api/me/store`                         | Settings, including `brandForeground` (readable text color on the brand color), `logoUrl` and `coverUrl`                                                                    |
+| PATCH  | `/api/me/store`                         | `{ name?, description?, whatsappPhone?, brandColor?, pricesNote? }`. Slug and localization are not editable here                                                            |
+| POST   | `/api/me/store/logo`, `/cover`          | Upload (multipart `file`); replaces and deletes the previous image                                                                                                          |
+| DELETE | `/api/me/store/logo`, `/cover`          | Remove the image                                                                                                                                                            |
+| GET    | `/api/me/store/slug-availability?slug=` | `{ slug, available, reason? }` with reason `invalid`, `reserved` or `taken`                                                                                                 |
 
 ## Owner — catalog
 
-| Method | Path                                      | Description                            |
-| ------ | ----------------------------------------- | -------------------------------------- |
-| GET    | `/api/me/categories`                      | List                                   |
-| POST   | `/api/me/categories`                      | Create                                 |
-| PATCH  | `/api/me/categories/:id`                  | Update                                 |
-| DELETE | `/api/me/categories/:id`                  | Delete (products become uncategorized) |
-| PUT    | `/api/me/categories/order`                | Reorder `{ ids: [] }`                  |
-| GET    | `/api/me/products?categoryId=&q=&cursor=` | List                                   |
-| POST   | `/api/me/products`                        | Create                                 |
-| GET    | `/api/me/products/:id`                    | Detail                                 |
-| PATCH  | `/api/me/products/:id`                    | Update (price, stock, trackStock, ...) |
-| DELETE | `/api/me/products/:id`                    | Delete                                 |
-| PUT    | `/api/me/products/order`                  | Reorder                                |
-| POST   | `/api/me/products/:id/images`             | Upload image (multipart)               |
-| DELETE | `/api/me/products/:id/images/:imageId`    | Delete image                           |
-| PUT    | `/api/me/products/:id/images/order`       | Reorder images                         |
+All ids in paths must belong to the caller's store; anything else answers `404 NOT_FOUND`.
+
+| Method | Path                                             | Description                                                                                    |
+| ------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| GET    | `/api/me/categories`                             | Categories in display order with `productCount`                                                |
+| POST   | `/api/me/categories`                             | `{ name, isActive? }`; `409 CATEGORY_NAME_TAKEN` for duplicates                                |
+| PATCH  | `/api/me/categories/:id`                         | `{ name?, isActive? }`                                                                         |
+| DELETE | `/api/me/categories/:id`                         | Products become uncategorized                                                                  |
+| PUT    | `/api/me/categories/order`                       | `{ ids: [] }` in the new order                                                                 |
+| GET    | `/api/me/products?categoryId=&q=&cursor=&limit=` | `{ data, nextCursor }`; `q` searches names (case-insensitive), `limit` 1 to 100 (default 50)   |
+| POST   | `/api/me/products`                               | `{ name, priceMinor, description?, categoryId?, trackStock?, stock?, isActive? }`              |
+| GET    | `/api/me/products/:id`                           | Product with images (`urls.thumb` 320 px, `medium` 800 px, `large` 1600 px)                    |
+| PATCH  | `/api/me/products/:id`                           | Any product field; `null` clears `description` or `categoryId`                                 |
+| DELETE | `/api/me/products/:id`                           | Also deletes its stored images; past orders keep their snapshots                               |
+| PUT    | `/api/me/products/order`                         | `{ ids: [] }`                                                                                  |
+| POST   | `/api/me/products/:id/images`                    | Multipart `file`: JPEG, PNG, WebP or AVIF, max 5 MB, max 8 per product (`409 TOO_MANY_IMAGES`) |
+| DELETE | `/api/me/products/:id/images/:imageId`           | Delete an image                                                                                |
+| PUT    | `/api/me/products/:id/images/order`              | `{ ids: [] }`                                                                                  |
+
+Uploads answer `503 MEDIA_NOT_CONFIGURED` when the API runs without Cloudinary credentials (development only).
 
 ## Owner — delivery, hours, payments
 
