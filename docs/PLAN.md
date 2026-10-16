@@ -31,7 +31,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [x] GitHub Actions `ci.yml`: install (pnpm cache) → lint → typecheck → test (Postgres service) → build, on push and PR
 - [x] GitHub Actions `pr-title.yml`: PR title must be a Conventional Commit
 - [x] Dependabot (npm via pnpm lockfile + GitHub Actions, weekly, grouped)
-- [x] Create GitHub repository (public), `main` + `develop` (default); rulesets: `develop` (PR + CI, squash only), `main` (PR + CI, merge commit only, releases only), no force push or deletion; auto-delete branches, labels, secret scanning + push protection
+- [x] Create GitHub repository (public), `main` + `develop` (default); rulesets: `develop` (PR + CI, rebase merge only), `main` (PR + CI, merge commit only, releases only), no force push or deletion; auto-delete branches, labels, secret scanning + push protection
 - [x] DEVLOG entry
 
 **Done when**
