@@ -4,6 +4,7 @@ import { lazy, Suspense, useState } from 'react';
 import { RouterProvider } from 'react-router';
 
 import { router } from './router';
+import { useColorScheme } from '../lib/color-scheme';
 import { createQueryClient } from '../lib/query-client';
 
 /** Toasts are only needed after an interaction; keep sonner out of the first-load bundle. */
@@ -19,6 +20,8 @@ const loadMotionFeatures = () => import('../lib/motion-features').then((module) 
  */
 export function App() {
   const [queryClient] = useState(createQueryClient);
+  // Toasts follow the light/dark choice ("system" lets sonner track prefers-color-scheme).
+  const colorScheme = useColorScheme();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -26,7 +29,7 @@ export function App() {
         <MotionConfig reducedMotion="user">
           <RouterProvider router={router} />
           <Suspense fallback={null}>
-            <Toaster position="top-center" richColors closeButton />
+            <Toaster position="top-center" richColors closeButton theme={colorScheme} />
           </Suspense>
         </MotionConfig>
       </LazyMotion>
