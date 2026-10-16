@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import {
   type CreateStoreInput,
@@ -11,9 +11,8 @@ import {
   type Store,
 } from '@booth/shared';
 
-import { toStoreDto } from './store.mapper';
+import { StorePresenter } from './store-presenter.service';
 import { AppException } from '../common/errors/app.exception';
-import { MEDIA_STORAGE, type MediaStorage } from '../media/media-storage';
 import { isUniqueViolation } from '../prisma/prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -21,7 +20,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class StoresService {
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(MEDIA_STORAGE) private readonly storage: MediaStorage,
+    private readonly presenter: StorePresenter,
   ) {}
 
   /** Onboarding: one store per owner. Localization defaults come from the country profile. */
@@ -42,7 +41,7 @@ export class StoresService {
           locale: input.locale ?? resolveAppLocale(profile.locale),
         },
       });
-      return toStoreDto(store, this.storage);
+      return await this.presenter.present(store);
     } catch (error) {
       if (isUniqueViolation(error, 'ownerId')) throw storeAlreadyExists();
       if (isUniqueViolation(error, 'slug')) {
@@ -56,7 +55,7 @@ export class StoresService {
 
   async get(storeId: string): Promise<Store> {
     const store = await this.prisma.store.findUniqueOrThrow({ where: { id: storeId } });
-    return toStoreDto(store, this.storage);
+    return this.presenter.present(store);
   }
 
   async slugAvailability(slug: string): Promise<SlugAvailability> {
