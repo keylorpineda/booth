@@ -4,8 +4,10 @@ import { type Response } from 'express';
 
 import { type HealthResponse } from '@booth/shared';
 
+import { Public } from '../auth/decorators/public.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 
+@Public()
 @SkipThrottle()
 @Controller('health')
 export class HealthController {
