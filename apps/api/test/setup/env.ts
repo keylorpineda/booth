@@ -11,4 +11,5 @@ Object.assign(process.env, {
   TRUST_PROXY: '1',
   CORS_ORIGINS: 'http://localhost:5173',
   WEB_PUBLIC_URL: 'http://localhost:5173',
+  JWT_ACCESS_SECRET: 'test-secret-that-is-long-enough-for-hs256-signing',
 });

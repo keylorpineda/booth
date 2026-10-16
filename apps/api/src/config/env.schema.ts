@@ -22,18 +22,33 @@ const trustProxy = z.string().transform((value): boolean | number | string => {
 
 const positiveInt = z.coerce.number().int().positive();
 
-export const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().min(1).max(65535).default(3000),
-  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
-  TRUST_PROXY: trustProxy.default(false),
-  CORS_ORIGINS: csv,
-  WEB_PUBLIC_URL: z.url(),
-  DATABASE_URL: z.string().regex(/^postgres(ql)?:\/\//, 'Must be a PostgreSQL connection URL'),
-  RATE_LIMIT_TTL_SECONDS: positiveInt.default(60),
-  RATE_LIMIT_DEFAULT: positiveInt.default(120),
-  RATE_LIMIT_AUTH: positiveInt.default(10),
-  RATE_LIMIT_PUBLIC_ORDERS: positiveInt.default(20),
-});
+export const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PORT: z.coerce.number().int().min(1).max(65535).default(3000),
+    LOG_LEVEL: z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .default('info'),
+    TRUST_PROXY: trustProxy.default(false),
+    CORS_ORIGINS: csv,
+    WEB_PUBLIC_URL: z.url(),
+    DATABASE_URL: z.string().regex(/^postgres(ql)?:\/\//, 'Must be a PostgreSQL connection URL'),
+    JWT_ACCESS_SECRET: z.string().min(32, 'Use at least 32 random characters'),
+    JWT_ACCESS_TTL_MINUTES: positiveInt.default(15),
+    REFRESH_TOKEN_TTL_DAYS: positiveInt.default(30),
+    RATE_LIMIT_TTL_SECONDS: positiveInt.default(60),
+    RATE_LIMIT_DEFAULT: positiveInt.default(120),
+    RATE_LIMIT_AUTH: positiveInt.default(10),
+    RATE_LIMIT_PUBLIC_ORDERS: positiveInt.default(20),
+  })
+  .superRefine((env, ctx) => {
+    if (env.NODE_ENV === 'production' && env.JWT_ACCESS_SECRET.startsWith('change-me')) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['JWT_ACCESS_SECRET'],
+        message: 'Replace the example value with a random secret',
+      });
+    }
+  });
 
 export type Env = z.infer<typeof envSchema>;
