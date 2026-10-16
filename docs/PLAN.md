@@ -43,17 +43,17 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 1 — API foundation
 
-- [ ] Config module with Zod-validated env (fails fast on invalid env)
-- [ ] Prisma setup, initial schema from DATA_MODEL.md, first migration, `PrismaService`
-- [ ] Global prefix `/api` (except `/health`), Swagger at `/api/docs`
-- [ ] Helmet, CORS allowlist, `trust proxy` from `TRUST_PROXY`
-- [ ] Rate limiting (`@nestjs/throttler`): default, `auth`, `public-orders` buckets, keyed by real client IP
-- [ ] Global exception filter → consistent error format (see API.md), request id
-- [ ] `ZodValidationPipe` using schemas from `packages/shared`
-- [ ] Structured logging (pino) with request id
-- [ ] `/health` checks DB connectivity
-- [ ] Test harness: Jest + Supertest, test DB on 5433, migrate + truncate between suites, factories
-- [ ] `packages/shared`: money module (ISO 4217 minor units table, `toMinor`, `fromMinor`, `formatMoney` with `Intl.NumberFormat`), phone module (E.164 via libphonenumber-js), country profiles
+- [x] Config module with Zod-validated env (fails fast on invalid env)
+- [x] Prisma setup, initial schema from DATA_MODEL.md, first migration, `PrismaService`
+- [x] Global prefix `/api` (except `/health`), Swagger at `/api/docs`
+- [x] Helmet, CORS allowlist, `trust proxy` from `TRUST_PROXY`
+- [x] Rate limiting (`@nestjs/throttler`): default, `auth`, `public-orders` buckets, keyed by real client IP
+- [x] Global exception filter → consistent error format (see API.md), request id
+- [x] `ZodValidationPipe` using schemas from `packages/shared`
+- [x] Structured logging (pino) with request id
+- [x] `/health` checks DB connectivity
+- [x] Test harness: Jest + Supertest, test DB on 5433, migrate + truncate between suites, factories
+- [x] `packages/shared`: money module (ISO 4217 minor units table, `toMinor`, `fromMinor`, `formatMoney` with `Intl.NumberFormat`), phone module (E.164 via libphonenumber-js), country profiles
 
 **Done when**
 
