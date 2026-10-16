@@ -322,6 +322,30 @@
     },
     "emptyHint": "New orders show up here on their own, no reload needed.",
     "noMatches": "No orders match",
-    "noMatchesHint": "Try another code, name or phone, or remove the payment filter."
+    "noMatchesHint": "Try another code, name or phone, or remove the payment filter.",
+    "detail": {
+      "back": "Orders",
+      "customer": "Customer",
+      "whatsapp": "Message on WhatsApp",
+      "whatsappGreeting": "Hi! We are writing about your order {{code}}.",
+      "call": "Call",
+      "items": "Items",
+      "subtotal": "Subtotal",
+      "deliveryFee": "Delivery",
+      "total": "Total",
+      "delivery": "Delivery and payment",
+      "pickupHint": "The customer picks the order up at the store.",
+      "timeline": "History",
+      "notFound": "We could not find this order",
+      "notFoundHint": "The link may be wrong, or the order belongs to another store."
+    },
+    "timeline": {
+      "actor": {
+        "customer": "Customer",
+        "owner": "You",
+        "system": "Automatic"
+      },
+      "reactivatedNote": "Order reactivated"
+    }
   }
 }
