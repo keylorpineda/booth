@@ -22,6 +22,7 @@
   --color-danger: var(--danger);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-warning-ink: var(--warning-ink);
 
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
