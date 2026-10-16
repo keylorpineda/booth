@@ -2,6 +2,8 @@
 
 This is a portfolio project, but it follows a team workflow so the history stays readable.
 
+By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Security problems go through the [Security Policy](SECURITY.md), never public issues.
+
 ## Requirements
 
 - Node 24 LTS (`nvm use`)
