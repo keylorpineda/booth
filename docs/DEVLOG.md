@@ -301,3 +301,23 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - Bash heredocs with long JSX failed to parse in this Windows shell; files are written directly instead.
 - The shell test needed a `QueryClientProvider` because the account menu uses the logout mutation.
+
+---
+
+## Owner orders list (#44) — 2026-10-16
+
+**Built**
+
+- Orders screen with tabs (active, completed, cancelled and expired, all), a payment filter and search by code, name or phone.
+- Order rows: code, time since placed, customer, total in the order currency, status and payment badges, pickup or delivery, item count and minutes left for pending orders.
+- "Load more" with the API cursor, a refresh every 30 seconds and on window focus, so new orders appear on their own.
+
+**Key decisions**
+
+- Filters live in the URL (`?tab=closed&payment=PAID&q=...`), so refresh, the back button and shared links keep them; typing replaces the history entry instead of adding one per search.
+- Unpaid cash orders read "cash on delivery", not "unpaid": nothing is owed until delivery.
+- A `--warning-ink` token gives amber text that keeps AA contrast in both themes.
+
+**Problems solved**
+
+- CI on the previous PR exposed a search bug: the digits of a code (`SW12CJ` -> `12`) matched customer phones. Phones are now searched only for phone-like queries (#42).
