@@ -5,7 +5,10 @@ import { HomePage } from '../pages/home-page';
 import { NotFoundPage } from '../pages/not-found-page';
 import { StorefrontPage } from '../pages/storefront-page';
 
-/** Storefront loads eagerly (first visit); checkout and tracking are split into their own chunks. */
+/**
+ * Storefront loads eagerly (first visit); checkout, tracking and every owner page are split into
+ * their own chunks, so shoppers never download the dashboard.
+ */
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
@@ -19,6 +22,49 @@ export const router = createBrowserRouter([
       {
         path: '/t/:token',
         lazy: async () => ({ Component: (await import('../pages/tracking-page')).TrackingPage }),
+      },
+      {
+        lazy: async () => ({
+          Component: (await import('../features/auth/components/guest-only')).GuestOnly,
+        }),
+        children: [
+          {
+            path: '/login',
+            lazy: async () => ({ Component: (await import('../pages/login-page')).LoginPage }),
+          },
+          {
+            path: '/register',
+            lazy: async () => ({
+              Component: (await import('../pages/register-page')).RegisterPage,
+            }),
+          },
+        ],
+      },
+      {
+        lazy: async () => ({
+          Component: (await import('../features/auth/components/require-session')).RequireSession,
+        }),
+        children: [
+          {
+            path: '/onboarding',
+            lazy: async () => ({
+              Component: (await import('../pages/onboarding-page')).OnboardingPage,
+            }),
+          },
+          {
+            lazy: async () => ({
+              Component: (await import('../features/auth/components/require-store')).RequireStore,
+            }),
+            children: [
+              {
+                path: '/dashboard',
+                lazy: async () => ({
+                  Component: (await import('../pages/dashboard-page')).DashboardPage,
+                }),
+              },
+            ],
+          },
+        ],
       },
       { path: '*', element: <NotFoundPage /> },
     ],
