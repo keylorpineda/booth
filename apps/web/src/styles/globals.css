@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/plus-jakarta-sans';
 @import './tokens.css';
 
 /*
@@ -8,6 +9,7 @@
  */
 @theme inline {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans Variable', 'Inter Variable', ui-sans-serif, sans-serif;
 
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -33,6 +35,7 @@
 
   --shadow-card: var(--shadow-card);
   --shadow-float: var(--shadow-float);
+  --shadow-glow: var(--glow);
 
   --ease-out-soft: var(--ease-out-soft);
   --ease-spring: var(--ease-spring);
@@ -58,6 +61,13 @@
   body {
     @apply bg-surface font-sans text-ink antialiased;
     font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    letter-spacing: -0.02em;
   }
 
   :focus-visible {
@@ -89,5 +99,34 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@layer components {
+  /* Soft brand glow over a faint dot grid that fades out: depth without noise. */
+  .hero-backdrop {
+    background:
+      radial-gradient(
+        60% 50% at 50% 0%,
+        color-mix(in oklab, var(--brand) 18%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        40% 40% at 90% 30%,
+        color-mix(in oklab, var(--brand) 10%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(circle at 1px 1px, var(--line-strong) 1px, transparent 0) 0 0 / 22px 22px;
+    mask-image: linear-gradient(to bottom, black 55%, transparent);
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(
+      100deg,
+      var(--brand) 10%,
+      color-mix(in oklab, var(--brand) 55%, oklch(0.7 0.2 320)) 90%
+    );
+    background-clip: text;
+    color: transparent;
   }
 }
