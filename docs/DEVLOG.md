@@ -174,3 +174,35 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - A closed-store test only asserted inside `if (!openNow)`, so it could pass without checking anything. It now sets hours on a weekday that is never "today" in the store time zone, so the assertions always run.
 - Two long shell heredocs failed on quoting again; scripted edits are now written as files in the scratchpad and run with Node.
+
+---
+
+## Phase 5 — Storefront UI & checkout — 2026-10-16
+
+**Built**
+
+- Design system: warm neutral tokens, light and dark themes, Tailwind 4 theme mapped to CSS variables, per-store brand color with OKLCH-derived shades and an automatic readable foreground.
+- Small UI primitives (one per file): Button with press feedback, Field with accessible wiring, Sheet (draggable bottom sheet on phones, side panel on desktop), animated Checkbox, OptionCards with a gliding selection ring, QuantityStepper with rolling numbers, Badge, Skeleton, EmptyState, CopyButton.
+- Vector animations: drawn checkmarks, cart bag bump, timeline fill, pulsing "open now" dot, hand-made animated SVG illustrations.
+- Storefront (`/s/:slug`): cover and logo, open/closed badge with next opening, sticky scroll-spy category tabs, product cards and detail sheet, per-store persisted cart, floating cart bar.
+- Checkout (`/s/:slug/checkout`): contact (local phone normalized to E.164 with the store's country), pickup or delivery with zone fees, cash or transfer, privacy consent with the store's notice, live server quote.
+- Tracking (`/t/:token`): "order saved" screen with the WhatsApp button, expiry countdown, animated status timeline, transfer details with copy buttons and the order code as reference, receipt upload with a progress bar.
+- i18n (es default, en), API wake-up notice, error and empty states, per-store SEO and Open Graph tags, `robots.txt`.
+
+**Key decisions**
+
+- **WhatsApp as a link the customer taps**, not an automatic popup: browsers block `window.open` after an async request, and the order is already saved, so the tracking page leads with "Send order on WhatsApp" and the store page links back to the latest order.
+- **Animated SVG instead of Lottie**: no Lottie assets existed, and SVG illustrations inherit the store color and add no runtime.
+- **First-load performance work** (measured with Lighthouse): prefetch store data from `index.html`, lazy routes, lazy Motion features (`LazyMotion` + `m.*`), lazy toasts, and no Zod on the storefront's first load. `@booth/shared` now builds one file per module and keeps schemas apart from helpers. Main bundle 277 KB → 180 KB gzipped.
+- **Storefront responses are typed, not validated at runtime**; checkout and tracking still validate. The API's e2e tests guard the public contract.
+- Contrast tokens were darkened (success, danger, subtle text) after Lighthouse flagged 3.08:1 and 3.49:1.
+
+**Lighthouse (mobile, local production build)**: Accessibility 100, Best Practices 100, SEO 100, Performance 72–80. The largest paint (~3.5 s) is bound by JS execution under 4× CPU throttling; the target of 90 is re-checked on the deployed build in Phase 7, with HTML pre-rendering of the store page as the next step if needed.
+
+**Problems solved (found by testing in the browser)**
+
+- **Buttons inside sheets never received clicks**: the whole sheet was draggable, and Motion captures the pointer on press, so `click` landed on the sheet. Only the handle and header start a drag now (`useDragControls`).
+- **Sheets and toasts ignored the store color**: they render in portals outside the themed wrapper. The theme is applied to `<html>` while a store page is mounted.
+- **The cover overlapped the logo**: the header content needed its own stacking context.
+- **Derived brand shades did not update** when `--brand` was overridden on a child: custom properties resolve where declared, so the shades are re-declared on every `[data-brand]` element.
+- The strict React lint rules caught `Date.now()` during render, setState in an effect, `forwardRef`, `cloneElement` and `form.watch` (incompatible with the React Compiler); replaced with `useNow`, cleanup-based state, ref-as-prop, a render-prop `Field` and `useWatch`.

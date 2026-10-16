@@ -119,31 +119,32 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 5 — Storefront UI & checkout
 
-- [ ] Design system foundation: tokens (CSS variables), Tailwind theme, typography, dark mode for the dashboard
-- [ ] UI primitives (`components/ui`): Button, IconButton, Input, Textarea, Select, Combobox, Dialog, Sheet (bottom drawer), Toast, Badge, Skeleton, Spinner, EmptyState, Tabs, Switch, Tooltip — built on Radix, each small and in its own file
-- [ ] Motion presets (`lib/motion`): spring tokens, page/route transitions, list stagger, press/hover feedback; all disabled under `prefers-reduced-motion`
-- [ ] Vector animations: animated SVG icons (cart bump, check draw, status timeline path), Lottie illustrations for empty/success states (lazy loaded)
-- [ ] Per-store theming from brand color (derived palette via OKLCH, auto foreground for contrast)
-- [ ] i18next setup with `es` (default) and `en`, store locale as default, language switch
-- [ ] Storefront: header with logo/cover, open/closed badge, category tabs (sticky, scroll-spy), product grid/cards, product detail sheet
-- [ ] Cart (Zustand persisted per store slug): add/remove/quantity with micro-interactions, floating cart button with count bump
-- [ ] Checkout: customer info (E.164 phone, default store country), pickup/delivery + zone, payment method, privacy consent, server-side total preview
-- [ ] Order placed screen → opens WhatsApp; fallback button if the popup is blocked
-- [ ] Tracking page: animated status timeline, payment instructions with order code as reference, receipt upload with progress
-- [ ] Error, loading (skeletons) and offline states; SEO meta and Open Graph per store
-- [ ] Vitest + Testing Library for cart store, checkout form, money display
+- [x] Design system foundation: tokens (CSS variables), Tailwind theme, typography, dark-theme tokens for the dashboard
+- [x] UI primitives needed by the storefront (`components/ui`): Button, Input, Textarea, Field, Sheet (bottom drawer / side panel), Checkbox, OptionCards (radio cards), QuantityStepper, Badge, Skeleton, Spinner, EmptyState, CopyButton, toasts — each small and in its own file. Select, Combobox, Tabs, Switch and Tooltip move to Phase 6, where the dashboard needs them
+- [x] Motion presets (`lib/motion`): spring tokens, route fade, list stagger, press feedback; reduced motion respected app-wide; Motion features lazy-loaded (`LazyMotion` + `m.*`)
+- [x] Vector animations: animated SVG (cart bag bump, checkbox tick, order-placed check, status timeline fill, rolling numbers) and hand-made animated SVG illustrations (empty bag, store sign) instead of Lottie files
+- [x] Per-store theming from brand color (OKLCH-derived shades, automatic foreground for contrast), applied to the document so sheets and toasts follow it
+- [x] i18next setup with `es` (default) and `en`, store locale as default, language switch
+- [x] Storefront: header with logo/cover, open/closed badge, category tabs (sticky, scroll-spy), product grid/cards, product detail sheet
+- [x] Cart (Zustand persisted per store slug): add/remove/quantity with micro-interactions, floating cart bar with count bump
+- [x] Checkout: customer info (E.164 phone, default store country), pickup/delivery + zone, payment method, privacy consent, server-side total preview
+- [x] Order placed screen with a WhatsApp button (a link the customer taps, so it is never blocked as a popup) and a way back to it from the store
+- [x] Tracking page: animated status timeline, payment instructions with order code as reference, receipt upload with progress
+- [x] Error, loading (skeletons), API wake-up notice; SEO meta and Open Graph per store; `robots.txt`
+- [x] Vitest + Testing Library for cart store, checkout form, product card (money display) and locale parity
 
 **Done when**
 
-- Full order flow works on a 360px viewport and on desktop.
-- Lighthouse mobile on the storefront: Performance ≥ 90, Accessibility ≥ 95.
-- With `prefers-reduced-motion: reduce`, no non-essential animation runs.
-- Switching store brand color re-themes the storefront with AA text contrast.
-- No hardcoded user-facing strings (lint rule or test).
+- [x] Full order flow works on a 360px viewport and on desktop (verified in the browser at 375×812 against the real API: catalog → cart → checkout with delivery → tracking → WhatsApp message).
+- [ ] Lighthouse mobile on the storefront: Performance ≥ 90, Accessibility ≥ 95. **Accessibility 100, Best Practices 100, SEO 100; Performance 72–80 locally** (simulated slow 4G + 4× CPU, busy dev machine). Re-measure on the deployed build in Phase 7; if still under 90, pre-render the store page HTML.
+- [x] With `prefers-reduced-motion: reduce`, no non-essential animation runs (`MotionConfig reducedMotion="user"` + a global CSS rule for CSS animations).
+- [x] Switching store brand color re-themes the storefront with AA text contrast (foreground picked per color; tested on 4,096 colors).
+- [x] No hardcoded user-facing strings: all copy goes through i18next, and a test fails if `es` and `en` differ in keys or have empty values.
 
 ## Phase 6 — Owner dashboard, payments, zones, hours & localization
 
 - [ ] Auth screens (register, login) and onboarding wizard (store → branding → payment → hours)
+- [ ] Remaining UI primitives: Select, Combobox (currency, time zone), Tabs, Switch, Tooltip, Dialog
 - [ ] Dashboard layout: responsive sidebar / bottom nav on mobile, command palette (optional)
 - [ ] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)
 - [ ] Localization: country, currency, timezone (from `Intl.supportedValuesOf`), language
