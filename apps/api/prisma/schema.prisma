@@ -57,7 +57,7 @@ model Store {
   // Branding
   logoPublicId  String?
   coverPublicId String?
-  brandColor    String  @default("#E85D3A")
+  brandColor    String  @default("#4F46E5")
 
   // Localization
   country  String @default("CR") // ISO 3166-1 alpha-2

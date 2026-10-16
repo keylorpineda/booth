@@ -1,4 +1,4 @@
-export const DEFAULT_BRAND_COLOR = '#E85D3A';
+export const DEFAULT_BRAND_COLOR = '#4F46E5';
 
 const LIGHT_TEXT = '#FFFFFF';
 const DARK_TEXT = '#000000';

@@ -173,7 +173,7 @@ describe('tenant isolation (store A vs store B)', () => {
     ).expect(200);
 
     const storeAfter = await prisma.store.findUniqueOrThrow({ where: { id: storeA.store.id } });
-    expect(storeAfter).toMatchObject({ name: storeA.store.name, brandColor: '#E85D3A' });
+    expect(storeAfter).toMatchObject({ name: storeA.store.name, brandColor: '#4F46E5' });
   });
 
   it('cannot use a cursor from A to page into A products', async () => {

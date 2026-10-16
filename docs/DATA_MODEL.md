@@ -84,7 +84,7 @@ model Store {
   // Branding
   logoPublicId  String?
   coverPublicId String?
-  brandColor    String  @default("#E85D3A") // hex, validated for contrast
+  brandColor    String  @default("#4F46E5") // hex, validated for contrast
 
   // Localization
   country  String @default("CR") // ISO 3166-1 alpha-2
