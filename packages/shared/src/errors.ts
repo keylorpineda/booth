@@ -32,6 +32,10 @@ export const ERROR_CODES = [
   'PRODUCT_UNAVAILABLE',
   'OUT_OF_STOCK',
   'ORDER_NOT_PAYABLE',
+  'INVALID_STATUS_TRANSITION',
+  // Settings
+  'CURRENCY_LOCKED',
+  'ZONE_NAME_TAKEN',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
