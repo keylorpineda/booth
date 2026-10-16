@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { businessHourSchema, isOpenAt, localTime, nextOpening } from './hours';
+import { isOpenAt, localTime, nextOpening } from './hours';
+import { businessHourSchema } from './schema';
 
 // Costa Rica is UTC-6 all year (no daylight saving time).
 const TZ = 'America/Costa_Rica';

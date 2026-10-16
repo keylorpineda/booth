@@ -1,15 +1,7 @@
-import { z } from 'zod';
-
 import { getCurrencyExponent } from './currencies';
 
 /** An amount in the minor units of a currency (e.g. cents). Always a safe integer. */
 export type MinorUnits = number;
-
-export const minorUnitsSchema = z
-  .number()
-  .int()
-  .nonnegative()
-  .max(Number.MAX_SAFE_INTEGER, 'Amount too large');
 
 const DECIMAL_PATTERN = /^(\d+)(?:\.(\d+))?$/;
 

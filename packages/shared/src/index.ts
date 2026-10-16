@@ -1,6 +1,7 @@
 export * from './auth';
 export * from './catalog';
 export * from './countries';
+export * from './error-schemas';
 export * from './errors';
 export * from './health';
 export * from './hours';

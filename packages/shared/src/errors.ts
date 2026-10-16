@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 /** Machine-readable error codes. The web app maps each code to a localized message. */
 export const ERROR_CODES = [
   'VALIDATION_ERROR',
@@ -38,21 +36,17 @@ export const ERROR_CODES = [
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
 
-export const fieldErrorSchema = z.object({
-  path: z.string(),
-  message: z.string(),
-});
-
-export type FieldError = z.infer<typeof fieldErrorSchema>;
+export interface FieldError {
+  path: string;
+  message: string;
+}
 
 /** Shape of every error response: `{ error: { code, message, details?, requestId } }`. */
-export const apiErrorSchema = z.object({
-  error: z.object({
-    code: z.string(),
-    message: z.string(),
-    details: z.record(z.string(), z.unknown()).optional(),
-    requestId: z.string(),
-  }),
-});
-
-export type ApiError = z.infer<typeof apiErrorSchema>;
+export interface ApiError {
+  error: {
+    code: string;
+    message: string;
+    details?: Record<string, unknown> | undefined;
+    requestId: string;
+  };
+}
