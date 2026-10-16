@@ -30,10 +30,10 @@ Every error response has the same shape:
 | Status | Typical codes                                                                                                        |
 | ------ | -------------------------------------------------------------------------------------------------------------------- |
 | 400    | `VALIDATION_ERROR` (with `details.fields: [{ path, message }]`), `BAD_REQUEST` (e.g. malformed JSON), `STORE_CLOSED` |
-| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`                                                     |
+| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `INVALID_REFRESH_TOKEN`, `REFRESH_TOKEN_REUSED`                            |
 | 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                                                              |
 | 404    | `NOT_FOUND` (also returned for other stores' resources)                                                              |
-| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `INVALID_STATUS_TRANSITION`                                             |
+| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `STORE_ALREADY_EXISTS`, `INVALID_STATUS_TRANSITION`                     |
 | 413    | `FILE_TOO_LARGE`, `PAYLOAD_TOO_LARGE`                                                                                |
 | 415    | `UNSUPPORTED_FILE_TYPE`, `UNSUPPORTED_MEDIA_TYPE`                                                                    |
 | 429    | `RATE_LIMITED` (with a `Retry-After` header)                                                                         |
@@ -51,6 +51,19 @@ Every response carries an `X-Request-Id` header (a valid incoming one is reused)
 
 ## Auth — rate limit: `auth`
 
+Every route requires `Authorization: Bearer <accessToken>` unless it is public (auth endpoints below, `/health`, `/api/public/*`). Register, login and refresh return:
+
+```json
+{
+  "user": { "id": "ck...", "email": "ana@example.com", "name": "Ana", "isDemo": false },
+  "store": { "id": "ck...", "slug": "la-esquina", "name": "Panadería La Esquina" },
+  "accessToken": "eyJ...",
+  "accessTokenExpiresIn": 900
+}
+```
+
+and set the refresh cookie `booth_rt` (`HttpOnly; Secure; SameSite=Lax; Path=/api/auth`). `store` is `null` before onboarding. A failed refresh clears the cookie.
+
 | Method | Path                 | Description                                                       |
 | ------ | -------------------- | ----------------------------------------------------------------- |
 | POST   | `/api/auth/register` | Create owner account → access token + refresh cookie              |
@@ -61,15 +74,15 @@ Every response carries an `X-Request-Id` header (a valid incoming one is reused)
 
 ## Owner — store
 
-| Method | Path                                    | Description                                          |
-| ------ | --------------------------------------- | ---------------------------------------------------- |
-| POST   | `/api/me/store`                         | Onboarding: create the store (one per owner)         |
-| GET    | `/api/me/store`                         | Full store settings                                  |
-| PATCH  | `/api/me/store`                         | Update info, ordering options, localization, privacy |
-| POST   | `/api/me/store/logo`                    | Upload logo (multipart)                              |
-| POST   | `/api/me/store/cover`                   | Upload cover image (multipart)                       |
-| DELETE | `/api/me/store/logo`, `/cover`          | Remove image                                         |
-| GET    | `/api/me/store/slug-availability?slug=` | Check slug                                           |
+| Method | Path                                    | Description                                                                                                                                                                 |
+| ------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/me/store`                         | Onboarding: `{ name, slug, whatsappPhone, country?, currency?, timezone?, locale? }`; missing localization comes from the country profile (default CR). One store per owner |
+| GET    | `/api/me/store`                         | Full store settings                                                                                                                                                         |
+| PATCH  | `/api/me/store`                         | Update info, ordering options, localization, privacy                                                                                                                        |
+| POST   | `/api/me/store/logo`                    | Upload logo (multipart)                                                                                                                                                     |
+| POST   | `/api/me/store/cover`                   | Upload cover image (multipart)                                                                                                                                              |
+| DELETE | `/api/me/store/logo`, `/cover`          | Remove image                                                                                                                                                                |
+| GET    | `/api/me/store/slug-availability?slug=` | `{ slug, available, reason?: invalid                                                                                                                                        | reserved | taken }` |
 
 ## Owner — catalog
 
