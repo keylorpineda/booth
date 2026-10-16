@@ -131,12 +131,16 @@ Uploads answer `503 MEDIA_NOT_CONFIGURED` when the API runs without Cloudinary c
 
 ## Public — storefront
 
-| Method | Path                               | Description                                                                                             |
-| ------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| GET    | `/api/public/stores/:slug`         | Branding, localization, open now + next opening, zones, payment methods (public fields), privacy notice |
-| GET    | `/api/public/stores/:slug/catalog` | Active categories and products with availability                                                        |
-| POST   | `/api/public/stores/:slug/quote`   | Server-computed totals for a cart (no side effects)                                                     |
-| POST   | `/api/public/stores/:slug/orders`  | Create order — rate limit `public-orders`                                                               |
+No authentication. The store comes from the URL slug (`TenantGuard`); unknown or inactive stores answer `404`.
+
+| Method | Path                               | Description                                                                                                                   |
+| ------ | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/public/stores/:slug`         | Branding, localization, hours, `openNow`, `acceptingOrders`, `nextOpening`, pickup and zones, payment methods, privacy notice |
+| GET    | `/api/public/stores/:slug/catalog` | Active categories with products, plus `uncategorized`; each product has `available` and `stockLeft` (null when made to order) |
+| POST   | `/api/public/stores/:slug/quote`   | Server-computed totals for `{ items, fulfillment, deliveryZoneId? }`; nothing is reserved                                     |
+| POST   | `/api/public/stores/:slug/orders`  | Place the order (rate limit `public-orders`)                                                                                  |
+
+A store without business hours is always open. The client never sends prices: any price or total in the body is ignored.
 
 `POST /orders` request:
 
@@ -146,12 +150,14 @@ Uploads answer `503 MEDIA_NOT_CONFIGURED` when the API runs without Cloudinary c
   "fulfillment": "DELIVERY",
   "deliveryZoneId": "ck...",
   "deliveryAddress": "200 m norte de la iglesia, casa azul",
-  "paymentMethodId": "ck...",
+  "payment": { "type": "TRANSFER", "methodId": "ck..." },
   "customer": { "name": "Ana", "phone": "+50688887777", "note": "Sin azúcar" },
   "privacyConsent": true,
   "locale": "es"
 }
 ```
+
+`payment` is `{ "type": "CASH" }` or `{ "type": "TRANSFER", "methodId" }`. Delivery requires `deliveryZoneId` and `deliveryAddress`.
 
 Response `201`:
 
@@ -170,15 +176,19 @@ Response `201`:
 }
 ```
 
+Errors: `409 STORE_CLOSED` (with `details.nextOpening`), `409 PRODUCT_UNAVAILABLE` and `409 OUT_OF_STOCK` (with `details.productIds`), `400 VALIDATION_ERROR` for an invalid zone, payment method or fulfillment.
+
 ## Public — tracking
 
-| Method | Path                                | Description                                                                        |
-| ------ | ----------------------------------- | ---------------------------------------------------------------------------------- |
-| GET    | `/api/public/orders/:token`         | Status, timeline, items, totals, payment instructions                              |
-| POST   | `/api/public/orders/:token/receipt` | Upload receipt (multipart, `file`) — pauses expiration; rate limit `public-orders` |
+| Method | Path                                | Description                                                                                                                                                                   |
+| ------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/public/orders/:token`         | Status, timeline, snapshot lines and totals, payment instructions, `canUploadReceipt`. No customer phone                                                                      |
+| POST   | `/api/public/orders/:token/receipt` | Multipart `file`: JPEG, PNG, WebP, HEIC or PDF, max 5 MB. Sets `RECEIPT_SUBMITTED` and pauses expiration. `409 ORDER_NOT_PAYABLE` for cash, paid, expired or cancelled orders |
+
+The token has 256 random bits. The short order code is only a payment reference and never opens the tracking page.
 
 ## Internal
 
-| Method | Path                               | Description                                                         |
-| ------ | ---------------------------------- | ------------------------------------------------------------------- |
-| POST   | `/api/internal/jobs/expire-orders` | Called by a scheduled GitHub Action; requires `X-Job-Secret` header |
+| Method | Path                               | Description                                                                                                                                                                           |
+| ------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/internal/jobs/expire-orders` | Called by a scheduled GitHub Action; requires the `X-Job-Secret` header to match `JOB_SECRET`. Answers `404` when `JOB_SECRET` is unset or the header is wrong. Returns `{ expired }` |
