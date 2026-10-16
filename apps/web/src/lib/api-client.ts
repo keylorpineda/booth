@@ -16,30 +16,36 @@ export class ApiError extends Error {
   }
 }
 
-interface RequestOptions<T> {
+export interface RequestOptions<T> {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+  /** JSON-serialized, or sent as is when it is FormData (file uploads). */
   body?: unknown;
+  headers?: Record<string, string>;
   /**
    * Validates the response so a contract change fails loudly. Optional on purpose: first-load
    * storefront requests skip it to keep Zod out of the critical bundle (the API's contract tests
    * guard those shapes); checkout and tracking validate.
    */
   schema?: ZodType<T>;
-  signal?: AbortSignal;
+  signal?: AbortSignal | undefined;
 }
 
 export async function api<T>(
   path: string,
-  { method = 'GET', body, schema, signal }: RequestOptions<T> = {},
+  { method = 'GET', body, headers = {}, schema, signal }: RequestOptions<T> = {},
 ): Promise<T> {
+  const isForm = body instanceof FormData;
   let response: Response;
   try {
     response = await fetch(`${BASE_URL}${path}`, {
       method,
       signal: signal ?? null,
       credentials: 'include',
-      headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
-      body: body === undefined ? null : JSON.stringify(body),
+      headers: {
+        ...(body === undefined || isForm ? {} : { 'Content-Type': 'application/json' }),
+        ...headers,
+      },
+      body: body === undefined ? null : isForm ? body : JSON.stringify(body),
     });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') throw error;
