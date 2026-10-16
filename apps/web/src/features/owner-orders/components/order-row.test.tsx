@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
 import { formatMoney, type OwnerOrderSummary } from '@booth/shared';
@@ -28,16 +29,19 @@ const order = (overrides: Partial<OwnerOrderSummary> = {}): OwnerOrderSummary =>
 
 const renderRow = (summary: OwnerOrderSummary) =>
   render(
-    <OrderRow
-      order={summary}
-      now={now}
-      formatMoney={(minor, currency) => formatMoney(minor, currency, 'es-CR')}
-    />,
+    <MemoryRouter>
+      <OrderRow
+        order={summary}
+        now={now}
+        formatMoney={(minor, currency) => formatMoney(minor, currency, 'es-CR')}
+      />
+    </MemoryRouter>,
   );
 
 describe('OrderRow', () => {
   it('shows the code, customer, total in the order currency and time left', () => {
     renderRow(order());
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/dashboard/orders/o1');
     expect(screen.getByText('#K7Q2MX')).toBeInTheDocument();
     expect(screen.getByText('Ana Mora')).toBeInTheDocument();
     expect(screen.getByText('₡7 500')).toBeInTheDocument();
