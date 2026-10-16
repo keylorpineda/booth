@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
+import { CatalogModule } from './catalog/catalog.module';
 import { AllExceptionsFilter } from './common/errors/all-exceptions.filter';
 import { LoggingModule } from './common/logging/logging.module';
 import { RateLimitModule } from './common/rate-limit/rate-limit.module';
@@ -23,6 +24,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
     TenancyModule,
     HealthModule,
     StoresModule,
+    CatalogModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
