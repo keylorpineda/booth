@@ -37,7 +37,7 @@ feat/catalog-products --rebase--> develop --release PR (merge commit)--> main --
 ```
 
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
-- Scopes: `api`, `web`, `shared`, `db`, `auth`, `catalog`, `orders`, `storefront`, `dashboard`, `i18n`, `ui`, `deps`, `ci`, `repo`
+- Scopes: `api`, `web`, `shared`, `db`, `auth`, `stores`, `catalog`, `orders`, `storefront`, `dashboard`, `i18n`, `ui`, `deps`, `deps-dev`, `ci`, `repo`, `release`
 - Breaking changes: `feat(api)!: ...` plus a `BREAKING CHANGE:` footer
 
 Examples:
