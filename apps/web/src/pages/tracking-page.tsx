@@ -5,7 +5,7 @@ import { Link, useLocation, useParams } from 'react-router';
 
 import { ErrorState } from '../components/feedback/error-state';
 import { WakingNotice } from '../components/feedback/waking-notice';
-import { LanguageSwitch } from '../components/layout/language-switch';
+import { HeaderControls } from '../components/layout/header-controls';
 import { Skeleton } from '../components/ui/skeleton';
 import { useCartStore } from '../features/cart/cart-store';
 import { useTrackingQuery } from '../features/tracking/api';
@@ -64,7 +64,7 @@ export function TrackingPage() {
           <Link to={`/s/${order.store.slug}`} className="font-bold">
             {order.store.name}
           </Link>
-          <LanguageSwitch />
+          <HeaderControls />
         </header>
         <m.main
           variants={staggerChildren(0.08)}

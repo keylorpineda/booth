@@ -4,12 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#E85D3A" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0b17" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
       content="Booth: catálogo en línea y pedidos por WhatsApp para pequeños negocios."
     />
     <title>Booth</title>
+    <script>
+      // Applies the saved light/dark choice before first paint (no flash). See lib/color-scheme.ts.
+      try {
+        var theme = localStorage.getItem('booth.theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch (e) {}
+    </script>
     <script>
       // Starts the storefront API requests while the JS bundle downloads, so the first paint of a
       // store does not wait for "download JS, then fetch data". Consumed once by lib/prefetch.ts.
