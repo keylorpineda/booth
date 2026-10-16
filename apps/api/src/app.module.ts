@@ -7,6 +7,7 @@ import { LoggingModule } from './common/logging/logging.module';
 import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
+import { MediaModule } from './media/media.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { StoresModule } from './stores/stores.module';
 import { TenancyModule } from './tenancy/tenancy.module';
@@ -17,6 +18,7 @@ import { TenancyModule } from './tenancy/tenancy.module';
     LoggingModule,
     RateLimitModule,
     PrismaModule,
+    MediaModule,
     AuthModule,
     TenancyModule,
     HealthModule,
