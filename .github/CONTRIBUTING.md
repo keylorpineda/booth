@@ -19,11 +19,11 @@ This is a portfolio project, but it follows a team workflow so the history stays
 | `<type>/<short-desc>` | Short-lived work branches cut from `develop`, e.g. `feat/catalog-products`.                                                              |
 
 ```
-feat/catalog-products --squash--> develop --release PR (merge commit)--> main --> tag vX.Y.Z
+feat/catalog-products --rebase--> develop --release PR (merge commit)--> main --> tag vX.Y.Z
 ```
 
 - Allowed `<type>` values are the same as commit types (below). One phase may span several branches; keep each PR focused.
-- Work PRs target `develop` and are **squash-merged**, so the PR title becomes the commit and must be a Conventional Commit.
+- Work PRs target `develop` and are **rebase-merged**: every commit lands on `develop` as is, so history shows the work step by step. Make small, focused commits; each one must be a Conventional Commit (enforced by the `commit-msg` hook).
 - Release PRs go from `develop` to `main` with a **merge commit**, titled `chore(release): vX.Y.Z`.
 - Hotfixes: `fix/<desc>` from `main`, PR to `main`, then merge `main` back into `develop`.
 - Every PR gets a Vercel preview deployment. `main` deploys to production (CD).
@@ -48,7 +48,7 @@ fix(storefront): keep cart when switching language
 docs(repo): add data model draft
 ```
 
-Work PRs are squash-merged into `develop`; the PR title becomes the commit, so it must also be a Conventional Commit.
+Work PRs are rebase-merged into `develop`, so each commit is kept. PR titles are Conventional Commits too (checked in CI) because they summarize the change in release notes.
 
 ## Before pushing
 

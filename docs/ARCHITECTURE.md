@@ -204,4 +204,4 @@ apps/web/src/
 - **CI** (GitHub Actions, push + PR): install with pnpm cache → lint → typecheck → test (Postgres service container) → build. PR titles are checked against Conventional Commits.
 - **CD**: Vercel Git integration (preview per PR and for `develop`, production on `main`); Render deploy hook called by a workflow after CI passes on `main`, running `prisma migrate deploy` before start.
 - **Releases**: release-please maintains `CHANGELOG.md` and tags (`v1.0.0` = MVP).
-- **Branching**: `develop` is the default integration branch (work branches squash-merged); `main` only holds completed versions, updated by release PRs and tagged. Both protected. See [CONTRIBUTING](../.github/CONTRIBUTING.md).
+- **Branching**: `develop` is the default integration branch (work branches rebase-merged, keeping every commit); `main` only holds completed versions, updated by release PRs and tagged. Both protected. See [CONTRIBUTING](../.github/CONTRIBUTING.md).

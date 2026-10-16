@@ -53,5 +53,5 @@ pnpm --filter api db:seed          # idempotent demo seed
 2. Before coding a phase: list files to create/change, new dependencies and why, open questions. Wait for approval.
 3. After implementing: lint, typecheck, test, build.
 4. Verify "Done when", tick PLAN.md, add a DEVLOG.md entry, propose Conventional Commit messages.
-5. Do not commit or push unless asked. Branches: `<type>/<short-desc>` from `develop`, PR to `develop` (squash). `main` only receives completed versions via release PRs (`develop` -> `main`, merge commit, tag).
+5. Small progressive commits (one logical step each). Branches: `<type>/<short-desc>` from `develop`, PR to `develop` (rebase merge, never squash), merge after CI is green. `main` only receives completed versions via release PRs (`develop` -> `main`, merge commit, tag).
 6. Commits and PRs are authored by the owner only: no AI co-author trailers or "generated with" footers.
