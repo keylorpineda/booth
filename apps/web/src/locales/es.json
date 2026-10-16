@@ -3,7 +3,8 @@
     "close": "Cerrar",
     "retry": "Reintentar",
     "copied": "Copiado",
-    "copyNamed": "Copiar {{name}}"
+    "copyNamed": "Copiar {{name}}",
+    "cancel": "Cancelar"
   },
   "language": {
     "label": "Idioma"
@@ -224,8 +225,52 @@
     "submit": "Crear mi tienda"
   },
   "dashboard": {
-    "welcome": "Tu tienda está lista. Muy pronto podrás gestionar aquí pedidos, catálogo y ajustes.",
-    "viewStore": "Ver mi tienda"
+    "welcome": "Esto es lo que falta para que tu tienda esté lista para vender.",
+    "viewStore": "Ver mi tienda",
+    "greeting": "¡Hola, {{name}}!",
+    "navLabel": "Secciones del panel",
+    "account": "Tu cuenta",
+    "nav": {
+      "home": "Inicio",
+      "orders": "Pedidos",
+      "catalog": "Catálogo",
+      "settings": "Ajustes"
+    },
+    "demo": {
+      "text": "Estás viendo una cuenta demo de solo lectura: puedes explorar todo, pero no guardar cambios.",
+      "cta": "Crea tu tienda"
+    },
+    "setup": {
+      "title": "Prepara tu tienda",
+      "progress": "{{done}} de {{total}}",
+      "products": {
+        "title": "Agrega productos",
+        "hint": "Sube tu catálogo con precios y fotos."
+      },
+      "payments": {
+        "title": "Elige cómo te pagan",
+        "hint": "Activa efectivo o agrega una transferencia."
+      },
+      "hours": {
+        "title": "Define tu horario",
+        "hint": "Sin horario, la tienda aparece siempre abierta."
+      },
+      "delivery": {
+        "title": "Crea zonas de entrega",
+        "hint": "Tienes envío activo pero ninguna zona."
+      }
+    },
+    "share": {
+      "title": "Comparte tu tienda",
+      "text": "Pon este enlace en tu perfil de WhatsApp, Instagram o Facebook.",
+      "link": "enlace de la tienda",
+      "whatsapp": "Compartir por WhatsApp",
+      "message": "Haz tu pedido en {{name}}: {{url}}"
+    },
+    "soon": {
+      "title": "Muy pronto",
+      "text": "Esta sección se está construyendo y aparecerá aquí en la próxima versión."
+    }
   },
   "theme": {
     "label": "Tema",
