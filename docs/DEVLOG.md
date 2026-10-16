@@ -17,7 +17,7 @@ One entry per phase: what was built, key decisions, problems solved.
 - Name: **Booth** (working name).
 - Scope widened beyond Latin America: US/EU payment presets (Zelle, Venmo, Cash App, Bizum, MB WAY), an optional payment link on any transfer method so stores can take cards through their own provider, an optional prices/tax note, English in the MVP, privacy defaults per country.
 - Money stored as `BigInt` minor units to fit large-denomination currencies (COP, IDR) in order totals.
-- Branching: `develop` is the default integration branch (short-lived `<type>/<desc>` branches, squash merge, PR title = Conventional Commit); `main` only receives completed versions through release PRs and is tagged.
+- Branching: `develop` is the default integration branch (short-lived `<type>/<desc>` branches, rebase merge so every commit is kept); `main` only receives completed versions through release PRs and is tagged.
 - CI workflow, Husky and commitlint are created in Phase 0 together with `package.json`, so the first CI run has real scripts to execute.
 - Frontend: Radix primitives + Motion for micro-interactions, animated SVG + lazy Lottie for vector animations, OKLCH-derived store theme, strict small-component rules.
 
@@ -35,7 +35,7 @@ One entry per phase: what was built, key decisions, problems solved.
 - Strict TypeScript base, ESLint 10 flat config (type-checked typescript-eslint, import order, `@eslint-react`, react-hooks, jsx-a11y-x), Prettier with Tailwind class sorting.
 - Husky hooks: lint-staged on pre-commit, commitlint with the project's scopes on commit-msg.
 - `@booth/shared` (Zod, dual ESM/CJS build with tsup), `@booth/api` (NestJS 12 + SWC, `GET /health`, Jest + Supertest), `@booth/web` (Vite 8, React 19, Tailwind 4, Vitest + Testing Library).
-- GitHub: public repository, `develop` as default branch, rulesets for `develop` (squash only) and `main` (merge commits from release PRs only), both requiring the `ci` and `pr-title` checks; labels, secret scanning with push protection, Dependabot alerts and updates targeting `develop`.
+- GitHub: public repository, `develop` as default branch, rulesets for `develop` (rebase merge only) and `main` (merge commits from release PRs only), both requiring the `ci` and `pr-title` checks; labels, secret scanning with push protection, Dependabot alerts and updates targeting `develop`.
 - CI: format → lint → typecheck → test (Postgres 17 service) → build.
 
 **Key decisions**
@@ -50,4 +50,5 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - **Nest 12 is ESM-only, Jest runs CommonJS.** Jest failed with "Must use import to load ES Module". Node 24 supports `require(esm)`, and Jest uses it when run with `--experimental-vm-modules`, so the API test script runs Jest through Node with that flag. The API stays CommonJS (decorator metadata via SWC).
 - **`npm install` installed packages before `only-allow` rejected it**, leaving `node_modules` and a `package-lock.json`. Unsatisfiable `engines.npm`/`engines.yarn` with `engine-strict=true` make npm and yarn fail before writing anything; `package-lock.json` and `yarn.lock` are also gitignored.
+- **Squash merge hid the progressive history.** PR #1 was first squash-merged, collapsing its 8 commits into one on `develop`. Because the tree was identical, `develop` was reset to the original 8 commits (rule paused for the force-push, then re-enabled) and `develop` now allows only rebase merges.
 - **A heredoc dropped a backslash** in the Jest transform regex (`'^.+\.ts$'` became "any character before ts"). ESLint's `no-useless-escape` caught it; the pattern now uses `String.raw`.
