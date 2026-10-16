@@ -52,6 +52,13 @@ docs(repo): add data model draft
 
 Work PRs are rebase-merged into `develop`, so each commit is kept. PR titles are Conventional Commits too (checked in CI) because they summarize the change in release notes.
 
+## Issues and milestones
+
+- **One issue = one screen or one flow**, small enough for one pull request. Larger features get a tracker issue whose sub-issues are worked in order.
+- Every issue has Context, Scope, Acceptance criteria, Technical notes, Out of scope and Dependencies, plus `type: …` and `area: …` labels.
+- **Milestones are versions** (`vX.Y.Z — Title`): their description says what users can do once it ships. The active milestone has a due date; shipped milestones are closed, never deleted.
+- PRs say `Closes #N` and carry the same milestone; the [project board](https://github.com/users/keylorpineda/projects/2) moves the card from Todo to In Progress to Done.
+
 ## Before pushing
 
 Husky runs `lint-staged` (ESLint + Prettier on staged files) on commit. Before opening a PR run:
