@@ -16,6 +16,7 @@ export default defineConfig(
     '**/coverage/**',
     '**/node_modules/**',
     '**/*.tsbuildinfo',
+    'apps/api/src/generated/**',
   ]),
 
   // Base rules for every JS/TS file

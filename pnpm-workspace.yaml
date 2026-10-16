@@ -2,9 +2,14 @@ packages:
   - apps/*
   - packages/*
 
-# Only these dependencies may run install scripts (native binaries).
+# Only these dependencies may run install scripts (native binaries, Prisma engines).
 allowBuilds:
+  '@prisma/engines': true
   '@swc/core': true
   esbuild: true
+  prisma: true
   unrs-resolver: true
+  # Explicitly blocked
   '@parcel/watcher': false
+  '@scarf/scarf': false # install telemetry from swagger-ui-dist
+
