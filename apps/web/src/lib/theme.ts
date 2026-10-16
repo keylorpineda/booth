@@ -30,7 +30,9 @@ export function useStoreTheme(brandColor: string | undefined, brandForeground?: 
     root.style.setProperty('--brand', brandColor);
     root.style.setProperty('--brand-foreground', brandForeground ?? readableForeground(brandColor));
     root.setAttribute('data-brand', '');
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', brandColor);
+    for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+      meta.setAttribute('content', brandColor);
+    }
     return () => {
       root.style.removeProperty('--brand');
       root.style.removeProperty('--brand-foreground');

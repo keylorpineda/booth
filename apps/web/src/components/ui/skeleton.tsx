@@ -7,7 +7,7 @@ export function Skeleton({ className }: { className?: string }) {
       aria-hidden="true"
       className={cn(
         'relative overflow-hidden rounded-control bg-surface-sunken',
-        'after:absolute after:inset-0 after:-translate-x-full after:animate-shimmer after:bg-gradient-to-r after:from-transparent after:via-white/60 after:to-transparent',
+        'after:absolute after:inset-0 after:-translate-x-full after:animate-shimmer after:bg-gradient-to-r after:from-transparent after:via-surface-raised/60 after:to-transparent',
         className,
       )}
     />
