@@ -112,3 +112,32 @@ One entry per phase: what was built, key decisions, problems solved.
 - The `express-serve-static-core` module augmentation failed under pnpm's strict layout (the package is not a direct dependency); `req.auth` / `req.tenant` now augment `express`'s `Request` instead.
 - commitlint rejected the new `stores` scope, and the failed commit's staged files slipped into the next commit. The local commit was undone, `stores` was added to commitlint, the PR-title check and CONTRIBUTING, and the commits were redone.
 - GitHub's rebase merge rewrites SHAs, so the Phase 2 branch (cut from the unmerged Phase 1 branch) was rebased onto `develop`; git skipped the already-merged commits automatically.
+
+---
+
+## Phase 3 — Catalog management — 2026-10-16
+
+**Built**
+
+- Categories: create, update, delete (products become uncategorized), reorder, product counts.
+- Products: CRUD with cursor pagination, name search and category filter, `trackStock` / `stock`, reorder. Prices are integer minor units (`BigInt` in the database, JSON numbers in the API).
+- Product images (up to 8, reorder, delete) and store logo and cover, stored through a `MediaStorage` interface: Cloudinary in production, a disabled storage that answers `503 MEDIA_NOT_CONFIGURED` without credentials, a fake in tests.
+- Store settings: name, description, WhatsApp phone, brand color with an automatic readable foreground, prices note.
+- Upload validation by magic bytes (JPEG, PNG, WebP, AVIF), 5 MB limit, metadata stripped on Cloudinary.
+- A tenant isolation suite: store B tries every owner catalog endpoint against store A's ids and always gets `404`, and A's data stays untouched.
+- `docs/CREDENTIALS_SETUP.es.md`: a Spanish guide for the owner on finding and setting Cloudinary and deployment credentials (written in Spanish at the owner's request).
+
+**Key decisions**
+
+- **Readable foreground instead of rejecting brand colors**: any color is allowed and the API returns black or white text for it. The guarantee (WCAG AA, worst case about 4.58:1) holds only with pure black; a 4,096-color test enforces it.
+- **"Validated against the store currency"**: an integer amount of minor units is valid for every currency (the exponent only affects display), so validation is "non-negative safe integer". Changing a store's currency is deliberately not possible from settings, because it would change the meaning of existing prices; that is handled in Phase 6.
+- **The API returns finished image URLs** (320/800/1600 px, automatic format and quality), so the web app does not depend on Cloudinary.
+- **404 for other stores' ids** (never 403) so ids cannot be probed; a foreign `categoryId` in a product body is a `400` field error.
+- **SVG uploads are rejected**: they can carry scripts.
+- **`definedOnly()` helper**: Zod partial schemas produce `field?: T | undefined`, which Prisma rejects under `exactOptionalPropertyTypes`; the helper drops undefined keys and keeps `null` (which means "clear the field").
+
+**Problems solved**
+
+- The first contrast test only sampled grays (stepping by `0x0f0f0f` keeps R, G and B equal) and the first foreground (`#111111`) fell to 4.42:1 on some mid-tones. Both were fixed: the test walks the RGB cube and the dark foreground is `#000000`.
+- Prettier un-escaped `\|` inside a Markdown table cell in `API.md`, breaking the table; the cell was reworded without pipes.
+- A commit command used a lockfile path relative to the wrong directory, so nothing was committed; it was rerun from the repository root.

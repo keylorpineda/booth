@@ -83,12 +83,12 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 3 — Catalog management
 
-- [ ] Categories CRUD + reorder
-- [ ] Products CRUD: name, description, price (minor units), category, `isActive`, `trackStock`, `stock`, position
-- [ ] Product images upload to Cloudinary (public), multiple per product, reorder, delete (removes asset)
-- [ ] Store settings & branding: name, description, WhatsApp phone, logo, cover, brand color (contrast-checked), prices note
-- [ ] Image validation (type, size) and transformations (responsive sizes, WebP/AVIF via Cloudinary)
-- [ ] Tenant isolation tests for every owner endpoint (store A vs store B)
+- [x] Categories CRUD + reorder
+- [x] Products CRUD: name, description, price (minor units), category, `isActive`, `trackStock`, `stock`, position
+- [x] Product images upload to Cloudinary (public), multiple per product, reorder, delete (removes asset)
+- [x] Store settings & branding: name, description, WhatsApp phone, logo, cover, brand color (contrast-checked), prices note
+- [x] Image validation (type, size) and transformations (responsive sizes, WebP/AVIF via Cloudinary)
+- [x] Tenant isolation tests for every owner endpoint (store A vs store B)
 
 **Done when**
 
