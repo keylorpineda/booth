@@ -1,6 +1,6 @@
 import { m } from 'motion/react';
 
-import { LanguageSwitch } from '../../../components/layout/language-switch';
+import { HeaderControls } from '../../../components/layout/header-controls';
 import { fadeUp } from '../../../lib/motion';
 import { useStoreContext } from '../store-context';
 import { OpenStatusBadge } from './open-status-badge';
@@ -26,7 +26,7 @@ export function StoreHeader() {
           <div className="size-full bg-[radial-gradient(120%_120%_at_0%_0%,var(--brand-soft),transparent_60%),linear-gradient(135deg,var(--brand),var(--brand-strong))]" />
         )}
         <div className="absolute top-4 right-4">
-          <LanguageSwitch />
+          <HeaderControls />
         </div>
       </div>
 
