@@ -13,6 +13,16 @@ export const ERROR_CODES = [
   'RATE_LIMITED',
   'SERVICE_UNAVAILABLE',
   'INTERNAL_ERROR',
+  // Auth
+  'EMAIL_TAKEN',
+  'INVALID_CREDENTIALS',
+  'INVALID_REFRESH_TOKEN',
+  'REFRESH_TOKEN_REUSED',
+  'DEMO_READ_ONLY',
+  // Stores
+  'ONBOARDING_REQUIRED',
+  'STORE_ALREADY_EXISTS',
+  'SLUG_TAKEN',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];
