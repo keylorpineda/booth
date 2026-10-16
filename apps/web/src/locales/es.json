@@ -10,13 +10,30 @@
   },
   "home": {
     "tagline": "Catálogo y pedidos por WhatsApp",
-    "title": "Tu catálogo en línea, tus pedidos por WhatsApp",
-    "subtitle": "Tus clientes arman el pedido en la web y te lo envían por WhatsApp. Sin comisiones ni mensualidades.",
+    "title": "Tu catálogo en línea, tus pedidos <accent>por WhatsApp</accent>",
+    "subtitle": "Tus clientes arman el pedido en tu catálogo y te llega completo y ordenado a WhatsApp, con el total calculado y el pago listo para confirmar.",
     "demoBakery": "Ver panadería demo",
-    "demoCafe": "Ver café demo",
-    "step1": "El cliente elige productos en tu catálogo",
-    "step2": "Envía el pedido completo por WhatsApp",
-    "step3": "Paga por transferencia o en efectivo y sigue su pedido"
+    "step1": "Tus clientes eligen productos en tu catálogo, desde el celular.",
+    "step2": "El pedido completo, con total y código, directo a tu chat.",
+    "step3": "Transferencia o efectivo, con comprobante y seguimiento del pedido.",
+    "badge": "Sin comisiones ni mensualidades",
+    "ctaCreate": "Crear mi tienda gratis",
+    "noFees": "Listo en 2 minutos · Sin tarjeta",
+    "howTitle": "Así de simple",
+    "step1Title": "Arman su pedido",
+    "step2Title": "Te llega a WhatsApp",
+    "step3Title": "Cobras y entregas",
+    "footer": "Hecho para pequeños negocios de Latinoamérica y el mundo.",
+    "preview": {
+      "store": "Panadería La Esquina",
+      "online": "en línea",
+      "order": "Pedido",
+      "item1": "Pan de masa madre",
+      "item2": "Queque de zanahoria",
+      "item3": "Croissant",
+      "total": "Total",
+      "reply": "¡Recibido! Listo a las 11:00"
+    }
   },
   "storefront": {
     "openNow": "Abierto ahora",
@@ -178,7 +195,11 @@
     "registerSubtitle": "Gratis. Recibe pedidos ordenados por WhatsApp.",
     "noAccount": "¿No tienes cuenta? <link>Crea una</link>",
     "haveAccount": "¿Ya tienes cuenta? <link>Inicia sesión</link>",
-    "restoring": "Recuperando tu sesión…"
+    "restoring": "Recuperando tu sesión…",
+    "panelTitle": "Vende por WhatsApp sin perder pedidos en el chat.",
+    "perk1": "Catálogo con tu marca y tus colores",
+    "perk2": "Pedidos con total calculado y stock reservado",
+    "perk3": "Pagos por transferencia con comprobante"
   },
   "onboarding": {
     "heading": "Tu tienda",
@@ -205,5 +226,11 @@
   "dashboard": {
     "welcome": "Tu tienda está lista. Muy pronto podrás gestionar aquí pedidos, catálogo y ajustes.",
     "viewStore": "Ver mi tienda"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Según el sistema"
   }
 }
