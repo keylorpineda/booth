@@ -1,29 +1,31 @@
-import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router';
 
-import { buttonVariants } from '../components/ui/button';
-import { AuthLayout } from '../features/auth/components/auth-layout';
-import { SignOutButton } from '../features/auth/components/sign-out-button';
+import { ErrorState } from '../components/feedback/error-state';
 import { useSessionStore } from '../features/auth/session-store';
+import { SetupChecklistCard } from '../features/dashboard/components/setup-checklist-card';
+import { ShareStoreCard } from '../features/dashboard/components/share-store-card';
+import { useSetupChecklist } from '../features/dashboard/use-setup-checklist';
 
-/** Placeholder home of the dashboard; the layout, orders, catalog and settings come next. */
+/** Dashboard home: what is left to set up and the link to share. */
 export function DashboardPage() {
   const { t } = useTranslation();
-  const store = useSessionStore((state) => state.session?.store);
-  if (!store) return null;
+  const session = useSessionStore((state) => state.session);
+  const { steps, error } = useSetupChecklist();
+  if (!session?.store) return null;
+
+  const firstName = session.user.name.split(/\s+/)[0] ?? '';
 
   return (
-    <AuthLayout title={store.name} subtitle={t('dashboard.welcome')} footer={<SignOutButton />}>
-      <title>{`${store.name} · Booth`}</title>
-      <Link
-        to={`/s/${store.slug}`}
-        target="_blank"
-        className={buttonVariants({ variant: 'outline', block: true })}
-      >
-        {t('dashboard.viewStore')}
-        <ExternalLink className="size-4" />
-      </Link>
-    </AuthLayout>
+    <div>
+      <title>{`${t('dashboard.nav.home')} · ${session.store.name}`}</title>
+      <h1 className="text-2xl font-extrabold sm:text-3xl">
+        {t('dashboard.greeting', { name: firstName })}
+      </h1>
+      <p className="mt-1 text-ink-muted">{t('dashboard.welcome')}</p>
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-start">
+        {error ? <ErrorState error={error} /> : <SetupChecklistCard steps={steps} />}
+        <ShareStoreCard slug={session.store.slug} name={session.store.name} />
+      </div>
+    </div>
   );
 }
