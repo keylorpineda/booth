@@ -155,7 +155,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [ ] Delivery zones CRUD, pickup toggle and address
 - [ ] Business hours editor (multiple intervals per day), accept-orders-while-closed setting
 - [ ] Categories & products management UI (drag to reorder, image upload, stock and `trackStock`)
-- [ ] Orders: list with filters (status, payment, date, search), detail with timeline, status changes, mark paid, view receipt (signed URL), reactivate expired order
+- [x] Orders: list with tabs, payment filter and search (auto-refresh), detail with timeline, status changes, mark paid, view receipt (signed URL), reactivate expired order
 - [x] Demo mode banner and disabled write actions for `isDemo` (`useCanWrite()`)
 
 **Done when**

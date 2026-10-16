@@ -336,3 +336,24 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - A page instead of a sheet: it can be shared and reloaded, and it works the same on phones and desktop.
 - Notes written by the API itself (for example "Reactivated") are translated; notes typed by people are shown as written.
+
+---
+
+## Owner order actions (#46) — 2026-10-16
+
+**Built**
+
+- Actions card on the order detail: next statuses from `ORDER_TRANSITIONS` (the first one highlighted), cancel behind a confirmation dialog, mark paid / unpaid, view receipt and reactivate expired orders.
+- Reactivation names the products that sold out when it fails with `OUT_OF_STOCK`.
+- Every action updates the detail from the API response and refreshes the lists; the demo account sees them disabled.
+- Toasts follow the light/dark choice.
+
+**Key decisions**
+
+- The receipt tab opens before the signed URL arrives, then navigates: opening it after an `await` would be blocked as a popup.
+- Signed receipt URLs are never cached: they expire in minutes.
+- On phones the actions card comes first, so the usual flow (view receipt, mark paid, confirm) takes three taps from the top of the page.
+
+**Not verified live**
+
+- "View receipt" needs an uploaded receipt, which needs Cloudinary; it is not configured locally.
