@@ -108,26 +108,33 @@ Uploads answer `503 MEDIA_NOT_CONFIGURED` when the API runs without Cloudinary c
 
 ## Owner — delivery, hours, payments
 
-| Method       | Path                            | Description                           |
-| ------------ | ------------------------------- | ------------------------------------- |
-| GET/POST     | `/api/me/delivery-zones`        | List / create                         |
-| PATCH/DELETE | `/api/me/delivery-zones/:id`    | Update / delete                       |
-| GET          | `/api/me/business-hours`        | Weekly intervals                      |
-| PUT          | `/api/me/business-hours`        | Replace the whole week                |
-| GET/POST     | `/api/me/payment-methods`       | List / create (from preset or custom) |
-| PATCH/DELETE | `/api/me/payment-methods/:id`   | Update / delete                       |
-| PUT          | `/api/me/payment-methods/order` | Reorder                               |
+| Method       | Path                            | Description                                                                                                          |
+| ------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| GET/POST     | `/api/me/delivery-zones`        | List / create `{ name, feeMinor, isActive? }`; `409 ZONE_NAME_TAKEN` for duplicates                                  |
+| PATCH/DELETE | `/api/me/delivery-zones/:id`    | Update / delete (orders keep the zone name and fee they were placed with)                                            |
+| PUT          | `/api/me/delivery-zones/order`  | Reorder `{ ids: [] }`                                                                                                |
+| GET          | `/api/me/business-hours`        | Weekly intervals `[{ weekday, opensAtMin, closesAtMin }]` in the store time zone; empty = always open                |
+| PUT          | `/api/me/business-hours`        | Replace the whole week `{ hours: [] }`; intervals of the same day may not overlap                                    |
+| GET/POST     | `/api/me/payment-methods`       | Transfer methods: list / create `{ label, preset?, accountHolder?, accountIdentifier?, instructions?, paymentUrl? }` |
+| PATCH/DELETE | `/api/me/payment-methods/:id`   | Update / delete (orders keep the label they were placed with)                                                        |
+| PUT          | `/api/me/payment-methods/order` | Reorder                                                                                                              |
+
+Cash is not a method row: it is the store's `cashEnabled` setting. Presets (SINPE Móvil, SPEI, Nequi, Daviplata, Yape, Plin, Pix, Zelle, Venmo, Cash App, Bizum, MB WAY, PayPal) live in `@booth/shared` (`PAYMENT_PRESETS`, `presetsForCountry`); they only pre-fill fields. `paymentUrl` must be `https://`.
+
+`PATCH /api/me/store` also accepts `acceptOrdersWhenClosed`, `orderExpirationMinutes` (5–1440), `pickupEnabled`, `pickupAddress`, `deliveryEnabled`, `cashEnabled`, `country`, `currency`, `timezone`, `locale` and `privacyNotice` (`null` = country default). Rules: pickup and delivery cannot both be off; the currency only changes while the store has no products or orders (`409 CURRENCY_LOCKED`, see `canChangeCurrency`); a new notice text increments `privacyNoticeVersion`.
 
 ## Owner — orders
 
-| Method | Path                             | Description                                                                                     |
-| ------ | -------------------------------- | ----------------------------------------------------------------------------------------------- |
-| GET    | `/api/me/orders`                 | Filters: `status`, `paymentStatus`, `from`, `to`, `q` (code/name/phone). Runs lazy expiry first |
-| GET    | `/api/me/orders/:id`             | Detail with items, events, receipt metadata                                                     |
-| PATCH  | `/api/me/orders/:id/status`      | `{ status, note? }`; validates allowed transitions; cancel releases stock                       |
-| PATCH  | `/api/me/orders/:id/payment`     | `{ paymentStatus: 'PAID' }`                                                                     |
-| POST   | `/api/me/orders/:id/reactivate`  | EXPIRED → PENDING, re-reserves stock or `409 OUT_OF_STOCK`                                      |
-| GET    | `/api/me/orders/:id/receipt-url` | Short-lived signed URL for the receipt                                                          |
+| Method | Path                             | Description                                                                                                                                            |
+| ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/api/me/orders`                 | Newest first. Filters: `status` (comma-separated), `paymentStatus`, `from`, `to`, `q` (code, name or phone), `cursor`, `limit`. Runs lazy expiry first |
+| GET    | `/api/me/orders/:id`             | Customer data, snapshot lines, totals, timeline (with actor and note), receipt metadata, tracking token                                                |
+| PATCH  | `/api/me/orders/:id/status`      | `{ status, note? }` following the flow below; `409 INVALID_STATUS_TRANSITION` otherwise. Cancelling releases stock                                     |
+| PATCH  | `/api/me/orders/:id/payment`     | `{ paymentStatus: 'PAID' \| 'UNPAID' }`; PAID stops the expiry. Not allowed on cancelled or expired orders                                             |
+| POST   | `/api/me/orders/:id/reactivate`  | EXPIRED → PENDING with a new window; re-reserves tracked stock or `409 OUT_OF_STOCK` with `details.productIds`                                         |
+| GET    | `/api/me/orders/:id/receipt-url` | `{ url, expiresAt }`: signed link to the private receipt, valid for `RECEIPT_URL_TTL_SECONDS` (default 300)                                            |
+
+Status flow (`ORDER_TRANSITIONS` in `@booth/shared`): PENDING → CONFIRMED or CANCELLED; CONFIRMED → PREPARING, READY or CANCELLED; PREPARING → READY or CANCELLED; READY → COMPLETED or CANCELLED. COMPLETED, CANCELLED and EXPIRED are final (an expired order only returns through reactivation). Before any status change, stale orders of the store expire, so an order whose window passed cannot be confirmed.
 
 ## Public — storefront
 
