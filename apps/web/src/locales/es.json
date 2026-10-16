@@ -127,7 +127,10 @@
     "chooseZone": "Elige una zona de entrega",
     "address": "Escribe la dirección de entrega",
     "choosePayment": "Elige cómo pagar",
-    "consent": "Debes aceptar el aviso de privacidad"
+    "consent": "Debes aceptar el aviso de privacidad",
+    "email": "Escribe un correo válido",
+    "tooShort": "Es demasiado corto",
+    "passwordLength": "Usa al menos 8 caracteres"
   },
   "feedback": {
     "oops": "¡Uy!",
@@ -152,6 +155,55 @@
     "FILE_TOO_LARGE": "El archivo pesa más de 5 MB.",
     "UNSUPPORTED_FILE_TYPE": "Usa una foto (JPG, PNG, WebP, HEIC) o un PDF.",
     "MEDIA_NOT_CONFIGURED": "La subida de archivos no está disponible en este momento.",
-    "INTERNAL_ERROR": "Ocurrió un error en el servidor. Intenta de nuevo."
+    "INTERNAL_ERROR": "Ocurrió un error en el servidor. Intenta de nuevo.",
+    "EMAIL_TAKEN": "Ya existe una cuenta con ese correo.",
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+    "SLUG_TAKEN": "Esa dirección ya está en uso.",
+    "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda."
+  },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "name": "Tu nombre",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "passwordHint_one": "Al menos {{count}} carácter",
+    "passwordHint_other": "Al menos {{count}} caracteres",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "createAccount": "Crear cuenta",
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Entra para gestionar tus pedidos y tu catálogo.",
+    "registerTitle": "Crea tu tienda en minutos",
+    "registerSubtitle": "Gratis. Recibe pedidos ordenados por WhatsApp.",
+    "noAccount": "¿No tienes cuenta? <link>Crea una</link>",
+    "haveAccount": "¿Ya tienes cuenta? <link>Inicia sesión</link>",
+    "restoring": "Recuperando tu sesión…"
+  },
+  "onboarding": {
+    "heading": "Tu tienda",
+    "title": "¡Hola, {{name}}! Configura tu tienda",
+    "subtitle": "Puedes cambiar casi todo después en Ajustes.",
+    "name": "Nombre de la tienda",
+    "namePlaceholder": "Panadería La Esquina",
+    "slugLabel": "Dirección de tu tienda",
+    "slugHint": "Tus clientes la abrirán en {{url}}",
+    "slugInvalid": "Usa minúsculas, números y guiones simples",
+    "slugReserved": "Ese nombre está reservado",
+    "slug": {
+      "checking": "Verificando…",
+      "available": "¡Disponible!",
+      "taken": "Ya está en uso, prueba otra",
+      "unavailable": "No se puede usar esa dirección"
+    },
+    "country": "País",
+    "countryHint": "Define la moneda, el horario y el idioma de la tienda.",
+    "whatsapp": "WhatsApp de la tienda",
+    "whatsappHint": "Aquí llegan los pedidos. Código del país: {{code}}",
+    "submit": "Crear mi tienda"
+  },
+  "dashboard": {
+    "welcome": "Tu tienda está lista. Muy pronto podrás gestionar aquí pedidos, catálogo y ajustes.",
+    "viewStore": "Ver mi tienda"
   }
 }

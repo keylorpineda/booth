@@ -127,7 +127,10 @@
     "chooseZone": "Choose a delivery area",
     "address": "Enter the delivery address",
     "choosePayment": "Choose how to pay",
-    "consent": "You need to accept the privacy notice"
+    "consent": "You need to accept the privacy notice",
+    "email": "Enter a valid email",
+    "tooShort": "Too short",
+    "passwordLength": "Use at least 8 characters"
   },
   "feedback": {
     "oops": "Oops",
@@ -152,6 +155,55 @@
     "FILE_TOO_LARGE": "The file is larger than 5 MB.",
     "UNSUPPORTED_FILE_TYPE": "Use a photo (JPG, PNG, WebP, HEIC) or a PDF.",
     "MEDIA_NOT_CONFIGURED": "File uploads aren't available right now.",
-    "INTERNAL_ERROR": "Something went wrong on our side. Please try again."
+    "INTERNAL_ERROR": "Something went wrong on our side. Please try again.",
+    "EMAIL_TAKEN": "An account with that email already exists.",
+    "INVALID_CREDENTIALS": "Wrong email or password.",
+    "SLUG_TAKEN": "That address is already taken.",
+    "STORE_ALREADY_EXISTS": "Your account already has a store."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Your name",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "passwordHint_one": "At least {{count}} character",
+    "passwordHint_other": "At least {{count}} characters",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "createAccount": "Create account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to manage your orders and catalog.",
+    "registerTitle": "Create your store in minutes",
+    "registerSubtitle": "Free. Get tidy orders on WhatsApp.",
+    "noAccount": "No account yet? <link>Create one</link>",
+    "haveAccount": "Already have an account? <link>Sign in</link>",
+    "restoring": "Restoring your session…"
+  },
+  "onboarding": {
+    "heading": "Your store",
+    "title": "Hi {{name}}! Set up your store",
+    "subtitle": "You can change almost everything later in Settings.",
+    "name": "Store name",
+    "namePlaceholder": "Corner Bakery",
+    "slugLabel": "Store address",
+    "slugHint": "Customers will open it at {{url}}",
+    "slugInvalid": "Use lowercase letters, numbers and single hyphens",
+    "slugReserved": "That name is reserved",
+    "slug": {
+      "checking": "Checking…",
+      "available": "Available!",
+      "taken": "Already taken, try another",
+      "unavailable": "That address cannot be used"
+    },
+    "country": "Country",
+    "countryHint": "Sets the store currency, time zone and language.",
+    "whatsapp": "Store WhatsApp",
+    "whatsappHint": "Orders arrive here. Country code: {{code}}",
+    "submit": "Create my store"
+  },
+  "dashboard": {
+    "welcome": "Your store is ready. Orders, catalog and settings will live here very soon.",
+    "viewStore": "View my store"
   }
 }
