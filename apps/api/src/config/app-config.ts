@@ -9,6 +9,11 @@ export interface AppConfig {
   corsOrigins: string[];
   webPublicUrl: string;
   databaseUrl: string;
+  auth: {
+    accessSecret: string;
+    accessTtlSeconds: number;
+    refreshTtlDays: number;
+  };
   rateLimit: {
     ttlMs: number;
     default: number;
@@ -47,6 +52,11 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
     corsOrigins: env.CORS_ORIGINS,
     webPublicUrl: env.WEB_PUBLIC_URL,
     databaseUrl: env.DATABASE_URL,
+    auth: {
+      accessSecret: env.JWT_ACCESS_SECRET,
+      accessTtlSeconds: env.JWT_ACCESS_TTL_MINUTES * 60,
+      refreshTtlDays: env.REFRESH_TOKEN_TTL_DAYS,
+    },
     rateLimit: {
       ttlMs: env.RATE_LIMIT_TTL_SECONDS * 1000,
       default: env.RATE_LIMIT_DEFAULT,
