@@ -321,3 +321,18 @@ One entry per phase: what was built, key decisions, problems solved.
 **Problems solved**
 
 - CI on the previous PR exposed a search bug: the digits of a code (`SW12CJ` -> `12`) matched customer phones. Phones are now searched only for phone-like queries (#42).
+
+---
+
+## Owner order detail (#45) — 2026-10-16
+
+**Built**
+
+- Order detail page (`/dashboard/orders/:id`): code, status and date; snapshot lines with subtotal, delivery fee and total; customer with note, WhatsApp (pre-filled with the order code) and call buttons; delivery zone and address or pickup; payment method and status; timeline with who made each change.
+- Order rows link to the detail; "back" returns to the list with the same filters.
+- A clear not-found state for unknown ids and other stores' orders (the API answers 404 for both).
+
+**Key decisions**
+
+- A page instead of a sheet: it can be shared and reloaded, and it works the same on phones and desktop.
+- Notes written by the API itself (for example "Reactivated") are translated; notes typed by people are shown as written.
