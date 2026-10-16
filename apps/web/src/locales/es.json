@@ -4,7 +4,8 @@
     "retry": "Reintentar",
     "copied": "Copiado",
     "copyNamed": "Copiar {{name}}",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "save": "Guardar"
   },
   "language": {
     "label": "Idioma"
@@ -178,7 +179,8 @@
     "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
     "SLUG_TAKEN": "Esa dirección ya está en uso.",
     "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda.",
-    "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar."
+    "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar.",
+    "CATEGORY_NAME_TAKEN": "Ya tienes una categoría con ese nombre."
   },
   "auth": {
     "email": "Correo electrónico",
@@ -376,6 +378,34 @@
         "COMPLETED": "Pedido entregado. No hay más pasos.",
         "CANCELLED": "Pedido cancelado. El stock ya volvió al catálogo."
       }
+    }
+  },
+  "catalog": {
+    "tabs": {
+      "products": "Productos",
+      "categories": "Categorías"
+    },
+    "moveUp": "Subir {{name}}",
+    "moveDown": "Bajar {{name}}",
+    "categories": {
+      "hint": "Las categorías son las pestañas de tu tienda, en este orden. Oculta una para guardarla sin borrarla.",
+      "newLabel": "Nueva categoría",
+      "newPlaceholder": "Panes, Bebidas, Postres…",
+      "add": "Agregar",
+      "created": "Categoría «{{name}}» creada",
+      "empty": "Aún no tienes categorías. Los productos sin categoría se muestran al final de la tienda.",
+      "productCount_one": "{{count}} producto",
+      "productCount_other": "{{count}} productos",
+      "hidden": "Oculta",
+      "visible": "Mostrar {{name}} en la tienda",
+      "rename": "Nuevo nombre",
+      "renameNamed": "Renombrar {{name}}",
+      "delete": "Eliminar {{name}}",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText_one": "Su producto queda sin categoría; no se borra.",
+      "deleteText_other": "Sus {{count}} productos quedan sin categoría; no se borran.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Categoría «{{name}}» eliminada"
     }
   }
 }
