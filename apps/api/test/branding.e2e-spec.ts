@@ -39,8 +39,8 @@ describe('store settings and branding', () => {
 
   it('starts with the default brand color and a readable foreground', () => {
     expect(owner.store).toMatchObject({
-      brandColor: '#E85D3A',
-      brandForeground: '#000000',
+      brandColor: '#4F46E5',
+      brandForeground: '#FFFFFF',
       logoUrl: null,
       coverUrl: null,
     });
