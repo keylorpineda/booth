@@ -66,6 +66,7 @@ _Published after the first deployment (Phase 7)._ The free API instance sleeps w
 - [Data model](docs/DATA_MODEL.md)
 - [API](docs/API.md)
 - [Dev log](docs/DEVLOG.md)
+- [Credentials setup (Spanish)](docs/CREDENTIALS_SETUP.es.md)
 - [Contributing](.github/CONTRIBUTING.md)
 
 ## License
