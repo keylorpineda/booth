@@ -8,9 +8,20 @@ import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { StoresModule } from './stores/stores.module';
+import { TenancyModule } from './tenancy/tenancy.module';
 
 @Module({
-  imports: [ConfigModule, LoggingModule, RateLimitModule, PrismaModule, AuthModule, HealthModule],
+  imports: [
+    ConfigModule,
+    LoggingModule,
+    RateLimitModule,
+    PrismaModule,
+    AuthModule,
+    TenancyModule,
+    HealthModule,
+    StoresModule,
+  ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
 export class AppModule {}
