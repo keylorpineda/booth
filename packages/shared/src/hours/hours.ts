@@ -1,15 +1,10 @@
-import { z } from 'zod';
-
 /** One opening interval in the store's time zone. Overnight shifts are two intervals. */
-export const businessHourSchema = z
-  .object({
-    weekday: z.number().int().min(0).max(6), // 0 = Sunday
-    opensAtMin: z.number().int().min(0).max(1439),
-    closesAtMin: z.number().int().min(1).max(1440),
-  })
-  .refine((h) => h.closesAtMin > h.opensAtMin, 'Closing time must be after opening time');
-
-export type BusinessHour = z.infer<typeof businessHourSchema>;
+export interface BusinessHour {
+  /** 0 = Sunday */
+  weekday: number;
+  opensAtMin: number;
+  closesAtMin: number;
+}
 
 const WEEKDAYS: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
 const formatters = new Map<string, Intl.DateTimeFormat>();

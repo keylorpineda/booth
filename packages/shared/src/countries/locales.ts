@@ -1,11 +1,7 @@
-import { z } from 'zod';
-
 /** UI languages with translations. `pt-BR` arrives in v1.1. */
 export const APP_LOCALES = ['es', 'en'] as const;
 export type AppLocale = (typeof APP_LOCALES)[number];
 export const DEFAULT_LOCALE: AppLocale = 'es';
-
-export const appLocaleSchema = z.enum(APP_LOCALES);
 
 /**
  * Picks the best available UI language: exact match, then same base language, then the default.

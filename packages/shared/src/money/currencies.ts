@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 /**
  * ISO 4217 minor-unit exponents that differ from the default of 2.
  * Source: ISO 4217 list one. CLDR (used by Intl) disagrees for a few codes, so ISO wins here.
@@ -54,10 +52,3 @@ export function isSupportedCurrency(code: string): boolean {
 export function getCurrencyExponent(currency: string): number {
   return NON_DEFAULT_EXPONENTS[currency] ?? DEFAULT_EXPONENT;
 }
-
-export const currencyCodeSchema = z
-  .string()
-  .regex(/^[A-Z]{3}$/, 'Must be an ISO 4217 code')
-  .refine(isSupportedCurrency, 'Unsupported currency');
-
-export type CurrencyCode = z.infer<typeof currencyCodeSchema>;

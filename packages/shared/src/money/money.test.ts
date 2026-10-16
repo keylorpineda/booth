@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { currencyCodeSchema, getCurrencyExponent } from './currencies';
+import { getCurrencyExponent } from './currencies';
 import { formatMoney, fromMinor, toMinor } from './money';
+import { currencyCodeSchema } from './schemas';
 
 describe('getCurrencyExponent', () => {
   it.each([

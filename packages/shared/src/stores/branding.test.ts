@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { contrastRatio, hexColorSchema, readableForeground, relativeLuminance } from './branding';
+import { contrastRatio, readableForeground, relativeLuminance } from './branding';
+import { hexColorSchema } from './color';
 
 describe('hexColorSchema', () => {
   it('accepts and uppercases 6-digit hex colors', () => {

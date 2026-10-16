@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { appLocaleSchema, countryCodeSchema, timeZoneSchema } from '../countries';
 import { currencyCodeSchema } from '../money';
 import { e164PhoneSchema } from '../phone';
-import { hexColorSchema } from './branding';
+import { hexColorSchema } from './color';
 import { slugSchema } from './slug';
 
 /**

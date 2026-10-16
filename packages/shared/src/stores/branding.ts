@@ -1,12 +1,4 @@
-import { z } from 'zod';
-
 export const DEFAULT_BRAND_COLOR = '#E85D3A';
-
-export const hexColorSchema = z
-  .string()
-  .trim()
-  .regex(/^#[0-9a-fA-F]{6}$/, 'Use a 6-digit hex color like #E85D3A')
-  .transform((value) => value.toUpperCase());
 
 const LIGHT_TEXT = '#FFFFFF';
 const DARK_TEXT = '#000000';
