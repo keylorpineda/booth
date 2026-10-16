@@ -30,6 +30,7 @@ export function DashboardShell() {
                 href={`/s/${store.slug}`}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={t('dashboard.viewStore')}
                 className={buttonVariants({ variant: 'outline', size: 'sm' })}
               >
                 <ExternalLink className="size-4" />
