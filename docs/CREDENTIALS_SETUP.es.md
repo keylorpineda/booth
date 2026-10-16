@@ -36,6 +36,8 @@ Se usa para las imágenes de productos, logo y portada (públicas) y para los co
 
 No hace falta crear _upload presets_: la API sube las imágenes firmadas desde el servidor.
 
+Los comprobantes de pago se guardan como archivos **privados** (`authenticated`) y solo se ven con enlaces firmados que vencen. Si un comprobante en PDF no se puede abrir desde el panel, en Cloudinary vaya a **Settings → Security** y active **Allow delivery of PDF and ZIP files**.
+
 ## 2. JWT (ya está listo en local)
 
 `apps/api/.env` ya tiene un `JWT_ACCESS_SECRET` aleatorio. Para producción (Fase 7) genere **otro distinto**:

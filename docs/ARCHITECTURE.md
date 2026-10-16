@@ -74,7 +74,7 @@ booth/
 
 ### Checkout flow
 
-1. Client sends `{ items: [{ productId, quantity }], fulfillment, zoneId?, address?, paymentMethodId, customer, consent }`. No prices.
+1. Client sends `{ items: [{ productId, quantity }], fulfillment, deliveryZoneId?, deliveryAddress?, payment, customer, privacyConsent }`. No prices.
 2. API runs lazy expiry for the store, checks the store is open (or accepts orders while closed), loads products, computes subtotal, delivery fee and total.
 3. In **one transaction**: reserve stock, insert order + item snapshots + first status event, set `expiresAt`.
 4. Response: order code, tracking token, totals and a `wa.me` URL with the localized message.
@@ -90,7 +90,7 @@ SET stock = stock - $qty
 WHERE id = $id AND "storeId" = $storeId AND "trackStock" = true AND stock >= $qty
 ```
 
-If any update affects 0 rows, the transaction rolls back and the API returns `409 OUT_OF_STOCK` with the product ids. Products with `trackStock = false` are never reserved. Each order item records `stockReserved` so releases are exact.
+If any update affects 0 rows, the transaction rolls back and the API returns `409 OUT_OF_STOCK` with the product ids. Products with `trackStock = false` are never reserved. Each order item records `stockReserved`; a release adds the reserved quantities back and clears the flags in the same transaction, so stock is never released twice. Tested: two concurrent orders for the last unit (exactly one succeeds) and 12 parallel orders against 5 units (exactly 5 succeed).
 
 ### Lifecycle
 
