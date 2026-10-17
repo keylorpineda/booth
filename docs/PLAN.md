@@ -151,7 +151,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [x] Dashboard layout: sidebar from `md`, bottom navigation on phones, header with the store link and account menu, light/dark theme (command palette later)
 - [ ] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)
 - [ ] Localization: country, currency, timezone (from `Intl.supportedValuesOf`), language
-- [ ] Payment methods: cash toggle, transfer methods from presets or custom, optional payment link, reorder
+- [x] Payment methods: cash toggle, transfer methods from presets or custom, optional payment link, reorder
 - [x] Delivery zones CRUD, pickup toggle and address
 - [ ] Business hours editor (multiple intervals per day), accept-orders-while-closed setting
 - [x] Categories & products management UI (drag to reorder, image upload, stock and `trackStock`)
