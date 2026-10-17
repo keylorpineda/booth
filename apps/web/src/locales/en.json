@@ -5,7 +5,8 @@
     "copied": "Copied",
     "copyNamed": "Copy {{name}}",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "clearSearch": "Clear search"
   },
   "language": {
     "label": "Language"
@@ -313,7 +314,6 @@
     "minutesLeft_other": "Expires in {{count}} min",
     "search": "Search orders",
     "searchPlaceholder": "Code, name or phone",
-    "clearSearch": "Clear search",
     "paymentFilter": "Filter by payment",
     "anyPayment": "Any payment",
     "loadMore": "Load more",
@@ -406,6 +406,25 @@
       "deleteText_other": "Its {{count}} products become uncategorized; they are not deleted.",
       "deleteConfirm": "Yes, delete",
       "deleted": "Category \"{{name}}\" deleted"
+    },
+    "products": {
+      "search": "Search products",
+      "searchPlaceholder": "Product name",
+      "categoryFilter": "Filter by category",
+      "allCategories": "All categories",
+      "uncategorized": "Uncategorized",
+      "stock_one": "{{count}} in stock",
+      "stock_other": "{{count}} in stock",
+      "badges": {
+        "inactive": "Hidden",
+        "soldOut": "Sold out",
+        "lowStock": "Low stock"
+      },
+      "reorderHint": "To change the order, clear the search and the category filter.",
+      "empty": "Your catalog is empty",
+      "emptyHint": "Add your first product with a price and a photo to start selling.",
+      "noMatches": "No products match",
+      "noMatchesHint": "Try another name or pick another category."
     }
   }
 }

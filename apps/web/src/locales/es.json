@@ -5,7 +5,8 @@
     "copied": "Copiado",
     "copyNamed": "Copiar {{name}}",
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "clearSearch": "Borrar búsqueda"
   },
   "language": {
     "label": "Idioma"
@@ -313,7 +314,6 @@
     "minutesLeft_other": "Vence en {{count}} min",
     "search": "Buscar pedidos",
     "searchPlaceholder": "Código, nombre o teléfono",
-    "clearSearch": "Borrar búsqueda",
     "paymentFilter": "Filtrar por pago",
     "anyPayment": "Cualquier pago",
     "loadMore": "Cargar más",
@@ -406,6 +406,25 @@
       "deleteText_other": "Sus {{count}} productos quedan sin categoría; no se borran.",
       "deleteConfirm": "Sí, eliminar",
       "deleted": "Categoría «{{name}}» eliminada"
+    },
+    "products": {
+      "search": "Buscar productos",
+      "searchPlaceholder": "Nombre del producto",
+      "categoryFilter": "Filtrar por categoría",
+      "allCategories": "Todas las categorías",
+      "uncategorized": "Sin categoría",
+      "stock_one": "{{count}} disponible",
+      "stock_other": "{{count}} disponibles",
+      "badges": {
+        "inactive": "Oculto",
+        "soldOut": "Agotado",
+        "lowStock": "Quedan pocos"
+      },
+      "reorderHint": "Para cambiar el orden, quita la búsqueda y el filtro de categoría.",
+      "empty": "Tu catálogo está vacío",
+      "emptyHint": "Agrega tu primer producto con precio y foto para empezar a vender.",
+      "noMatches": "Ningún producto coincide",
+      "noMatchesHint": "Prueba con otro nombre o elige otra categoría."
     }
   }
 }
