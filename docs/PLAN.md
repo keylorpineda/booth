@@ -168,8 +168,8 @@ The original target is Latin America with Costa Rica first. To work in any count
 ## Phase 7 — Testing, security hardening & deployment (MVP done)
 
 - [x] Idempotent seed: demo bakery (CR, CRC, SINPE Móvil) and demo coffee shop (CO, COP, Nequi), products, zones, hours, sample orders, demo owner (`isDemo`)
-- [ ] Security review: headers, CORS, cookie flags, rate limits, upload validation, signed URL TTL, IDOR checks
-- [ ] Coverage report in CI; critical paths covered (tenant isolation, stock, expiration, auth)
+- [x] Security review: headers, CORS, cookie flags, rate limits, upload validation, signed URL TTL, IDOR checks
+- [x] Coverage report in CI; critical paths covered (tenant isolation, stock, expiration, auth)
 - [ ] Check current Render and Neon free-plan limits, then write `docs/DEPLOYMENT.md` (including cold start of close to a minute)
 - [ ] Neon database, Render web service (API), Vercel project (web) with `/api/*` rewrite to Render
 - [ ] CD: Vercel preview per PR and production on `main`; Render deploy hook triggered by GitHub Actions after CI passes on `main`; Prisma migrations run on deploy
