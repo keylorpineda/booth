@@ -601,6 +601,36 @@
         "order": "La hora de cierre debe ser posterior a la de apertura",
         "overlap": "Este turno se cruza con otro del mismo día"
       }
+    },
+    "localization": {
+      "title": "País, moneda e idioma",
+      "subtitle": "Define cómo se muestran precios, fechas, teléfonos y mensajes al cliente.",
+      "country": "País",
+      "countryHint": "Define las sugerencias de métodos de pago, el prefijo telefónico y el aviso de privacidad por defecto.",
+      "currency": "Moneda",
+      "currencyHint": "Se usa en todos los precios de productos y costos de envío.",
+      "currencyLockedHint": "La moneda no se puede cambiar cuando la tienda ya tiene productos o pedidos, para no alterar los precios existentes.",
+      "currencySearch": "Buscar código o nombre de moneda…",
+      "timezone": "Zona horaria",
+      "timezoneHint": "Se usa para calcular si tu tienda está abierta o cerrada en este momento.",
+      "timezoneSearch": "Buscar ciudad o región…",
+      "locale": "Idioma de la tienda",
+      "localeHint": "Idioma por defecto del catálogo público y del resumen por WhatsApp.",
+      "noMatches": "Sin coincidencias",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      }
+    },
+    "privacy": {
+      "title": "Aviso de privacidad",
+      "subtitle": "Se muestra al cliente al finalizar el pedido antes de enviarlo.",
+      "defaultBadge": "Por defecto del país",
+      "customBadge": "Personalizado",
+      "version": "v{{version}}",
+      "notice": "Texto del aviso",
+      "versionHint": "Guardar un cambio crea una nueva versión y la registra en los próximos pedidos.",
+      "resetDefault": "Restablecer al aviso del país"
     }
   }
 }

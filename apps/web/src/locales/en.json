@@ -601,6 +601,36 @@
         "order": "Closing time must be after opening time",
         "overlap": "This shift overlaps with an earlier shift on the same day"
       }
+    },
+    "localization": {
+      "title": "Country, currency and language",
+      "subtitle": "Controls how prices, dates, phone numbers and customer messages are formatted.",
+      "country": "Country",
+      "countryHint": "Sets payment method presets, default phone prefix and the default privacy notice.",
+      "currency": "Currency",
+      "currencyHint": "Used across all product prices and delivery fees.",
+      "currencyLockedHint": "Currency cannot be changed once your store has products or orders, so existing prices stay accurate.",
+      "currencySearch": "Search currency code or name…",
+      "timezone": "Time zone",
+      "timezoneHint": "Used to evaluate whether your store is open or closed right now.",
+      "timezoneSearch": "Search city or region…",
+      "locale": "Store language",
+      "localeHint": "Default language for your public storefront and WhatsApp order summary.",
+      "noMatches": "No matching options",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      }
+    },
+    "privacy": {
+      "title": "Privacy notice",
+      "subtitle": "Shown to customers at checkout before they send their order.",
+      "defaultBadge": "Country default",
+      "customBadge": "Custom notice",
+      "version": "v{{version}}",
+      "notice": "Notice text",
+      "versionHint": "Saving a change starts a new version and records that version number on future orders.",
+      "resetDefault": "Reset to country default"
     }
   }
 }
