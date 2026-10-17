@@ -495,3 +495,17 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - When the combobox opens on focus, the search input clears its query while keeping the selected label as the placeholder, so owners can type immediately to filter 160+ currencies or 400+ time zones without backspacing first.
+
+---
+
+## Idempotent demo seed (#22) — 2026-10-16
+
+**Built**
+
+- `seedDemoData` (`apps/api/src/seed/` + `apps/api/prisma/seed.ts`): idempotent seed script wired to `pnpm --filter api db:seed` and `pnpm db:seed`.
+- Two demo stores with read-only demo owners (`isDemo = true`): **Panadería La Esquina** (`panaderia-demo`, Costa Rica, `CRC`, SINPE Móvil + cash, pickup + 3 delivery zones, Monday–Saturday hours, 15 products in 4 categories) and **Bruma Coffee Roasters** (`cafe-demo`, Colombia, `COP`, Nequi + Daviplata, delivery only, split shifts, 12 products in 4 categories, English locale).
+- Sample orders across every status (`PENDING` unpaid, `PENDING` with `RECEIPT_SUBMITTED`, `CONFIRMED`, `PREPARING`, `READY`, `COMPLETED`, `CANCELLED`, `EXPIRED`) with realistic status timelines and consistent reserved stock.
+
+**Key decisions**
+
+- Every entity is upserted by a stable key (owner email, store slug, `(storeId, name)` for categories, deterministic ids for zones, payment methods, products and orders), and tracked product stock is computed as `initialStock - sum(active/completed order quantities)` so re-running the seed never drifts stock or duplicates rows.

@@ -44,7 +44,7 @@ cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env
 pnpm db:up
 pnpm --filter api prisma:migrate
-pnpm --filter api db:seed   # available from Phase 7
+pnpm --filter api db:seed
 pnpm dev
 ```
 
@@ -53,7 +53,12 @@ pnpm dev
 
 ## Demo credentials
 
-_Published after the seed script exists (Phase 7)._ The demo owner account is read-only.
+Both demo owner accounts are read-only (`isDemo = true`): you can browse orders, products and settings, while write actions are rejected.
+
+| Store                     | Country / Currency | Storefront          | Owner email                | Password    |
+| ------------------------- | ------------------ | ------------------- | -------------------------- | ----------- |
+| **Panadería La Esquina**  | Costa Rica (`CRC`) | `/s/panaderia-demo` | `panaderia@demo.booth.app` | `Demo1234!` |
+| **Bruma Coffee Roasters** | Colombia (`COP`)   | `/s/cafe-demo`      | `cafe@demo.booth.app`      | `Demo1234!` |
 
 ## Live links
 
