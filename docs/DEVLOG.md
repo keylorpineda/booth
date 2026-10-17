@@ -468,3 +468,16 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - Selecting a preset pre-fills the display name and customer instructions while leaving every field editable so owners can tailor the instructions or switch to a custom method at any time.
+
+---
+
+## Business hours editor (#54) — 2026-10-16
+
+**Built**
+
+- `HoursPanel` and `WeekdayRow`: one row per weekday (Monday first) with open/closed switch, split shifts (up to 4 intervals per day), "Copy to Mon–Fri" and "Copy to all" helpers, "Clear all (always open)" button, and an "accept orders while closed" toggle.
+- `validateWeekSchedule` (`hours-form.ts`): validates time ordering and highlights overlapping intervals on the offending shift (`aria-invalid` + per-interval error message).
+
+**Key decisions**
+
+- An empty week displays a prominent notice explaining that the store is treated as always open, matching `isOpenAt([]) === true` in `@booth/shared`.
