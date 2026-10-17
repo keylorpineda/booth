@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 
 import { type Product } from '@booth/shared';
@@ -23,9 +24,17 @@ const product = (overrides: Partial<Product> = {}): Product => ({
 
 const renderRow = (props: Partial<Parameters<typeof ProductRow>[0]> = {}) =>
   render(
-    <ul>
-      <ProductRow product={product()} categoryName="Panes" price="₡2 500" move={null} {...props} />
-    </ul>,
+    <MemoryRouter>
+      <ul>
+        <ProductRow
+          product={product()}
+          categoryName="Panes"
+          price="₡2 500"
+          move={null}
+          {...props}
+        />
+      </ul>
+    </MemoryRouter>,
   );
 
 describe('ProductRow', () => {

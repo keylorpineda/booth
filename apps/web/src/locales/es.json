@@ -150,7 +150,10 @@
     "consent": "Debes aceptar el aviso de privacidad",
     "email": "Escribe un correo válido",
     "tooShort": "Es demasiado corto",
-    "passwordLength": "Usa al menos 8 caracteres"
+    "passwordLength": "Usa al menos 8 caracteres",
+    "amount": "Escribe un monto válido, por ejemplo 2500 o 2500,50",
+    "amountDecimals": "Esta moneda no admite tantos decimales",
+    "stock": "Escribe un número entero de unidades"
   },
   "feedback": {
     "oops": "¡Uy!",
@@ -424,7 +427,32 @@
       "empty": "Tu catálogo está vacío",
       "emptyHint": "Agrega tu primer producto con precio y foto para empezar a vender.",
       "noMatches": "Ningún producto coincide",
-      "noMatchesHint": "Prueba con otro nombre o elige otra categoría."
+      "noMatchesHint": "Prueba con otro nombre o elige otra categoría.",
+      "add": "Agregar producto"
+    },
+    "form": {
+      "newTitle": "Nuevo producto",
+      "editTitle": "Editar producto",
+      "name": "Nombre",
+      "price": "Precio",
+      "priceHint": "Con impuestos incluidos, tal como lo paga el cliente.",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Ingredientes, tamaño, sabor… lo que ayude a decidir.",
+      "category": "Categoría",
+      "isActive": "Visible en la tienda",
+      "isActiveHint": "Apágalo para ocultarlo sin borrarlo.",
+      "trackStock": "Controlar stock",
+      "trackStockHint": "Apágalo si lo haces por encargo: nunca aparecerá agotado.",
+      "stock": "Unidades disponibles",
+      "create": "Crear producto",
+      "save": "Guardar cambios",
+      "created": "«{{name}}» creado. Ahora puedes agregarle fotos.",
+      "saved": "Cambios guardados",
+      "delete": "Eliminar producto",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Se borra con sus fotos. Los pedidos anteriores conservan su nombre y precio.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Producto eliminado"
     }
   }
 }

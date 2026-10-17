@@ -150,7 +150,10 @@
     "consent": "You need to accept the privacy notice",
     "email": "Enter a valid email",
     "tooShort": "Too short",
-    "passwordLength": "Use at least 8 characters"
+    "passwordLength": "Use at least 8 characters",
+    "amount": "Enter a valid amount, for example 2500 or 2500.50",
+    "amountDecimals": "This currency does not allow that many decimals",
+    "stock": "Enter a whole number of units"
   },
   "feedback": {
     "oops": "Oops",
@@ -424,7 +427,32 @@
       "empty": "Your catalog is empty",
       "emptyHint": "Add your first product with a price and a photo to start selling.",
       "noMatches": "No products match",
-      "noMatchesHint": "Try another name or pick another category."
+      "noMatchesHint": "Try another name or pick another category.",
+      "add": "Add product"
+    },
+    "form": {
+      "newTitle": "New product",
+      "editTitle": "Edit product",
+      "name": "Name",
+      "price": "Price",
+      "priceHint": "Taxes included, exactly what the customer pays.",
+      "description": "Description",
+      "descriptionPlaceholder": "Ingredients, size, flavor… whatever helps people decide.",
+      "category": "Category",
+      "isActive": "Visible in the store",
+      "isActiveHint": "Turn it off to hide it without deleting it.",
+      "trackStock": "Track stock",
+      "trackStockHint": "Turn it off for made-to-order items: they never show as sold out.",
+      "stock": "Units available",
+      "create": "Create product",
+      "save": "Save changes",
+      "created": "\"{{name}}\" created. You can add photos now.",
+      "saved": "Changes saved",
+      "delete": "Delete product",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteText": "It is deleted with its photos. Past orders keep its name and price.",
+      "deleteConfirm": "Yes, delete",
+      "deleted": "Product deleted"
     }
   }
 }

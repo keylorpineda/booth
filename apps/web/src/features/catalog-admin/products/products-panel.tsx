@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { AddProductLink } from './add-product-link';
 import { useProducts, useReorderProducts } from './api';
 import { ProductRow } from './product-row';
 import { useProductFilters } from './use-product-filters';
@@ -80,6 +81,7 @@ export function ProductsPanel() {
           description={t(
             filtered ? 'catalog.products.noMatchesHint' : 'catalog.products.emptyHint',
           )}
+          action={filtered ? undefined : <AddProductLink />}
         />
       ) : (
         <ul className="mt-2 divide-y divide-line">
