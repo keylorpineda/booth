@@ -1,8 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { IMAGE_MAX_BYTES } from '@booth/shared';
+
 import { AppException } from '../common/errors/app.exception';
 
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+/** Shared with the dashboard, which checks the size before uploading. */
+export const MAX_IMAGE_BYTES = IMAGE_MAX_BYTES;
 
 export type ImageType = 'jpeg' | 'png' | 'webp' | 'avif';
 
