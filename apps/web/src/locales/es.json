@@ -581,6 +581,26 @@
       "deleteText": "Los pedidos anteriores con este método conservan su nombre.",
       "deleteConfirm": "Sí, eliminar",
       "deleted": "«{{name}}» eliminado"
+    },
+    "hours": {
+      "title": "Horario semanal",
+      "subtitle": "Horas en la zona horaria de tu tienda ({{timezone}}).",
+      "alwaysOpenNotice": "Sin horario configurado: tu tienda aparece siempre abierta.",
+      "clearAll": "Vaciar todo (siempre abierta)",
+      "closedDay": "Cerrado",
+      "toggleDay": "Abierto el {{day}}",
+      "addShift": "Agregar turno",
+      "removeShift": "Quitar turno {{shift}} del {{day}}",
+      "opensAt": "Hora de apertura del turno {{shift}} el {{day}}",
+      "closesAt": "Hora de cierre del turno {{shift}} el {{day}}",
+      "copyWeekdays": "Copiar a lun–vie",
+      "copyAll": "Copiar a todos",
+      "copied": "Horario copiado",
+      "errors": {
+        "format": "Escribe una hora válida (HH:MM)",
+        "order": "La hora de cierre debe ser posterior a la de apertura",
+        "overlap": "Este turno se cruza con otro del mismo día"
+      }
     }
   }
 }
