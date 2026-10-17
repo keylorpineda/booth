@@ -52,4 +52,18 @@ describe('rate limiting', () => {
   it('never limits the health check', async () => {
     for (let i = 0; i < 5; i++) await get('/health', '203.0.113.40').expect(200);
   });
+
+  it('extracts the real client IP behind two proxies (TRUST_PROXY=2) and ignores spoofed prefixes', async () => {
+    await app.close();
+    app = await createTestApp({
+      controllers: [TestController],
+      env: { TRUST_PROXY: '2', RATE_LIMIT_DEFAULT: '2' },
+    });
+
+    // Direct peer = Render (hop 1), last XFF = Vercel (hop 2), second-from-right = real client IP
+    await get('/api/test/ping', '198.51.100.7, 10.0.0.1').expect(200);
+    // Attacker prepends a fake IP to X-Forwarded-For; TRUST_PROXY=2 still resolves 198.51.100.7
+    await get('/api/test/ping', '1.2.3.4, 198.51.100.7, 10.0.0.1').expect(200);
+    await get('/api/test/ping', '9.9.9.9, 198.51.100.7, 10.0.0.1').expect(429);
+  });
 });

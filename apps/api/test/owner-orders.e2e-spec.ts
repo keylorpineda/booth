@@ -253,6 +253,11 @@ describe('owner orders', () => {
     const { url, expiresAt } = receiptUrlSchema.parse(response.body);
     expect(url).toMatch(/^https:\/\/private\.test\/booth\/.+\/receipts\/.+\.pdf\?ttl=300$/);
     expect(new Date(expiresAt).getTime() - Date.now()).toBeLessThanOrEqual(300_000);
+
+    const publicTracking = await request(app.getHttpServer())
+      .get(`/api/public/orders/${order.trackingToken}`)
+      .expect(200);
+    expect(JSON.stringify(publicTracking.body)).not.toMatch(/private\.test|publicId|receipts\//);
   });
 
   it('store B cannot see or act on store A orders', async () => {
