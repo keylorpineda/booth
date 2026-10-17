@@ -2,7 +2,7 @@
 
 Booth is built one phase at a time, in order. Each phase has checkbox tasks and "Done when" criteria. A phase is closed only when every criterion is verified, lint/typecheck/test/build pass, and a DEVLOG entry exists.
 
-- **Release milestones**, one per delivered version: `v0.1.0`–`v0.6.0` (Phases 0–5, closed), `v0.7.0` Owner dashboard (Phase 6) and `v1.0.0` Launch (Phase 7), then `v1.1.0`.
+- **Release milestones**, one per delivered version: `v0.1.0`–`v0.6.0` (Phases 0–5), `v0.7.0` Dashboard foundations, `v0.8.0` Order management, `v0.9.0` Catalog management and `v0.10.0` Store settings (Phase 6), `v1.0.0` Launch (Phase 7), then `v1.1.0`.
 - **v1.1** = items in the v1.1 section → tagged `v1.1.0`.
 - Anything else goes to the Backlog.
 
