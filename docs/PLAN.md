@@ -154,7 +154,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [ ] Payment methods: cash toggle, transfer methods from presets or custom, optional payment link, reorder
 - [ ] Delivery zones CRUD, pickup toggle and address
 - [ ] Business hours editor (multiple intervals per day), accept-orders-while-closed setting
-- [ ] Categories & products management UI (drag to reorder, image upload, stock and `trackStock`)
+- [x] Categories & products management UI (drag to reorder, image upload, stock and `trackStock`)
 - [x] Orders: list with tabs, payment filter and search (auto-refresh), detail with timeline, status changes, mark paid, view receipt (signed URL), reactivate expired order
 - [x] Demo mode banner and disabled write actions for `isDemo` (`useCanWrite()`)
 

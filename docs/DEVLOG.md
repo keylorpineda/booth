@@ -413,3 +413,18 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - `no-irregular-whitespace` flagged literal no-break spaces in a regex; `\s` already matches them in JavaScript.
 - A session loss during testing came from a sign-out in the pane, not from refresh-token reuse: the API log showed the logout and a later refresh without a cookie.
+
+---
+
+## Product images (#50) — 2026-10-16
+
+**Built**
+
+- Shared `IMAGE_MAX_BYTES` (5 MB) and `IMAGE_ACCEPT` between API and web so the file picker checks format, size and the 8-photo limit before uploading, using the same error codes (`UNSUPPORTED_FILE_TYPE`, `FILE_TOO_LARGE`, `TOO_MANY_IMAGES`).
+- `uploadFile()` XHR helper with upload progress (reused by tracking receipts) and `ownerUpload()` with Bearer token and single refresh retry.
+- `ProductImages` and `ImageTile` on the product edit page: multi-file sequential upload with live progress (`current of total · %`), cover badge on the first image, optimistic reorder with left/right arrows and rollback on failure, and delete behind a `ConfirmDialog`.
+
+**Key decisions**
+
+- Multi-file uploads run one request after another rather than in parallel so each finished photo appears in the gallery right away and progress stays predictable on slow mobile connections.
+- Reordering updates the cached product immediately and invalidates the product lists so the new cover shows up everywhere without a reload.
