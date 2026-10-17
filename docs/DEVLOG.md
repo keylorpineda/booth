@@ -442,3 +442,16 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - The live brand color preview scopes `--brand` and `--brand-foreground` to the preview box with `brandProps(validColor, foreground)` so light colors like yellow immediately flip the button label to black without re-theming the dashboard shell.
+
+---
+
+## Ordering options and delivery zones (#52) — 2026-10-16
+
+**Built**
+
+- `OrderingOptionsCard` (`orderingFormSchema`): pickup toggle + address, delivery toggle, cash on delivery/pickup toggle, accept orders while closed toggle, and pending order hold window (`MIN_ORDER_EXPIRATION_MINUTES`–`MAX_ORDER_EXPIRATION_MINUTES`); explains that at least one of pickup or delivery is required.
+- `DeliveryZonesCard` (`zoneFormSchema`): create zones with `MoneyInput` in the store currency, inline edit of name and fee (`ZoneEditor`), show/hide switch, optimistic up/down reorder with rollback, and delete behind a `ConfirmDialog`.
+
+**Key decisions**
+
+- Turning off both pickup and delivery blocks saving in the client with a clear `FormAlert` (mirroring the API's rule on `pickupEnabled`) and clears the alert immediately when either switch is turned back on.
