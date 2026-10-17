@@ -2,12 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
 import { ErrorState } from '../../components/feedback/error-state';
-import { StoreSignIllustration } from '../../components/illustrations/store-sign';
-import { EmptyState } from '../../components/ui/empty-state';
 import { Skeleton } from '../../components/ui/skeleton';
 import { TabPanel, Tabs } from '../../components/ui/tabs';
 import { useOwnerStore } from '../../features/dashboard/api';
 import { HoursPanel } from '../../features/settings/hours/hours-panel';
+import { LocalizationPanel } from '../../features/settings/localization/localization-panel';
 import { OrderingPanel } from '../../features/settings/ordering/ordering-panel';
 import { PaymentMethodsPanel } from '../../features/settings/payment-methods/payment-methods-panel';
 import { ProfilePanel } from '../../features/settings/profile/profile-panel';
@@ -70,11 +69,11 @@ export function SettingsPage() {
           )}
         </TabPanel>
         <TabPanel value="localization">
-          <EmptyState
-            illustration={<StoreSignIllustration label="…" />}
-            title={t('dashboard.soon.title')}
-            description={t('dashboard.soon.text')}
-          />
+          {store.data ? (
+            <LocalizationPanel store={store.data} />
+          ) : (
+            <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
+          )}
         </TabPanel>
       </Tabs>
     </div>
