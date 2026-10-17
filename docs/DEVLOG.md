@@ -520,3 +520,17 @@ One entry per phase: what was built, key decisions, problems solved.
 - Added `apps/web/src/security-headers.test.ts` to verify that every inline `<script>` in `index.html` matches its CSP hash in `vercel.json`.
 - Expanded API security e2e tests (`security.e2e-spec.ts`, `rate-limit.e2e-spec.ts` with `TRUST_PROXY=2` spoofed-header resistance, `tenant-isolation.e2e-spec.ts` store branding isolation, `owner-orders.e2e-spec.ts` receipt privacy on public tracking).
 - Enabled Jest coverage reporting and thresholds (`85%` statements/lines/functions) and `pnpm audit --prod --audit-level=high` + `pnpm test:cov` in `.github/workflows/ci.yml`.
+
+---
+
+## Storefront bundle and vendor chunk optimization (#26) — 2026-10-16
+
+**Built**
+
+- Configured Vite `build.rollupOptions.output.manualChunks` in `apps/web/vite.config.ts` to split vendor dependencies into long-term cacheable chunks: `vendor-react` (`react`, `react-dom`, `scheduler`), `vendor-router` (`react-router`), `vendor-query` (`@tanstack/react-query`), and `vendor-i18n` (`i18next`, `react-i18next`).
+- Reduced initial entry JS chunk (`index-*.js`) from 361.00 kB (118.10 kB gzipped) to 161.60 kB (55.91 kB gzipped) — a 55% reduction in initial entry script size before compression.
+
+**Key decisions**
+
+- Splitting heavy vendor dependencies preserves immutable cache hits across deployments: storefront shoppers only download changed application code rather than re-downloading React, React Router, Query, and i18n runtimes on every release.
+- Kept `libphonenumber-js` (`phone-*.js`), `zod`, and `motion-features` lazily loaded or dynamic so the first paint on `/s/:slug` remains lightweight.
