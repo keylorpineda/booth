@@ -174,14 +174,14 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [x] Neon database, Render web service (API), Vercel project (web) with `/api/*` rewrite to Render
 - [x] CD: Vercel preview per PR and production on `main`; Render deploy hook triggered by GitHub Actions after CI passes on `main`; Prisma migrations run on deploy
 - [x] Scheduled GitHub Actions workflow calling a protected endpoint to expire orders (backup for the sleeping free instance)
-- [ ] release-please for CHANGELOG and version tags
-- [ ] README: screenshots, demo credentials, live links
+- [x] CHANGELOG and version tags (v1.0.0)
+- [x] README: demo credentials, documentation and release badge
 
 **Done when**
 
 - [x] Seed can run twice without duplicates or errors.
-- Production storefront and dashboard work end-to-end through the Vercel rewrite, with the refresh cookie first-party.
-- CI and CD are green; release PR `develop` -> `main` merged and `v1.0.0` tagged. **MVP milestone reached.**
+- [x] Production storefront and dashboard work end-to-end through the Vercel rewrite, with the refresh cookie first-party.
+- [x] CI and CD are green; release PR `develop` -> `main` merged and `v1.0.0` tagged. **MVP milestone reached.**
 
 ---
 

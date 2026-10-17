@@ -551,3 +551,18 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - The scheduled order expiration job checks if `JOB_SECRET` is populated before calling the API, ensuring automated runs skip cleanly without spurious failures when secrets are not yet configured.
 - The Render Deploy Hook in `ci.yml` triggers only on pushes to `main` when `RENDER_DEPLOY_HOOK_URL` is set, preserving decoupled build triggers while automating production releases.
+
+---
+
+## Release v1.0.0 (#25) — 2026-10-17
+
+**Built**
+
+- Created [CHANGELOG.md](file:///c:/Users/Keylo/Documents/Proyectos%20Personales/Booth/CHANGELOG.md) documenting all MVP features and pull requests grouped into Storefront & Shopping Experience, Owner Dashboard & Operations, and Platform & Infrastructure.
+- Added release badge and updated project status in [README.md](file:///c:/Users/Keylo/Documents/Proyectos%20Personales/Booth/README.md).
+- Merged `develop` into `main` via release PR with merge commit and created Git tag `v1.0.0` along with GitHub Release.
+- Cleaned up obsolete remote feature branches on GitHub to synchronize local and remote repository state.
+
+**Key decisions**
+
+- Release PR `develop` -> `main` uses a merge commit to establish an explicit version baseline on `main` while preserving the complete granular commit history from development.

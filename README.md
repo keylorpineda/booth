@@ -1,8 +1,11 @@
 # Booth
 
+[![Release](https://img.shields.io/github/v/release/keylorpineda/booth?color=indigo)](https://github.com/keylorpineda/booth/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Booth is a multi-tenant online catalog for small businesses. Customers browse a store, build an order on the web and send it to the store through WhatsApp. The store confirms the order, receives payment by bank or mobile transfer (with an uploaded receipt) or in cash, and updates its status from a dashboard.
 
-> Status: in development. See [docs/PLAN.md](docs/PLAN.md) for progress.
+> Status: **v1.0.0** (MVP launched). See [CHANGELOG.md](CHANGELOG.md) and [docs/PLAN.md](docs/PLAN.md).
 
 ## Features (MVP)
 
@@ -67,6 +70,7 @@ _Published after the first deployment (Phase 7)._ The free API instance sleeps w
 ## Documentation
 
 - [Plan and milestones](docs/PLAN.md)
+- [Changelog](CHANGELOG.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Data model](docs/DATA_MODEL.md)
 - [API](docs/API.md)
