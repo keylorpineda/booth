@@ -428,3 +428,17 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - Multi-file uploads run one request after another rather than in parallel so each finished photo appears in the gallery right away and progress stays predictable on slow mobile connections.
 - Reordering updates the cached product immediately and invalidates the product lists so the new cover shows up everywhere without a reload.
+
+---
+
+## Settings profile and branding (#51) — 2026-10-16
+
+**Built**
+
+- `/dashboard/settings` page (`SettingsPage`) with URL-synced `Tabs` (`profile`, `delivery`, `payments`, `hours`, `localization`, matching `setupChecklist` links); removed the `dashboard-section-page.tsx` placeholder.
+- `ProfilePanel`: logo and cover image upload/remove cards (`StoreImageCard`) with 5 MB and format checks, upload progress, and a `ConfirmDialog` for removal.
+- Store profile form (`profileFormSchema`): name, description, E.164 WhatsApp phone validated against the store country, prices note, and brand color picker (`BrandColorField`) with hex input and a live product card + button preview using `brandProps` and `readableForeground`.
+
+**Key decisions**
+
+- The live brand color preview scopes `--brand` and `--brand-foreground` to the preview box with `brandProps(validColor, foreground)` so light colors like yellow immediately flip the button label to black without re-theming the dashboard shell.
