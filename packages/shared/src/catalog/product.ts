@@ -3,6 +3,12 @@ import { z } from 'zod';
 import { minorUnitsSchema } from '../money';
 
 export const MAX_PRODUCT_IMAGES = 8;
+
+/** Upload limit for store and product images (the API checks it again, with magic bytes). */
+export const IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+
+/** Image formats the API accepts, for file pickers (`accept`). */
+export const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp,image/avif';
 export const MAX_STOCK = 1_000_000;
 
 const productFields = z.object({
