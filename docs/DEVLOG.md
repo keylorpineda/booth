@@ -455,3 +455,16 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - Turning off both pickup and delivery blocks saving in the client with a clear `FormAlert` (mirroring the API's rule on `pickupEnabled`) and clears the alert immediately when either switch is turned back on.
+
+---
+
+## Payment methods with country presets (#53) — 2026-10-16
+
+**Built**
+
+- `PaymentMethodsPanel`: cash toggle plus transfer payment methods (`usePaymentMethodMutations`) with add, inline edit, active switch, optimistic up/down reorder and delete behind a `ConfirmDialog`.
+- `PaymentMethodFormView` (`paymentMethodFormSchema`): preset selector powered by `presetsForCountry(store.country)` (or custom) that pre-fills the label, localized identifier hint and default instructions, plus optional `https://` payment link validation.
+
+**Key decisions**
+
+- Selecting a preset pre-fills the display name and customer instructions while leaving every field editable so owners can tailor the instructions or switch to a custom method at any time.
