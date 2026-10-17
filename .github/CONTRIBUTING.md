@@ -56,8 +56,9 @@ Work PRs are rebase-merged into `develop`, so each commit is kept. PR titles are
 
 - **One issue = one screen or one flow**, small enough for one pull request. Larger features get a tracker issue whose sub-issues are worked in order.
 - Every issue has Context, Scope, Acceptance criteria, Technical notes, Out of scope and Dependencies, plus `type: …` and `area: …` labels.
-- **Milestones are versions** (`vX.Y.Z — Title`): their description says what users can do once it ships. The active milestone has a due date; shipped milestones are closed, never deleted.
-- PRs say `Closes #N` and carry the same milestone; the [project board](https://github.com/users/keylorpineda/projects/2) moves the card from Todo to In Progress to Done.
+- **Milestones are versions** (`vX.Y.Z — Title`), one per real delivery with **4–6 issues**: their description says what users can do once it ships. Only the active milestone has a due date; shipped milestones are closed, never deleted.
+- Milestones hold **issues only**. Pull requests are linked to their issue, not to the milestone, so the counts measure scope instead of activity. Phases 0–5 (`v0.1.0`–`v0.6.0`) predate the detailed issues and keep one issue each.
+- PRs say `Closes #N`; the [project board](https://github.com/users/keylorpineda/projects/2) moves the card from Todo to In Progress to Done.
 
 ## Before pushing
 
