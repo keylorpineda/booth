@@ -481,3 +481,17 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - An empty week displays a prominent notice explaining that the store is treated as always open, matching `isOpenAt([]) === true` in `@booth/shared`.
+
+---
+
+## Localization and privacy notice (#55) — 2026-10-16
+
+**Built**
+
+- `Combobox` (`components/ui/combobox.tsx`): keyboard-accessible searchable combobox primitive for long option lists (currencies and IANA time zones).
+- `LocalizationCard` (`features/settings/localization/`): country (`Intl.DisplayNames`), currency (`Intl.supportedValuesOf('currency')`, locked with an explanation when `canChangeCurrency` is false), time zone (`Intl.supportedValuesOf('timeZone')`), and store language (`es` / `en`).
+- `PrivacyCard` (`features/settings/privacy/`): displays the effective privacy notice and version badge (`vN`), lets owners write a custom notice or reset to the country default (`privacyNotice: null`), and explains that saving increments the version recorded on future orders.
+
+**Key decisions**
+
+- When the combobox opens on focus, the search input clears its query while keeping the selected label as the placeholder, so owners can type immediately to filter 160+ currencies or 400+ time zones without backspacing first.
