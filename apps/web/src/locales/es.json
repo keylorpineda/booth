@@ -184,7 +184,8 @@
     "SLUG_TAKEN": "Esa dirección ya está en uso.",
     "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda.",
     "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar.",
-    "CATEGORY_NAME_TAKEN": "Ya tienes una categoría con ese nombre."
+    "CATEGORY_NAME_TAKEN": "Ya tienes una categoría con ese nombre.",
+    "TOO_MANY_IMAGES": "Cada producto admite hasta 8 fotos."
   },
   "auth": {
     "email": "Correo electrónico",
@@ -453,6 +454,20 @@
       "deleteText": "Se borra con sus fotos. Los pedidos anteriores conservan su nombre y precio.",
       "deleteConfirm": "Sí, eliminar",
       "deleted": "Producto eliminado"
+    },
+    "images": {
+      "title": "Fotos",
+      "hint": "La primera es la portada en tu tienda. JPG, PNG, WebP o AVIF de hasta 5 MB.",
+      "add": "Agregar fotos",
+      "uploading": "Subiendo {{current}} de {{total}} · {{percent}} %",
+      "cover": "Portada",
+      "alt": "Foto {{position}}",
+      "moveLeft": "Mover la foto {{position}} a la izquierda",
+      "moveRight": "Mover la foto {{position}} a la derecha",
+      "delete": "Eliminar la foto {{position}}",
+      "deleteTitle": "¿Eliminar esta foto?",
+      "deleteText": "Se borra de tu tienda y no se puede recuperar.",
+      "deleteConfirm": "Sí, eliminar"
     }
   }
 }
