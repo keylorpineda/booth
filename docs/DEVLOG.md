@@ -392,3 +392,24 @@ One entry per phase: what was built, key decisions, problems solved.
 **Process**
 
 - Milestones were standardized: issues only (no PRs), 4–6 issues per release, outcome descriptions, a due date on the active one. The owner dashboard became v0.7.0 Dashboard foundations, v0.8.0 Order management, v0.9.0 Catalog management and v0.10.0 Store settings.
+
+---
+
+## Product form and MoneyInput (#49) — 2026-10-16
+
+**Built**
+
+- `MoneyInput`: currency sign from `Intl`, decimal keyboard on phones, tidies the amount on blur ("2500" -> "2 500").
+- `parseMoneyInput`: reads "2500", "2 500", "2.500,50" or "2,500.50"; the last separator is the decimal mark unless it closes a group of three digits; rejects more decimals than the currency has (JPY "10.5"); converts with `toMinor`, never floats.
+- Product page for new and existing products: name, price, description, category, visible switch, "track stock" switch with the stock field only when on; delete behind a confirmation; creating a product opens its edit page (photos come next).
+- `SwitchField` (labelled switch with a hint) for settings screens too; rows in the products list link to the edit page; "Add product" in the header and the empty state.
+
+**Key decisions**
+
+- The form keeps the price as typed text and converts it once on submit, so what the owner typed is never rounded behind their back.
+- Thousands groups must have exactly three digits ("1,5,0" is rejected instead of guessed).
+
+**Problems solved**
+
+- `no-irregular-whitespace` flagged literal no-break spaces in a regex; `\s` already matches them in JavaScript.
+- A session loss during testing came from a sign-out in the pane, not from refresh-token reuse: the API log showed the logout and a later refresh without a cookie.
