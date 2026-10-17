@@ -147,10 +147,10 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [x] Auth screens (register, login), session restore with single-flight refresh, route guards and onboarding (store name, URL with live availability, country, WhatsApp)
 - [x] Setup checklist on the dashboard home from real data (products, a way to get paid, hours, delivery zones when delivery is on) plus a share-your-store card
 - [x] UI primitives: Select (native), Switch, Tabs, ConfirmDialog
-- [ ] Combobox (currency, time zone) and Tooltip, with the settings screens
+- [x] Combobox (currency, time zone), with the settings screens
 - [x] Dashboard layout: sidebar from `md`, bottom navigation on phones, header with the store link and account menu, light/dark theme (command palette later)
-- [ ] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)
-- [ ] Localization: country, currency, timezone (from `Intl.supportedValuesOf`), language
+- [x] Settings: store info, branding (upload with crop preview), prices note, privacy notice editor (country default)
+- [x] Localization: country, currency, timezone (from `Intl.supportedValuesOf`), language
 - [x] Payment methods: cash toggle, transfer methods from presets or custom, optional payment link, reorder
 - [x] Delivery zones CRUD, pickup toggle and address
 - [x] Business hours editor (multiple intervals per day), accept-orders-while-closed setting
@@ -160,10 +160,10 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 **Done when**
 
-- A new owner can go from registration to a working storefront without touching the database.
+- [x] A new owner can go from registration to a working storefront without touching the database.
 - [x] Orders list reflects lazy expiry on load (API, tested).
 - [x] Reactivating an expired order fails with a clear message when stock is no longer available (tested).
-- All dashboard screens usable at 360px.
+- [x] All dashboard screens usable at 360px.
 
 ## Phase 7 — Testing, security hardening & deployment (MVP done)
 
