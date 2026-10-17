@@ -88,6 +88,19 @@ export const router = createBrowserRouter([
                     }),
                   },
                   {
+                    // `/new` and `/:id` share the page: no `id` param means a new product.
+                    path: 'catalog/products/new',
+                    lazy: async () => ({
+                      Component: (await import('../pages/product-form-page')).ProductFormPage,
+                    }),
+                  },
+                  {
+                    path: 'catalog/products/:id',
+                    lazy: async () => ({
+                      Component: (await import('../pages/product-form-page')).ProductFormPage,
+                    }),
+                  },
+                  {
                     path: 'settings',
                     lazy: async () => ({
                       Component: (await import('../pages/dashboard-section-page'))

@@ -1,5 +1,6 @@
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 
 import { type Product } from '@booth/shared';
 
@@ -28,27 +29,34 @@ export function ProductRow({ product, categoryName, price, move }: ProductRowPro
 
   return (
     <li className="flex items-center gap-3 py-3">
-      <ProductThumb product={product} className={cn(!product.isActive && 'opacity-50')} />
-      <div className="min-w-0 flex-1">
-        <p className={cn('truncate font-semibold', !product.isActive && 'text-ink-muted')}>
-          {product.name}
-        </p>
-        <p className="truncate text-sm text-ink-muted">
-          <span className="font-semibold text-ink tabular-nums">{price}</span>
-          {' · '}
-          {categoryName ?? t('catalog.products.uncategorized')}
-          {product.trackStock ? ` · ${t('catalog.products.stock', { count: product.stock })}` : ''}
-        </p>
-        {badges.length > 0 ? (
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
-            {badges.map((badge) => (
-              <Badge key={badge} tone={BADGE_TONES[badge]}>
-                {t(`catalog.products.badges.${badge}`)}
-              </Badge>
-            ))}
-          </div>
-        ) : null}
-      </div>
+      <Link
+        to={`/dashboard/catalog/products/${product.id}`}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-control"
+      >
+        <ProductThumb product={product} className={cn(!product.isActive && 'opacity-50')} />
+        <div className="min-w-0 flex-1">
+          <p className={cn('truncate font-semibold', !product.isActive && 'text-ink-muted')}>
+            {product.name}
+          </p>
+          <p className="truncate text-sm text-ink-muted">
+            <span className="font-semibold text-ink tabular-nums">{price}</span>
+            {' · '}
+            {categoryName ?? t('catalog.products.uncategorized')}
+            {product.trackStock
+              ? ` · ${t('catalog.products.stock', { count: product.stock })}`
+              : ''}
+          </p>
+          {badges.length > 0 ? (
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {badges.map((badge) => (
+                <Badge key={badge} tone={BADGE_TONES[badge]}>
+                  {t(`catalog.products.badges.${badge}`)}
+                </Badge>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </Link>
       {move ? (
         <div className="flex">
           <button

@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router';
 
 import { TabPanel, Tabs } from '../components/ui/tabs';
 import { CategoriesPanel } from '../features/catalog-admin/categories/categories-panel';
+import { AddProductLink } from '../features/catalog-admin/products/add-product-link';
 import { ProductsPanel } from '../features/catalog-admin/products/products-panel';
 
 const TABS = ['products', 'categories'] as const;
@@ -17,7 +18,10 @@ export function CatalogPage() {
   return (
     <div>
       <title>{`${t('dashboard.nav.catalog')} · Booth`}</title>
-      <h1 className="text-2xl font-extrabold sm:text-3xl">{t('dashboard.nav.catalog')}</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-extrabold sm:text-3xl">{t('dashboard.nav.catalog')}</h1>
+        {tab === 'products' ? <AddProductLink /> : null}
+      </div>
       <Tabs
         className="mt-4"
         value={tab}
