@@ -17,6 +17,7 @@ import {
   toProductInput,
 } from '../features/catalog-admin/products/product-form';
 import { ProductFormView } from '../features/catalog-admin/products/product-form-view';
+import { ProductImages } from '../features/catalog-admin/products/product-images';
 import { useOwnerStore } from '../features/dashboard/api';
 import { useOwnerLocale } from '../features/dashboard/use-owner-money';
 import { useErrorMessage } from '../hooks/use-error-message';
@@ -104,6 +105,11 @@ export function ProductFormPage() {
           onSubmit={save}
         />
       </div>
+      {product.data ? (
+        <div className="mt-4">
+          <ProductImages product={product.data} />
+        </div>
+      ) : null}
       {editing ? (
         <ConfirmDialog
           open={confirmDelete}
