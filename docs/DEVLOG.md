@@ -509,3 +509,14 @@ One entry per phase: what was built, key decisions, problems solved.
 **Key decisions**
 
 - Every entity is upserted by a stable key (owner email, store slug, `(storeId, name)` for categories, deterministic ids for zones, payment methods, products and orders), and tracked product stock is computed as `initialStock - sum(active/completed order quantities)` so re-running the seed never drifts stock or duplicates rows.
+
+---
+
+## Security review and hardening (#23) — 2026-10-16
+
+**Built**
+
+- Hardened HTTP headers on the API (`app.setup.ts`: `frameguard: deny`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `frame-ancestors 'none'`) and added `apps/web/vercel.json` with `Content-Security-Policy` (including SHA-256 hashes for both inline scripts in `index.html`), HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`.
+- Added `apps/web/src/security-headers.test.ts` to verify that every inline `<script>` in `index.html` matches its CSP hash in `vercel.json`.
+- Expanded API security e2e tests (`security.e2e-spec.ts`, `rate-limit.e2e-spec.ts` with `TRUST_PROXY=2` spoofed-header resistance, `tenant-isolation.e2e-spec.ts` store branding isolation, `owner-orders.e2e-spec.ts` receipt privacy on public tracking).
+- Enabled Jest coverage thresholds (`85%` statements/lines/functions, `75%` branches) and `pnpm audit --prod --audit-level=high` + `pnpm test:cov` in `.github/workflows/ci.yml`.
