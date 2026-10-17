@@ -534,3 +534,20 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - Splitting heavy vendor dependencies preserves immutable cache hits across deployments: storefront shoppers only download changed application code rather than re-downloading React, React Router, Query, and i18n runtimes on every release.
 - Kept `libphonenumber-js` (`phone-*.js`), `zod`, and `motion-features` lazily loaded or dynamic so the first paint on `/s/:slug` remains lightweight.
+
+---
+
+## Deployment: Neon, Render, Vercel and CD (#24) — 2026-10-16
+
+**Built**
+
+- Created comprehensive `docs/DEPLOYMENT.md` covering architecture, free-tier limits (Neon, Render, Vercel, Cloudinary), environment variables per service, step-by-step deployment guide, database migrations, rollbacks, and cold-start handling.
+- Configured production API rewrite in `apps/web/vercel.json` (`/api/:path*` -> Render backend URL) keeping authentication refresh cookies first-party on the Vercel domain.
+- Created `.github/workflows/expire-orders.yml` scheduled workflow running every 10 minutes to execute `POST /api/internal/jobs/expire-orders` with `X-Job-Secret`, automating order expiration and keeping the Render free instance active during working hours.
+- Added Render Continuous Deployment hook trigger in `.github/workflows/ci.yml` after CI passes on `main`.
+- Updated documentation links in `README.md` and checked off deployment setup items in `docs/PLAN.md`.
+
+**Key decisions**
+
+- The scheduled order expiration job checks if `JOB_SECRET` is populated before calling the API, ensuring automated runs skip cleanly without spurious failures when secrets are not yet configured.
+- The Render Deploy Hook in `ci.yml` triggers only on pushes to `main` when `RENDER_DEPLOY_HOOK_URL` is set, preserving decoupled build triggers while automating production releases.

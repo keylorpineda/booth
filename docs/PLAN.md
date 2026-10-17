@@ -170,10 +170,10 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [x] Idempotent seed: demo bakery (CR, CRC, SINPE Móvil) and demo coffee shop (CO, COP, Nequi), products, zones, hours, sample orders, demo owner (`isDemo`)
 - [x] Security review: headers, CORS, cookie flags, rate limits, upload validation, signed URL TTL, IDOR checks
 - [x] Coverage report in CI; critical paths covered (tenant isolation, stock, expiration, auth)
-- [ ] Check current Render and Neon free-plan limits, then write `docs/DEPLOYMENT.md` (including cold start of close to a minute)
-- [ ] Neon database, Render web service (API), Vercel project (web) with `/api/*` rewrite to Render
-- [ ] CD: Vercel preview per PR and production on `main`; Render deploy hook triggered by GitHub Actions after CI passes on `main`; Prisma migrations run on deploy
-- [ ] Scheduled GitHub Actions workflow calling a protected endpoint to expire orders (backup for the sleeping free instance)
+- [x] Check current Render and Neon free-plan limits, then write `docs/DEPLOYMENT.md` (including cold start of close to a minute)
+- [x] Neon database, Render web service (API), Vercel project (web) with `/api/*` rewrite to Render
+- [x] CD: Vercel preview per PR and production on `main`; Render deploy hook triggered by GitHub Actions after CI passes on `main`; Prisma migrations run on deploy
+- [x] Scheduled GitHub Actions workflow calling a protected endpoint to expire orders (backup for the sleeping free instance)
 - [ ] release-please for CHANGELOG and version tags
 - [ ] README: screenshots, demo credentials, live links
 
