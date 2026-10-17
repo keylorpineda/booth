@@ -167,7 +167,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 ## Phase 7 — Testing, security hardening & deployment (MVP done)
 
-- [ ] Idempotent seed: demo bakery (CR, CRC, SINPE Móvil) and demo coffee shop (CO, COP, Nequi), products, zones, hours, sample orders, demo owner (`isDemo`)
+- [x] Idempotent seed: demo bakery (CR, CRC, SINPE Móvil) and demo coffee shop (CO, COP, Nequi), products, zones, hours, sample orders, demo owner (`isDemo`)
 - [ ] Security review: headers, CORS, cookie flags, rate limits, upload validation, signed URL TTL, IDOR checks
 - [ ] Coverage report in CI; critical paths covered (tenant isolation, stock, expiration, auth)
 - [ ] Check current Render and Neon free-plan limits, then write `docs/DEPLOYMENT.md` (including cold start of close to a minute)
@@ -179,7 +179,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 **Done when**
 
-- Seed can run twice without duplicates or errors.
+- [x] Seed can run twice without duplicates or errors.
 - Production storefront and dashboard work end-to-end through the Vercel rewrite, with the refresh cookie first-party.
 - CI and CD are green; release PR `develop` -> `main` merged and `v1.0.0` tagged. **MVP milestone reached.**
 
