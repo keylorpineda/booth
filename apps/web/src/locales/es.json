@@ -153,7 +153,8 @@
     "passwordLength": "Usa al menos 8 caracteres",
     "amount": "Escribe un monto válido, por ejemplo 2500 o 2500,50",
     "amountDecimals": "Esta moneda no admite tantos decimales",
-    "stock": "Escribe un número entero de unidades"
+    "stock": "Escribe un número entero de unidades",
+    "hexColor": "Usa un color hexadecimal de 6 dígitos como #4F46E5"
   },
   "feedback": {
     "oops": "¡Uy!",
@@ -468,6 +469,55 @@
       "deleteTitle": "¿Eliminar esta foto?",
       "deleteText": "Se borra de tu tienda y no se puede recuperar.",
       "deleteConfirm": "Sí, eliminar"
+    }
+  },
+  "settings": {
+    "tabs": {
+      "profile": "Perfil",
+      "delivery": "Entrega",
+      "payments": "Pagos",
+      "hours": "Horario",
+      "localization": "Región y privacidad"
+    },
+    "save": "Guardar cambios",
+    "saved": "Cambios guardados",
+    "profile": {
+      "name": "Nombre de la tienda",
+      "description": "Descripción",
+      "descriptionHint": "Aparece debajo del nombre en la parte superior de tu tienda.",
+      "descriptionPlaceholder": "Pan de masa madre y repostería horneados cada mañana.",
+      "whatsapp": "WhatsApp de la tienda",
+      "pricesNote": "Nota sobre los precios",
+      "pricesNoteHint": "Texto opcional junto al estado de la tienda (por ejemplo, si incluyen impuestos).",
+      "pricesNotePlaceholder": "Impuestos incluidos",
+      "brandColor": "Color de marca",
+      "brandColorHint": "Los botones y acentos se ajustan solos para que el texto siempre se lea bien.",
+      "colorPicker": "Elegir color de marca",
+      "previewTitle": "Vista previa",
+      "previewProduct": "Especial de la casa"
+    },
+    "branding": {
+      "upload": "Subir foto",
+      "change": "Cambiar foto",
+      "remove": "Quitar",
+      "removeConfirm": "Sí, quitar",
+      "uploading": "Subiendo · {{percent}} %",
+      "logo": {
+        "title": "Logo",
+        "hint": "Imagen cuadrada en el encabezado de tu tienda. Hasta 5 MB.",
+        "saved": "Logo actualizado",
+        "removeTitle": "¿Quitar el logo?",
+        "removeText": "Tu tienda mostrará su inicial con tu color de marca.",
+        "removed": "Logo quitado"
+      },
+      "cover": {
+        "title": "Imagen de portada",
+        "hint": "Banner detrás del logo en la parte superior de la tienda. Hasta 5 MB.",
+        "saved": "Portada actualizada",
+        "removeTitle": "¿Quitar la imagen de portada?",
+        "removeText": "Tu tienda mostrará un degradado con tu color de marca.",
+        "removed": "Portada quitada"
+      }
     }
   }
 }
