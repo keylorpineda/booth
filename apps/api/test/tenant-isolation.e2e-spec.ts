@@ -167,13 +167,21 @@ describe('tenant isolation (store A vs store B)', () => {
     ).expect(400);
   });
 
-  it('B settings updates only touch B store', async () => {
+  it('B settings and branding updates only touch B store', async () => {
+    await request(app.getHttpServer())
+      .post('/api/me/store/logo')
+      .set('Authorization', storeA.auth)
+      .attach('file', PNG, 'a-logo.png')
+      .expect(201);
+
     await asB((h) =>
       h.patch('/api/me/store').send({ name: 'B renamed', brandColor: '#000000' }),
     ).expect(200);
+    await asB((h) => h.delete('/api/me/store/logo')).expect(200);
 
     const storeAfter = await prisma.store.findUniqueOrThrow({ where: { id: storeA.store.id } });
     expect(storeAfter).toMatchObject({ name: storeA.store.name, brandColor: '#4F46E5' });
+    expect(storeAfter.logoPublicId).toBeTruthy();
   });
 
   it('cannot use a cursor from A to page into A products', async () => {

@@ -22,7 +22,12 @@ describe('HTTP security and docs', () => {
     const response = await http().get('/api/test/ping').expect(200);
 
     expect(response.headers['x-content-type-options']).toBe('nosniff');
-    expect(response.headers['content-security-policy']).toBeDefined();
+    expect(response.headers['x-frame-options']).toBe('DENY');
+    expect(response.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+    expect(response.headers['permissions-policy']).toBe(
+      'camera=(), microphone=(), geolocation=(), payment=()',
+    );
+    expect(response.headers['content-security-policy']).toContain("frame-ancestors 'none'");
     expect(response.headers['x-powered-by']).toBeUndefined();
   });
 
