@@ -581,6 +581,26 @@
       "deleteText": "Past orders paid with this method keep its name.",
       "deleteConfirm": "Yes, delete",
       "deleted": "\"{{name}}\" deleted"
+    },
+    "hours": {
+      "title": "Weekly hours",
+      "subtitle": "Times in your store time zone ({{timezone}}).",
+      "alwaysOpenNotice": "No hours configured: your store always shows as open.",
+      "clearAll": "Clear all (always open)",
+      "closedDay": "Closed",
+      "toggleDay": "Open on {{day}}",
+      "addShift": "Add shift",
+      "removeShift": "Remove shift {{shift}} on {{day}}",
+      "opensAt": "{{day}} shift {{shift}} opening time",
+      "closesAt": "{{day}} shift {{shift}} closing time",
+      "copyWeekdays": "Copy to Mon–Fri",
+      "copyAll": "Copy to all",
+      "copied": "Hours copied",
+      "errors": {
+        "format": "Enter a valid time (HH:MM)",
+        "order": "Closing time must be after opening time",
+        "overlap": "This shift overlaps with an earlier shift on the same day"
+      }
     }
   }
 }

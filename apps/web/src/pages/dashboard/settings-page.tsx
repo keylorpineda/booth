@@ -7,6 +7,7 @@ import { EmptyState } from '../../components/ui/empty-state';
 import { Skeleton } from '../../components/ui/skeleton';
 import { TabPanel, Tabs } from '../../components/ui/tabs';
 import { useOwnerStore } from '../../features/dashboard/api';
+import { HoursPanel } from '../../features/settings/hours/hours-panel';
 import { OrderingPanel } from '../../features/settings/ordering/ordering-panel';
 import { PaymentMethodsPanel } from '../../features/settings/payment-methods/payment-methods-panel';
 import { ProfilePanel } from '../../features/settings/profile/profile-panel';
@@ -61,15 +62,20 @@ export function SettingsPage() {
             <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
           )}
         </TabPanel>
-        {(['hours', 'localization'] as const).map((upcoming) => (
-          <TabPanel key={upcoming} value={upcoming}>
-            <EmptyState
-              illustration={<StoreSignIllustration label="…" />}
-              title={t('dashboard.soon.title')}
-              description={t('dashboard.soon.text')}
-            />
-          </TabPanel>
-        ))}
+        <TabPanel value="hours">
+          {store.data ? (
+            <HoursPanel store={store.data} />
+          ) : (
+            <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
+          )}
+        </TabPanel>
+        <TabPanel value="localization">
+          <EmptyState
+            illustration={<StoreSignIllustration label="…" />}
+            title={t('dashboard.soon.title')}
+            description={t('dashboard.soon.text')}
+          />
+        </TabPanel>
       </Tabs>
     </div>
   );
