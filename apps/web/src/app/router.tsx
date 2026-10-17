@@ -103,8 +103,7 @@ export const router = createBrowserRouter([
                   {
                     path: 'settings',
                     lazy: async () => ({
-                      Component: (await import('../pages/dashboard-section-page'))
-                        .SettingsSectionPage,
+                      Component: (await import('../pages/dashboard/settings-page')).SettingsPage,
                     }),
                   },
                 ],

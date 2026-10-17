@@ -153,7 +153,8 @@
     "passwordLength": "Use at least 8 characters",
     "amount": "Enter a valid amount, for example 2500 or 2500.50",
     "amountDecimals": "This currency does not allow that many decimals",
-    "stock": "Enter a whole number of units"
+    "stock": "Enter a whole number of units",
+    "hexColor": "Use a 6-digit hex color like #4F46E5"
   },
   "feedback": {
     "oops": "Oops",
@@ -468,6 +469,55 @@
       "deleteTitle": "Delete this photo?",
       "deleteText": "It is removed from your store and cannot be recovered.",
       "deleteConfirm": "Yes, delete"
+    }
+  },
+  "settings": {
+    "tabs": {
+      "profile": "Profile",
+      "delivery": "Delivery",
+      "payments": "Payments",
+      "hours": "Hours",
+      "localization": "Region & privacy"
+    },
+    "save": "Save changes",
+    "saved": "Changes saved",
+    "profile": {
+      "name": "Store name",
+      "description": "Description",
+      "descriptionHint": "Shown under your name at the top of the store.",
+      "descriptionPlaceholder": "Artisan sourdough and pastries baked every morning.",
+      "whatsapp": "Store WhatsApp",
+      "pricesNote": "Prices note",
+      "pricesNoteHint": "Optional note next to your store status (e.g. whether taxes are included).",
+      "pricesNotePlaceholder": "Sales tax not included",
+      "brandColor": "Brand color",
+      "brandColorHint": "Buttons and highlights adapt automatically so text stays readable.",
+      "colorPicker": "Pick brand color",
+      "previewTitle": "Preview",
+      "previewProduct": "House special"
+    },
+    "branding": {
+      "upload": "Upload photo",
+      "change": "Change photo",
+      "remove": "Remove",
+      "removeConfirm": "Yes, remove",
+      "uploading": "Uploading · {{percent}}%",
+      "logo": {
+        "title": "Logo",
+        "hint": "Square image shown at the top of your store. Up to 5 MB.",
+        "saved": "Logo updated",
+        "removeTitle": "Remove logo?",
+        "removeText": "Your store will show its initial in your brand color instead.",
+        "removed": "Logo removed"
+      },
+      "cover": {
+        "title": "Cover image",
+        "hint": "Banner behind your logo at the top of the store. Up to 5 MB.",
+        "saved": "Cover updated",
+        "removeTitle": "Remove cover image?",
+        "removeText": "Your store will show a gradient in your brand color instead.",
+        "removed": "Cover removed"
+      }
     }
   }
 }
