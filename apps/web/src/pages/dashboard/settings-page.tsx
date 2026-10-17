@@ -8,6 +8,7 @@ import { Skeleton } from '../../components/ui/skeleton';
 import { TabPanel, Tabs } from '../../components/ui/tabs';
 import { useOwnerStore } from '../../features/dashboard/api';
 import { OrderingPanel } from '../../features/settings/ordering/ordering-panel';
+import { PaymentMethodsPanel } from '../../features/settings/payment-methods/payment-methods-panel';
 import { ProfilePanel } from '../../features/settings/profile/profile-panel';
 
 const TABS = ['profile', 'delivery', 'payments', 'hours', 'localization'] as const;
@@ -53,7 +54,14 @@ export function SettingsPage() {
             <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
           )}
         </TabPanel>
-        {(['payments', 'hours', 'localization'] as const).map((upcoming) => (
+        <TabPanel value="payments">
+          {store.data ? (
+            <PaymentMethodsPanel store={store.data} />
+          ) : (
+            <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
+          )}
+        </TabPanel>
+        {(['hours', 'localization'] as const).map((upcoming) => (
           <TabPanel key={upcoming} value={upcoming}>
             <EmptyState
               illustration={<StoreSignIllustration label="…" />}

@@ -156,7 +156,9 @@
     "stock": "Escribe un número entero de unidades",
     "hexColor": "Usa un color hexadecimal de 6 dígitos como #4F46E5",
     "expirationMinutes": "Escribe entre 5 y 1440 minutos",
-    "fulfillmentRequired": "Activa retiro en tienda, envío a domicilio o ambos para recibir pedidos"
+    "fulfillmentRequired": "Activa retiro en tienda, envío a domicilio o ambos para recibir pedidos",
+    "httpsUrl": "Usa un enlace seguro que empiece con https://",
+    "invalid": "Elige una opción válida"
   },
   "feedback": {
     "oops": "¡Uy!",
@@ -554,6 +556,31 @@
       "deleteText": "Los pedidos anteriores en esta zona conservan su nombre y costo.",
       "deleteConfirm": "Sí, eliminar",
       "deleted": "Zona «{{name}}» eliminada"
+    },
+    "payments": {
+      "title": "Transferencias y enlaces de pago",
+      "subtitle": "El cliente ve tus instrucciones y puede subir el comprobante después de pedir.",
+      "add": "Agregar método",
+      "create": "Agregar método",
+      "created": "«{{name}}» agregado",
+      "empty": "Aún no tienes métodos de transferencia. Agrega uno para recibir pagos por transferencia o enlace.",
+      "preset": "Tipo de método",
+      "custom": "Método personalizado",
+      "label": "Nombre visible",
+      "labelPlaceholder": "SINPE Móvil, Transferencia bancaria…",
+      "accountHolder": "Titular de la cuenta",
+      "accountHolderPlaceholder": "Nombre completo o comercio",
+      "accountIdentifier": "Cuenta o teléfono",
+      "accountIdentifierPlaceholder": "Teléfono, IBAN, CLABE, correo…",
+      "paymentUrl": "Enlace de pago (opcional)",
+      "paymentUrlHint": "PayPal.me, Venmo, Stripe Payment Link o similar (solo https://).",
+      "instructions": "Instrucciones para el cliente",
+      "noDetails": "Solo instrucciones",
+      "visible": "Mostrar {{name}} al finalizar el pedido",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Los pedidos anteriores con este método conservan su nombre.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "«{{name}}» eliminado"
     }
   }
 }
