@@ -154,7 +154,9 @@
     "amount": "Escribe un monto válido, por ejemplo 2500 o 2500,50",
     "amountDecimals": "Esta moneda no admite tantos decimales",
     "stock": "Escribe un número entero de unidades",
-    "hexColor": "Usa un color hexadecimal de 6 dígitos como #4F46E5"
+    "hexColor": "Usa un color hexadecimal de 6 dígitos como #4F46E5",
+    "expirationMinutes": "Escribe entre 5 y 1440 minutos",
+    "fulfillmentRequired": "Activa retiro en tienda, envío a domicilio o ambos para recibir pedidos"
   },
   "feedback": {
     "oops": "¡Uy!",
@@ -186,7 +188,8 @@
     "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda.",
     "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar.",
     "CATEGORY_NAME_TAKEN": "Ya tienes una categoría con ese nombre.",
-    "TOO_MANY_IMAGES": "Cada producto admite hasta 8 fotos."
+    "TOO_MANY_IMAGES": "Cada producto admite hasta 8 fotos.",
+    "ZONE_NAME_TAKEN": "Ya tienes una zona de entrega con ese nombre."
   },
   "auth": {
     "email": "Correo electrónico",
@@ -518,6 +521,39 @@
         "removeText": "Tu tienda mostrará un degradado con tu color de marca.",
         "removed": "Portada quitada"
       }
+    },
+    "ordering": {
+      "title": "Opciones de pedido",
+      "subtitle": "Cómo reciben los clientes su pedido y cuánto tiempo se reserva el stock pendiente.",
+      "pickup": "Retiro en tienda",
+      "pickupHint": "El cliente recoge su pedido en tu dirección.",
+      "pickupAddress": "Dirección de retiro",
+      "pickupAddressHint": "Se muestra al finalizar la compra y en el seguimiento del pedido.",
+      "pickupAddressPlaceholder": "Calle principal, 100 m norte del parque",
+      "delivery": "Envío a domicilio",
+      "deliveryHint": "El cliente elige una de tus zonas de entrega.",
+      "cash": "Efectivo al entregar o retirar",
+      "cashHint": "El cliente puede pagar en efectivo cuando recibe su pedido.",
+      "acceptWhenClosed": "Aceptar pedidos fuera de horario",
+      "acceptWhenClosedHint": "Si está apagado, los clientes pueden ver el catálogo pero no pedir cuando la tienda está cerrada.",
+      "expiration": "Reserva de pedidos pendientes (minutos)",
+      "expirationHint": "Entre {{min}} y {{max}} minutos antes de que un pedido sin confirmar ni comprobante venza y libere su stock."
+    },
+    "zones": {
+      "title": "Zonas de entrega",
+      "hint": "El cliente elige su zona al pedir; la tarifa se suma al total.",
+      "name": "Nombre de la zona",
+      "namePlaceholder": "Centro, Sector norte…",
+      "fee": "Costo de envío",
+      "add": "Agregar zona",
+      "created": "Zona «{{name}}» creada",
+      "empty": "Aún no tienes zonas de entrega. Agrega al menos una para que puedan elegir envío.",
+      "free": "Gratis",
+      "visible": "Mostrar {{name}} al finalizar el pedido",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Los pedidos anteriores en esta zona conservan su nombre y costo.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Zona «{{name}}» eliminada"
     }
   }
 }

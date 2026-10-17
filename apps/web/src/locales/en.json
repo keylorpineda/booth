@@ -154,7 +154,9 @@
     "amount": "Enter a valid amount, for example 2500 or 2500.50",
     "amountDecimals": "This currency does not allow that many decimals",
     "stock": "Enter a whole number of units",
-    "hexColor": "Use a 6-digit hex color like #4F46E5"
+    "hexColor": "Use a 6-digit hex color like #4F46E5",
+    "expirationMinutes": "Enter between 5 and 1440 minutes",
+    "fulfillmentRequired": "Turn on pickup, delivery, or both so customers can receive orders"
   },
   "feedback": {
     "oops": "Oops",
@@ -186,7 +188,8 @@
     "STORE_ALREADY_EXISTS": "Your account already has a store.",
     "INVALID_STATUS_TRANSITION": "The order changed in the meantime. Reload and try again.",
     "CATEGORY_NAME_TAKEN": "You already have a category with that name.",
-    "TOO_MANY_IMAGES": "Each product can have up to 8 photos."
+    "TOO_MANY_IMAGES": "Each product can have up to 8 photos.",
+    "ZONE_NAME_TAKEN": "You already have a delivery zone with that name."
   },
   "auth": {
     "email": "Email",
@@ -518,6 +521,39 @@
         "removeText": "Your store will show a gradient in your brand color instead.",
         "removed": "Cover removed"
       }
+    },
+    "ordering": {
+      "title": "Ordering options",
+      "subtitle": "How customers receive their order and how long pending orders hold stock.",
+      "pickup": "Store pickup",
+      "pickupHint": "Customers pick up their order at your address.",
+      "pickupAddress": "Pickup address",
+      "pickupAddressHint": "Shown at checkout and on the order tracking page.",
+      "pickupAddressPlaceholder": "Main Street, 100 m north of the park",
+      "delivery": "Home delivery",
+      "deliveryHint": "Customers choose one of your delivery zones.",
+      "cash": "Cash on delivery or pickup",
+      "cashHint": "Customers can pay in cash when they receive their order.",
+      "acceptWhenClosed": "Accept orders while closed",
+      "acceptWhenClosedHint": "When off, customers can browse the catalog but cannot place orders outside your hours.",
+      "expiration": "Pending order hold (minutes)",
+      "expirationHint": "Between {{min}} and {{max}} minutes before an unconfirmed order without a receipt expires and releases its stock."
+    },
+    "zones": {
+      "title": "Delivery zones",
+      "hint": "Customers pick their area at checkout; the fee is added to the order total.",
+      "name": "Zone name",
+      "namePlaceholder": "Downtown, North side…",
+      "fee": "Delivery fee",
+      "add": "Add zone",
+      "created": "Zone \"{{name}}\" created",
+      "empty": "No delivery zones yet. Add at least one so customers can choose delivery.",
+      "free": "Free",
+      "visible": "Show {{name}} at checkout",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteText": "Past orders in this zone keep its name and fee.",
+      "deleteConfirm": "Yes, delete",
+      "deleted": "Zone \"{{name}}\" deleted"
     }
   }
 }
