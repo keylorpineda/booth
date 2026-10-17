@@ -42,8 +42,9 @@ const baseStore: Store = {
 
 describe('localizationFormSchema & helpers', () => {
   it('includes currency in update payload only when canChangeCurrency is true', () => {
-    const values = toLocalizationForm(baseStore);
-    expect(localizationFormSchema.parse(values)).toEqual(values);
+    const raw = toLocalizationForm(baseStore);
+    const values = localizationFormSchema.parse(raw);
+    expect(values).toEqual(raw);
 
     const allowed = toLocalizationUpdate({ ...values, currency: 'USD' }, baseStore);
     expect(allowed.currency).toBe('USD');
