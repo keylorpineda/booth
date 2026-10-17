@@ -156,7 +156,9 @@
     "stock": "Enter a whole number of units",
     "hexColor": "Use a 6-digit hex color like #4F46E5",
     "expirationMinutes": "Enter between 5 and 1440 minutes",
-    "fulfillmentRequired": "Turn on pickup, delivery, or both so customers can receive orders"
+    "fulfillmentRequired": "Turn on pickup, delivery, or both so customers can receive orders",
+    "httpsUrl": "Use a secure link starting with https://",
+    "invalid": "Choose a valid option"
   },
   "feedback": {
     "oops": "Oops",
@@ -554,6 +556,31 @@
       "deleteText": "Past orders in this zone keep its name and fee.",
       "deleteConfirm": "Yes, delete",
       "deleted": "Zone \"{{name}}\" deleted"
+    },
+    "payments": {
+      "title": "Transfer and payment links",
+      "subtitle": "Customers see your instructions and can upload a receipt after ordering.",
+      "add": "Add method",
+      "create": "Add method",
+      "created": "\"{{name}}\" added",
+      "empty": "No transfer methods yet. Add one so customers can pay by transfer or payment link.",
+      "preset": "Method type",
+      "custom": "Custom method",
+      "label": "Display name",
+      "labelPlaceholder": "SINPE Móvil, Bank transfer…",
+      "accountHolder": "Account holder",
+      "accountHolderPlaceholder": "Full name or business name",
+      "accountIdentifier": "Account or phone",
+      "accountIdentifierPlaceholder": "Phone, IBAN, CLABE, email…",
+      "paymentUrl": "Payment link (optional)",
+      "paymentUrlHint": "PayPal.me, Venmo, Stripe Payment Link or similar (https:// only).",
+      "instructions": "Instructions for the customer",
+      "noDetails": "Instructions only",
+      "visible": "Show {{name}} at checkout",
+      "deleteTitle": "Delete \"{{name}}\"?",
+      "deleteText": "Past orders paid with this method keep its name.",
+      "deleteConfirm": "Yes, delete",
+      "deleted": "\"{{name}}\" deleted"
     }
   }
 }
