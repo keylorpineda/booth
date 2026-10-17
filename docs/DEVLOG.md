@@ -372,3 +372,23 @@ One entry per phase: what was built, key decisions, problems solved.
 - Reordering is optimistic: the list moves at once and rolls back if the API refuses.
 - Up/down buttons instead of drag and drop: they work with a keyboard, a screen reader and one thumb.
 - Icon-only buttons always carry an `aria-label` (also fixed for the header's "view store" link on phones).
+
+---
+
+## Catalog products list (#48) — 2026-10-16
+
+**Built**
+
+- Products tab: photo or monogram, name, price in the store currency, category, stock for tracked products, and badges for hidden, sold out and low stock (5 or fewer).
+- Search by name and category filter, both in the URL; "load more" with the cursor.
+- Reorder with up/down buttons, optimistic with rollback.
+- `SearchInput` shared by orders and products.
+
+**Key decisions**
+
+- Reordering is offered only on the unfiltered list: the API assigns positions in the order it receives, so reordering a filtered subset would scramble the products that are not shown. The screen says why.
+- Made-to-order products never show stock or a sold-out badge.
+
+**Process**
+
+- Milestones were standardized: issues only (no PRs), 4–6 issues per release, outcome descriptions, a due date on the active one. The owner dashboard became v0.7.0 Dashboard foundations, v0.8.0 Order management, v0.9.0 Catalog management and v0.10.0 Store settings.
