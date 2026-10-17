@@ -3,10 +3,18 @@ import {
   keepPreviousData,
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 
-import { type Paginated, paginatedSchema, type Product, productSchema } from '@booth/shared';
+import {
+  type CreateProductInput,
+  type Paginated,
+  paginatedSchema,
+  type Product,
+  productSchema,
+  type UpdateProductInput,
+} from '@booth/shared';
 
 import { ownerApi } from '../../auth/owner-api';
 
@@ -80,4 +88,41 @@ export function useReorderProducts(filters: ProductFilters) {
       void queryClient.invalidateQueries({ queryKey: productKeys.all });
     },
   });
+}
+
+export function useProduct(id: string | undefined) {
+  return useQuery({
+    queryKey: [...productKeys.all, 'detail', id],
+    queryFn: ({ signal }) =>
+      ownerApi(`/me/products/${encodeURIComponent(id ?? '')}`, { schema: productSchema, signal }),
+    enabled: id !== undefined,
+  });
+}
+
+/** Create, update and delete. Lists, categories (counts) and the setup checklist refresh. */
+export function useProductMutations() {
+  const queryClient = useQueryClient();
+  const onSuccess = () => {
+    void queryClient.invalidateQueries({ queryKey: productKeys.all });
+    void queryClient.invalidateQueries({ queryKey: ['owner', 'categories'] });
+  };
+
+  const create = useMutation({
+    mutationFn: (input: CreateProductInput) =>
+      ownerApi('/me/products', { method: 'POST', body: input, schema: productSchema }),
+    onSuccess,
+  });
+
+  const update = useMutation({
+    mutationFn: ({ id, ...input }: UpdateProductInput & { id: string }) =>
+      ownerApi(`/me/products/${id}`, { method: 'PATCH', body: input, schema: productSchema }),
+    onSuccess,
+  });
+
+  const remove = useMutation({
+    mutationFn: (id: string) => ownerApi(`/me/products/${id}`, { method: 'DELETE' }),
+    onSuccess,
+  });
+
+  return { create, update, remove };
 }
