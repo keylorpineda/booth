@@ -24,7 +24,7 @@ export const localizationFormSchema = z.object({
 export type LocalizationFormInput = z.input<typeof localizationFormSchema>;
 export type LocalizationForm = z.output<typeof localizationFormSchema>;
 
-export function toLocalizationForm(store: Store): LocalizationForm {
+export function toLocalizationForm(store: Store): LocalizationFormInput {
   return {
     country: store.country,
     currency: store.currency,
