@@ -12,5 +12,5 @@
     "outDir": "dist",
     "baseUrl": "."
   },
-  "include": ["src", "test", "jest.config.ts", "prisma.config.ts"]
+  "include": ["src", "test", "jest.config.ts", "prisma.config.ts", "prisma/seed.ts"]
 }

@@ -11,6 +11,7 @@ export default defineConfig({
   schema: path.join('prisma', 'schema.prisma'),
   migrations: {
     path: path.join('prisma', 'migrations'),
+    seed: 'pnpm db:seed',
   },
   // Omitted when unset so `prisma generate` works without a database (e.g. on install).
   ...(process.env.DATABASE_URL && { datasource: { url: process.env.DATABASE_URL } }),
