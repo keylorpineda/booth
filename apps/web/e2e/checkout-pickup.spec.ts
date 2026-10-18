@@ -48,7 +48,7 @@ test.describe('Checkout with pickup', () => {
 
     // 10. Verify redirect to tracking page
     await expect(page).toHaveURL(/\/t\/[a-zA-Z0-9_-]+/);
-    await expect(page.getByText(/¡Pedido recibido!|Tu pedido .* está guardado/i)).toBeVisible();
-    await expect(page.getByRole('link', { name: /Enviar por WhatsApp/i })).toBeVisible();
+    await expect(page.getByText(/¡Pedido guardado!/i)).toBeVisible();
+    await expect(page.getByRole('link', { name: /Enviar pedido por WhatsApp/i })).toBeVisible();
   });
 });

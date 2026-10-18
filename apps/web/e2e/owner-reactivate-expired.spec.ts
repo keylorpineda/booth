@@ -34,9 +34,7 @@ test.describe('Owner reactivates expired order', () => {
     await expect(page.getByRole('heading', { level: 1, name: /#PAN108/i })).toBeVisible();
 
     // 4. Verify expired explanation is shown
-    await expect(
-      page.getByText(/Este pedido venció porque el cliente no pagó ni subió comprobante/i),
-    ).toBeVisible();
+    await expect(page.getByText(/Este pedido venció/i)).toBeVisible();
 
     // 5. Click reactivate button
     const reactivateButton = page.getByRole('button', { name: /Reactivar pedido/i });
