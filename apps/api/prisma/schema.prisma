@@ -89,6 +89,7 @@ model Store {
   businessHours  BusinessHour[]
   paymentMethods PaymentMethod[]
   orders         Order[]
+  verifications  ReceiptVerification[]
 }
 
 // ---------- Catalog ----------
@@ -305,5 +306,43 @@ model PaymentReceipt {
   bytes      Int
   uploadedAt DateTime @default(now()) @db.Timestamptz(3)
 
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order        Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  verification ReceiptVerification?
 }
+
+// ---------- Smart receipts & AI verification ----------
+
+enum ReceiptVerificationStatus {
+  MATCHED
+  AMOUNT_MISMATCH
+  RECIPIENT_MISMATCH
+  DUPLICATE_REFERENCE
+  UNVERIFIED
+}
+
+model ReceiptVerification {
+  id                   String                    @id @default(cuid(2))
+  receiptId            String                    @unique
+  storeId              String
+  status               ReceiptVerificationStatus @default(UNVERIFIED)
+  confidence           String                    @default("LOW")
+  extractedAmountMinor BigInt?
+  extractedCurrency    String?
+  referenceNumber      String?
+  recipientPhone       String?
+  recipientName        String?
+  senderName           String?
+  transactionDate      String?
+  bankName             String?
+  rawSummary           String?
+  rejectionReason      String?
+  verifiedAt           DateTime                  @default(now()) @db.Timestamptz(3)
+  createdAt            DateTime                  @default(now()) @db.Timestamptz(3)
+
+  receipt PaymentReceipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  store   Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId, referenceNumber])
+  @@index([storeId, status])
+}
+
