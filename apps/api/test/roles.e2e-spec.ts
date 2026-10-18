@@ -82,8 +82,7 @@ describe('role-based access control (RBAC) and team memberships', () => {
     await as(staff.accessToken, (h) =>
       h.post('/api/me/products').send({
         name: 'Forbidden Product',
-        slug: 'forbidden-product',
-        price: 1000,
+        priceMinor: 100000,
       }),
     ).expect(403);
 
@@ -102,8 +101,7 @@ describe('role-based access control (RBAC) and team memberships', () => {
     await as(manager.accessToken, (h) =>
       h.post('/api/me/products').send({
         name: 'Manager Product',
-        slug: 'manager-product',
-        price: 2500,
+        priceMinor: 250000,
       }),
     ).expect(201);
 
