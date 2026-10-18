@@ -188,4 +188,87 @@ describe('tenant isolation (store A vs store B)', () => {
     const response = await asB((h) => h.get(`/api/me/products?cursor=${a.productId}`)).expect(200);
     expect(response.body).toEqual({ data: [], nextCursor: null });
   });
+
+  describe('public storefront tenant resolution and isolation', () => {
+    it('resolves Store A via explicit path /api/public/stores/:slug/catalog', async () => {
+      const responseA = await request(app.getHttpServer())
+        .get(`/api/public/stores/${storeA.store.slug}/catalog`)
+        .expect(200);
+
+      const responseB = await request(app.getHttpServer())
+        .get(`/api/public/stores/${storeB.store.slug}/catalog`)
+        .expect(200);
+
+      expect(responseA.body.products).toHaveLength(1);
+      expect(responseA.body.products[0].name).toBe('Secret product');
+      expect(responseB.body.products).toHaveLength(0);
+    });
+
+    it('resolves Store A via Host subdomain header and isolates from Store B', async () => {
+      const responseA = await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('Host', `${storeA.store.slug}.localhost:3000`)
+        .expect(200);
+
+      const responseB = await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('Host', `${storeB.store.slug}.localhost:3000`)
+        .expect(200);
+
+      expect(responseA.body.products).toHaveLength(1);
+      expect(responseA.body.products[0].name).toBe('Secret product');
+      expect(responseB.body.products).toHaveLength(0);
+    });
+
+    it('resolves Store A via X-Forwarded-Host subdomain header', async () => {
+      const responseA = await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('X-Forwarded-Host', `${storeA.store.slug}.booth.app`)
+        .expect(200);
+
+      expect(responseA.body.products).toHaveLength(1);
+      expect(responseA.body.products[0].name).toBe('Secret product');
+    });
+
+    it('resolves Store A via active custom domain and guarantees tenant isolation', async () => {
+      await prisma.customDomain.create({
+        data: {
+          storeId: storeA.store.id,
+          domain: 'panaderia-a.com',
+          status: 'ACTIVE',
+          verificationToken: 'token-a',
+          verifiedAt: new Date(),
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('Host', 'panaderia-a.com')
+        .expect(200);
+
+      expect(response.body.products).toHaveLength(1);
+      expect(response.body.products[0].name).toBe('Secret product');
+    });
+
+    it('returns 404 for unknown or unverified domains', async () => {
+      await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('Host', 'unknown-store.localhost')
+        .expect(404);
+
+      await prisma.customDomain.create({
+        data: {
+          storeId: storeB.store.id,
+          domain: 'pending-b.com',
+          status: 'PENDING',
+          verificationToken: 'token-b',
+        },
+      });
+
+      await request(app.getHttpServer())
+        .get('/api/public/storefront/catalog')
+        .set('Host', 'pending-b.com')
+        .expect(404);
+    });
+  });
 });

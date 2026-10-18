@@ -7,11 +7,14 @@ import { Skeleton } from '../components/ui/skeleton';
 import { CheckoutView } from '../features/checkout/components/checkout-view';
 import { useCatalogQuery, useStoreQuery } from '../features/storefront/api';
 import { StoreProvider } from '../features/storefront/store-context';
+import { getDomainInfo } from '../lib/domain';
 import { applyStoreLocale } from '../lib/i18n';
 import { useStoreTheme } from '../lib/theme';
 
 export function CheckoutPage() {
-  const { slug = '' } = useParams();
+  const params = useParams();
+  const domainInfo = getDomainInfo();
+  const slug = params.slug ?? domainInfo.subdomain ?? '';
   const store = useStoreQuery(slug);
   const catalog = useCatalogQuery(slug);
   useStoreTheme(store.data?.brandColor, store.data?.brandForeground);

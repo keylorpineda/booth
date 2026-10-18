@@ -90,6 +90,7 @@ model Store {
   paymentMethods PaymentMethod[]
   orders         Order[]
   verifications  ReceiptVerification[]
+  customDomain   CustomDomain?
 }
 
 // ---------- Catalog ----------
@@ -344,5 +345,29 @@ model ReceiptVerification {
 
   @@index([storeId, referenceNumber])
   @@index([storeId, status])
+}
+
+// ---------- Domains ----------
+
+enum CustomDomainStatus {
+  PENDING
+  ACTIVE
+  FAILED
+}
+
+model CustomDomain {
+  id                String             @id @default(cuid(2))
+  storeId           String             @unique
+  domain            String             @unique
+  status            CustomDomainStatus @default(PENDING)
+  verificationToken String             @unique
+  verifiedAt        DateTime?          @db.Timestamptz(3)
+  errorMessage      String?
+  createdAt         DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime           @updatedAt @db.Timestamptz(3)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([domain, status])
 }
 

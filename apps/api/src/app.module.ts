@@ -8,6 +8,7 @@ import { AllExceptionsFilter } from './common/errors/all-exceptions.filter';
 import { LoggingModule } from './common/logging/logging.module';
 import { RateLimitModule } from './common/rate-limit/rate-limit.module';
 import { ConfigModule } from './config/config.module';
+import { CustomDomainsModule } from './domains/custom-domains.module';
 import { HealthModule } from './health/health.module';
 import { MediaModule } from './media/media.module';
 import { OrdersModule } from './orders/orders.module';
@@ -38,6 +39,7 @@ const scheduler = process.env.NODE_ENV === 'test' ? [] : [ScheduleModule.forRoot
     OrdersModule,
     PublicModule,
     ReceiptsModule,
+    CustomDomainsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

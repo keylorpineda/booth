@@ -10,7 +10,8 @@ export const storefrontKeys = {
   catalog: (slug: string) => ['storefront', slug, 'catalog'] as const,
 };
 
-const storePath = (slug: string) => `/public/stores/${encodeURIComponent(slug)}`;
+const storePath = (slug: string) =>
+  slug ? `/public/stores/${encodeURIComponent(slug)}` : '/public/storefront';
 
 /*
  * First-load storefront data: typed, not validated at runtime (see api-client), and the first

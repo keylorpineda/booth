@@ -1,9 +1,12 @@
 import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from './root-layout';
+import { getDomainInfo } from '../lib/domain';
 import { HomePage } from '../pages/home-page';
 import { NotFoundPage } from '../pages/not-found-page';
 import { StorefrontPage } from '../pages/storefront-page';
+
+const domainInfo = getDomainInfo();
 
 /**
  * Storefront loads eagerly (first visit); checkout, tracking and every owner page are split into
@@ -13,7 +16,11 @@ export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/', element: <HomePage /> },
+      { path: '/', element: domainInfo.isStoreDomain ? <StorefrontPage /> : <HomePage /> },
+      {
+        path: '/checkout',
+        lazy: async () => ({ Component: (await import('../pages/checkout-page')).CheckoutPage }),
+      },
       { path: '/s/:slug', element: <StorefrontPage /> },
       {
         path: '/s/:slug/checkout',

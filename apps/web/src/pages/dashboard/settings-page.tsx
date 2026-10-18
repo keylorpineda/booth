@@ -5,13 +5,14 @@ import { ErrorState } from '../../components/feedback/error-state';
 import { Skeleton } from '../../components/ui/skeleton';
 import { TabPanel, Tabs } from '../../components/ui/tabs';
 import { useOwnerStore } from '../../features/dashboard/api';
+import { CustomDomainPanel } from '../../features/settings/domain/custom-domain-panel';
 import { HoursPanel } from '../../features/settings/hours/hours-panel';
 import { LocalizationPanel } from '../../features/settings/localization/localization-panel';
 import { OrderingPanel } from '../../features/settings/ordering/ordering-panel';
 import { PaymentMethodsPanel } from '../../features/settings/payment-methods/payment-methods-panel';
 import { ProfilePanel } from '../../features/settings/profile/profile-panel';
 
-const TABS = ['profile', 'delivery', 'payments', 'hours', 'localization'] as const;
+const TABS = ['profile', 'domain', 'delivery', 'payments', 'hours', 'localization'] as const;
 type SettingsTab = (typeof TABS)[number];
 
 function isSettingsTab(value: string | null): value is SettingsTab {
@@ -43,6 +44,13 @@ export function SettingsPage() {
         <TabPanel value="profile">
           {store.data ? (
             <ProfilePanel store={store.data} />
+          ) : (
+            <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
+          )}
+        </TabPanel>
+        <TabPanel value="domain">
+          {store.data ? (
+            <CustomDomainPanel store={store.data} />
           ) : (
             <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
           )}
