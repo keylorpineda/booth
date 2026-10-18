@@ -53,10 +53,6 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
       } catch {
         // Ignore invalid URL parsing from origin header
       }
-      if (config.env !== 'production') {
-        callback(null, true);
-        return;
-      }
       callback(null, false);
     },
     credentials: true,

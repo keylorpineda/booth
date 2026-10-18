@@ -199,9 +199,10 @@ describe('tenant isolation (store A vs store B)', () => {
         .get(`/api/public/stores/${storeB.store.slug}/catalog`)
         .expect(200);
 
-      expect(responseA.body.products).toHaveLength(1);
-      expect(responseA.body.products[0].name).toBe('Secret product');
-      expect(responseB.body.products).toHaveLength(0);
+      expect(responseA.body.categories[0].products).toHaveLength(1);
+      expect(responseA.body.categories[0].products[0].name).toBe('Secret product');
+      expect(responseB.body.categories).toHaveLength(0);
+      expect(responseB.body.uncategorized).toHaveLength(0);
     });
 
     it('resolves Store A via Host subdomain header and isolates from Store B', async () => {
@@ -215,9 +216,10 @@ describe('tenant isolation (store A vs store B)', () => {
         .set('Host', `${storeB.store.slug}.localhost:3000`)
         .expect(200);
 
-      expect(responseA.body.products).toHaveLength(1);
-      expect(responseA.body.products[0].name).toBe('Secret product');
-      expect(responseB.body.products).toHaveLength(0);
+      expect(responseA.body.categories[0].products).toHaveLength(1);
+      expect(responseA.body.categories[0].products[0].name).toBe('Secret product');
+      expect(responseB.body.categories).toHaveLength(0);
+      expect(responseB.body.uncategorized).toHaveLength(0);
     });
 
     it('resolves Store A via X-Forwarded-Host subdomain header', async () => {
@@ -226,8 +228,8 @@ describe('tenant isolation (store A vs store B)', () => {
         .set('X-Forwarded-Host', `${storeA.store.slug}.booth.app`)
         .expect(200);
 
-      expect(responseA.body.products).toHaveLength(1);
-      expect(responseA.body.products[0].name).toBe('Secret product');
+      expect(responseA.body.categories[0].products).toHaveLength(1);
+      expect(responseA.body.categories[0].products[0].name).toBe('Secret product');
     });
 
     it('resolves Store A via active custom domain and guarantees tenant isolation', async () => {
@@ -246,8 +248,8 @@ describe('tenant isolation (store A vs store B)', () => {
         .set('Host', 'panaderia-a.com')
         .expect(200);
 
-      expect(response.body.products).toHaveLength(1);
-      expect(response.body.products[0].name).toBe('Secret product');
+      expect(response.body.categories[0].products).toHaveLength(1);
+      expect(response.body.categories[0].products[0].name).toBe('Secret product');
     });
 
     it('returns 404 for unknown or unverified domains', async () => {
