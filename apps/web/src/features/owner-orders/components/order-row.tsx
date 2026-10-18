@@ -6,6 +6,7 @@ import { type OwnerOrderSummary } from '@booth/shared';
 
 import { OrderStatusBadge } from './order-status-badge';
 import { PaymentBadge } from './payment-badge';
+import { ReceiptVerificationBadge } from './receipt-verification-badge';
 import { formatRelativeTime, minutesUntil } from '../../../lib/relative-time';
 
 interface OrderRowProps {
@@ -48,6 +49,9 @@ export function OrderRow({ order, now, formatMoney }: OrderRowProps) {
         <div className="flex flex-wrap items-center gap-2">
           <OrderStatusBadge status={order.status} />
           <PaymentBadge status={order.paymentStatus} cash={order.paymentMethodKind === 'CASH'} />
+          {order.receiptVerificationStatus ? (
+            <ReceiptVerificationBadge status={order.receiptVerificationStatus} />
+          ) : null}
           <span className="inline-flex items-center gap-1 text-xs text-ink-muted">
             <FulfillmentIcon className="size-3.5" />
             {t(`orders.fulfillment.${order.fulfillment}`)}

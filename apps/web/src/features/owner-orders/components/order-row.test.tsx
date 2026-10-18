@@ -60,4 +60,14 @@ describe('OrderRow', () => {
     expect(screen.getByText('Efectivo al entregar')).toBeInTheDocument();
     expect(screen.queryByText('Sin pagar')).not.toBeInTheDocument();
   });
+
+  it('displays the AI verification badge when receipt verification status is present', () => {
+    renderRow(order({ receiptVerificationStatus: 'MATCHED' }));
+    expect(screen.getByText('Verificado por IA')).toBeInTheDocument();
+  });
+
+  it('displays warning badge when receipt verification status has amount mismatch', () => {
+    renderRow(order({ receiptVerificationStatus: 'AMOUNT_MISMATCH' }));
+    expect(screen.getByText('Monto diferente')).toBeInTheDocument();
+  });
 });
