@@ -11,4 +11,5 @@ export * from './orders';
 export * from './payments';
 export * from './phone';
 export * from './privacy';
+export * from './receipts';
 export * from './stores';
