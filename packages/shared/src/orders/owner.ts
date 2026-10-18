@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 import { fulfillmentSchema, orderStatusSchema, paymentStatusSchema } from './status';
+import {
+  receiptVerificationResultSchema,
+  receiptVerificationStatusSchema,
+} from '../receipts/schema';
 
 /** `status` accepts a comma-separated list (`?status=PENDING,CONFIRMED`). */
 export const ownerOrderListQuerySchema = z.object({
@@ -35,6 +39,7 @@ export const ownerOrderSummarySchema = z.object({
   totalMinor: z.number().int(),
   itemCount: z.number().int(),
   hasReceipt: z.boolean(),
+  receiptVerificationStatus: receiptVerificationStatusSchema.nullable().optional(),
   expiresAt: z.string().nullable(),
   createdAt: z.string(),
 });
@@ -66,7 +71,12 @@ export const ownerOrderSchema = ownerOrderSummarySchema.extend({
     }),
   ),
   receipt: z
-    .object({ mimeType: z.string(), bytes: z.number().int(), uploadedAt: z.string() })
+    .object({
+      mimeType: z.string(),
+      bytes: z.number().int(),
+      uploadedAt: z.string(),
+      verification: receiptVerificationResultSchema.nullable().optional(),
+    })
     .nullable(),
   trackingToken: z.string(),
   privacyConsentAt: z.string(),
