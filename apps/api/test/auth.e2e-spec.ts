@@ -119,6 +119,7 @@ describe('auth', () => {
       expect(sessionSchema.parse(response.body)).toEqual({
         user: owner.body.user,
         store: null,
+        role: null,
       });
     });
 

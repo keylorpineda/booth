@@ -16,7 +16,7 @@ describe('RolesGuard', () => {
   });
 
   const createMockContext = (
-    authContext: { role?: string | null } | undefined,
+    authContext: { storeId?: string | null; role?: string | null } | undefined,
   ): ExecutionContext => {
     const request = {
       auth: authContext,
@@ -48,7 +48,7 @@ describe('RolesGuard', () => {
       return undefined;
     });
 
-    const context = createMockContext({ role: 'STAFF' });
+    const context = createMockContext({ storeId: 's1', role: 'STAFF' });
     expect(guard.canActivate(context)).toBe(true);
   });
 
@@ -59,8 +59,25 @@ describe('RolesGuard', () => {
       return undefined;
     });
 
-    const context = createMockContext({ role: 'STAFF' });
+    const context = createMockContext({ storeId: 's1', role: 'STAFF' });
     expect(guard.canActivate(context)).toBe(true);
+  });
+
+  it('throws AppException ONBOARDING_REQUIRED if user has no storeId', () => {
+    jest.spyOn(reflector, 'getAllAndOverride').mockImplementation((key) => {
+      if (key === IS_PUBLIC) return false;
+      if (key === ROLES_KEY) return ['OWNER'];
+      return undefined;
+    });
+
+    const context = createMockContext({ storeId: null, role: null });
+    expect(() => guard.canActivate(context)).toThrow(AppException);
+    try {
+      guard.canActivate(context);
+    } catch (err) {
+      expect(err).toBeInstanceOf(AppException);
+      expect((err as AppException).code).toBe('ONBOARDING_REQUIRED');
+    }
   });
 
   it('throws AppException FORBIDDEN if user role is not in required roles', () => {
@@ -70,18 +87,13 @@ describe('RolesGuard', () => {
       return undefined;
     });
 
-    const context = createMockContext({ role: 'STAFF' });
+    const context = createMockContext({ storeId: 's1', role: 'STAFF' });
     expect(() => guard.canActivate(context)).toThrow(AppException);
-  });
-
-  it('throws AppException FORBIDDEN if request has no auth context or role', () => {
-    jest.spyOn(reflector, 'getAllAndOverride').mockImplementation((key) => {
-      if (key === IS_PUBLIC) return false;
-      if (key === ROLES_KEY) return ['OWNER'];
-      return undefined;
-    });
-
-    const context = createMockContext(undefined);
-    expect(() => guard.canActivate(context)).toThrow(AppException);
+    try {
+      guard.canActivate(context);
+    } catch (err) {
+      expect(err).toBeInstanceOf(AppException);
+      expect((err as AppException).code).toBe('FORBIDDEN');
+    }
   });
 });

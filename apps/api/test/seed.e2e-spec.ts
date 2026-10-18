@@ -59,7 +59,7 @@ describe('demo seed (e2e)', () => {
     const firstCounts = await snapshotCounts();
 
     expect(firstCounts).toEqual({
-      users: 2,
+      users: 3,
       stores: 2,
       categories: 8,
       products: 27,

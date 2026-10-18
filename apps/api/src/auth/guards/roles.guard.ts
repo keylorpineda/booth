@@ -34,7 +34,17 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const userRole = request.auth?.role;
+    const auth = request.auth;
+
+    if (!auth?.storeId) {
+      throw new AppException(
+        'ONBOARDING_REQUIRED',
+        'Create your store first',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const userRole = auth.role;
 
     if (!userRole || !requiredRoles.includes(userRole)) {
       throw new AppException(
