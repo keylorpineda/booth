@@ -11,8 +11,10 @@ import { OwnerOrdersController } from './owner/owner-orders.controller';
 import { OwnerOrdersService } from './owner/owner-orders.service';
 import { StockService } from './stock.service';
 import { TrackingService } from './tracking.service';
+import { ReceiptsModule } from '../receipts/receipts.module';
 
 @Module({
+  imports: [ReceiptsModule],
   controllers: [InternalJobsController, OwnerOrdersController],
   providers: [
     StockService,

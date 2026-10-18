@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger, Optional } from '@nestjs/common';
 
 import { readableForeground, type Tracking } from '@booth/shared';
 
@@ -8,6 +8,7 @@ import { notFound } from '../common/errors/not-found';
 import { type ReceiptType } from '../media/image-file';
 import { MEDIA_STORAGE, type MediaStorage } from '../media/media-storage';
 import { PrismaService } from '../prisma/prisma.service';
+import { ReceiptVerificationService } from '../receipts/receipt-verification.service';
 
 const OPEN_STATUSES = new Set(['PENDING', 'CONFIRMED', 'PREPARING', 'READY']);
 
@@ -22,10 +23,13 @@ const trackingInclude = {
 /** Public order view by unguessable token. The short order code never grants access. */
 @Injectable()
 export class TrackingService {
+  private readonly logger = new Logger(TrackingService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly expiration: OrderExpirationService,
     @Inject(MEDIA_STORAGE) private readonly storage: MediaStorage,
+    @Optional() private readonly receiptVerification?: ReceiptVerificationService,
   ) {}
 
   async get(token: string): Promise<Tracking> {
@@ -48,7 +52,7 @@ export class TrackingService {
       `booth/${order.storeId}/receipts`,
       format,
     );
-    const updated = await this.prisma.$transaction(async (tx) => {
+    const receiptId = await this.prisma.$transaction(async (tx) => {
       // Conditional: if the order expired or was cancelled meanwhile, nothing changes.
       const { count } = await tx.order.updateMany({
         where: {
@@ -58,8 +62,8 @@ export class TrackingService {
         },
         data: { paymentStatus: 'RECEIPT_SUBMITTED', expiresAt: null },
       });
-      if (count === 0) return false;
-      await tx.paymentReceipt.upsert({
+      if (count === 0) return null;
+      const receipt = await tx.paymentReceipt.upsert({
         where: { orderId: order.id },
         create: {
           orderId: order.id,
@@ -74,10 +78,10 @@ export class TrackingService {
           uploadedAt: new Date(),
         },
       });
-      return true;
+      return receipt.id;
     });
 
-    if (!updated) {
+    if (!receiptId) {
       await this.storage.deletePrivate(stored.publicId);
       throw new AppException(
         'ORDER_NOT_PAYABLE',
@@ -86,6 +90,17 @@ export class TrackingService {
       );
     }
     if (order.receipt) await this.storage.deletePrivate(order.receipt.publicId);
+
+    if (this.receiptVerification) {
+      try {
+        await this.receiptVerification.verifyReceipt(order.id, receiptId, file, format);
+      } catch (error) {
+        this.logger.warn(
+          `AI receipt verification skipped due to error: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
+    }
+
     return this.get(token);
   }
 
