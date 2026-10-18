@@ -67,6 +67,36 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Migrate & seed test database
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+        run: |
+          pnpm --filter @booth/api prisma:deploy
+          pnpm --filter @booth/api db:seed
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @booth/web exec playwright install --with-deps chromium webkit
+
+      - name: Run Playwright E2E tests
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+          JWT_ACCESS_SECRET: Oko9AEnZMMjUkImGgbzFu6TK0H4Gjm70k58-qm8V-J6vDXrpN-sxsg5pRXfAAfIm
+          CORS_ORIGINS: http://localhost:5173
+          WEB_PUBLIC_URL: http://localhost:5173
+          PORT: 3000
+          NODE_ENV: test
+          CI: true
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
       - name: Trigger Render Deploy Hook
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
