@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { type Request } from 'express';
 
 import { type TenantResolver } from './tenant-resolver';
@@ -13,10 +13,11 @@ export class CustomDomainTenantResolver implements TenantResolver {
 
   constructor(
     private readonly prisma: PrismaService,
-    excludedDomains: string[] = ['localhost', 'booth.app'],
+    @Optional() excludedDomains?: string[],
   ) {
+    const defaultExcluded = ['localhost', 'booth.app'];
     const envBase = process.env.APP_BASE_DOMAIN?.trim().toLowerCase();
-    const domains = new Set(excludedDomains.map((d) => d.toLowerCase()));
+    const domains = new Set((excludedDomains ?? defaultExcluded).map((d) => d.toLowerCase()));
     if (envBase) {
       domains.add(envBase);
     }
