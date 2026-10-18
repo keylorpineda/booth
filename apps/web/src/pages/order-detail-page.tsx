@@ -15,6 +15,7 @@ import { OrderActionsCard } from '../features/owner-orders/components/order-acti
 import { OrderItemsCard } from '../features/owner-orders/components/order-items-card';
 import { OrderStatusBadge } from '../features/owner-orders/components/order-status-badge';
 import { OrderTimeline } from '../features/owner-orders/components/order-timeline';
+import { ReceiptVerificationCard } from '../features/owner-orders/components/receipt-verification-card';
 import { ApiError } from '../lib/api-client';
 
 /** Everything about one order before acting on it. */
@@ -86,6 +87,7 @@ export function OrderDetailPage() {
         </div>
         {/* Actions come first on phones, where the owner acts from the top of the page. */}
         <div className="order-first flex flex-col gap-4 lg:order-none">
+          {data.receipt ? <ReceiptVerificationCard order={data} formatMoney={formatMoney} /> : null}
           <OrderActionsCard order={data} />
           <CustomerCard order={data} />
           <FulfillmentCard order={data} />

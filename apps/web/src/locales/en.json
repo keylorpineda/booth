@@ -388,6 +388,48 @@
         "COMPLETED": "Order delivered. No more steps.",
         "CANCELLED": "Order cancelled. Its stock is back in the catalog."
       }
+    },
+    "receiptVerification": {
+      "title": "Receipt verification",
+      "aiBadge": "AI",
+      "status": {
+        "MATCHED": "AI Verified",
+        "AMOUNT_MISMATCH": "Amount mismatch",
+        "DUPLICATE_REFERENCE": "Duplicate voucher",
+        "RECIPIENT_MISMATCH": "Recipient mismatch",
+        "UNVERIFIED": "Needs manual review"
+      },
+      "statusDescription": {
+        "MATCHED": "AI confirmed the amount, destination, and reference number match this order.",
+        "AMOUNT_MISMATCH": "The transferred amount does not match the order total. Check the receipt details.",
+        "DUPLICATE_REFERENCE": "This reference number was already used in another approved order.",
+        "RECIPIENT_MISMATCH": "The recipient phone or account does not match your store details.",
+        "UNVERIFIED": "AI could not verify the voucher details with certainty. Please review manually."
+      },
+      "confidence": {
+        "label": "AI Confidence",
+        "HIGH": "High",
+        "MEDIUM": "Medium",
+        "LOW": "Low"
+      },
+      "fields": {
+        "detectedAmount": "Detected amount",
+        "expectedAmount": "Order total",
+        "reference": "Reference number",
+        "bank": "Bank / App",
+        "recipientPhone": "Recipient phone",
+        "recipientName": "Recipient name",
+        "sender": "Sender",
+        "date": "Transaction date",
+        "verifiedAt": "Processed at"
+      },
+      "actions": {
+        "viewReceipt": "View receipt",
+        "confirmPayment": "Confirm payment",
+        "paymentConfirmed": "Payment confirmed"
+      },
+      "summary": "AI Summary",
+      "noVerification": "Receipt uploaded before automatic verification was enabled."
     }
   },
   "catalog": {

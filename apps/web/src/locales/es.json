@@ -388,6 +388,48 @@
         "COMPLETED": "Pedido entregado. No hay más pasos.",
         "CANCELLED": "Pedido cancelado. El stock ya volvió al catálogo."
       }
+    },
+    "receiptVerification": {
+      "title": "Verificación de comprobante",
+      "aiBadge": "IA",
+      "status": {
+        "MATCHED": "Verificado por IA",
+        "AMOUNT_MISMATCH": "Monto diferente",
+        "DUPLICATE_REFERENCE": "Comprobante duplicado",
+        "RECIPIENT_MISMATCH": "Destino diferente",
+        "UNVERIFIED": "Revisión manual requerida"
+      },
+      "statusDescription": {
+        "MATCHED": "La IA confirmó que el monto, destino y número de comprobante coinciden con el pedido.",
+        "AMOUNT_MISMATCH": "El monto transferido no coincide con el total del pedido. Revisa el comprobante.",
+        "DUPLICATE_REFERENCE": "Este número de comprobante ya fue utilizado en otro pedido aprobado.",
+        "RECIPIENT_MISMATCH": "El teléfono o cuenta de destino no coincide con los datos de tu tienda.",
+        "UNVERIFIED": "La IA no pudo verificar los datos con certeza. Por favor revisa manualmente."
+      },
+      "confidence": {
+        "label": "Confianza de IA",
+        "HIGH": "Alta",
+        "MEDIUM": "Media",
+        "LOW": "Baja"
+      },
+      "fields": {
+        "detectedAmount": "Monto detectado",
+        "expectedAmount": "Total del pedido",
+        "reference": "N.º de comprobante",
+        "bank": "Banco / App",
+        "recipientPhone": "Teléfono destino",
+        "recipientName": "Nombre destino",
+        "sender": "Emisor",
+        "date": "Fecha de transacción",
+        "verifiedAt": "Procesado el"
+      },
+      "actions": {
+        "viewReceipt": "Ver comprobante",
+        "confirmPayment": "Confirmar pago",
+        "paymentConfirmed": "Pago confirmado"
+      },
+      "summary": "Resumen de IA",
+      "noVerification": "Comprobante enviado antes de activar la verificación automática."
     }
   },
   "catalog": {
