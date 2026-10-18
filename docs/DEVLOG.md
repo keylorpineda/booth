@@ -551,3 +551,22 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - The scheduled order expiration job checks if `JOB_SECRET` is populated before calling the API, ensuring automated runs skip cleanly without spurious failures when secrets are not yet configured.
 - The Render Deploy Hook in `ci.yml` triggers only on pushes to `main` when `RENDER_DEPLOY_HOOK_URL` is set, preserving decoupled build triggers while automating production releases.
+
+---
+
+## AI receipts: Gemini vision extractor and structured schemas (#76) — 2026-10-17
+
+**Built**
+
+- `@booth/shared`: added receipt extraction and verification schemas in `packages/shared/src/receipts/schema.ts` (`receiptExtractionSchema`, `receiptVerificationStatusSchema`, `receiptConfidenceSchema`, `receiptVerificationResultSchema`), exported from `@booth/shared`.
+- Added unit tests in `packages/shared/src/receipts/receipts.test.ts` covering valid payloads, nullable missing fields, minor unit amounts, and status enums.
+- Added optional `GEMINI_API_KEY` to `apps/api/src/config/env.schema.ts` and `AppConfig`, documented in `apps/api/.env.example`.
+- Implemented `ReceiptExtractorService` (`apps/api/src/receipts/receipt-extractor.service.ts`) using Gemini 2.0 Flash REST endpoint with structured JSON output schema, graceful offline fallback when no API key is provided, network timeouts, and image URL fetching.
+- Added comprehensive unit tests in `apps/api/src/receipts/receipt-extractor.service.spec.ts` covering unconfigured key handling, SINPE Móvil minor unit extraction, USD receipts, blurry/unreadable images, API error handling, and request timeouts.
+- Updated `apps/api/test/setup/global-setup.ts` to handle offline Postgres connections gracefully during fast unit test execution.
+
+**Key decisions**
+
+- Direct REST call to Gemini 2.0 Flash (`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`) with `responseMimeType: "application/json"` using Node 24 native `fetch`, eliminating additional heavy SDK dependencies.
+- Extracted amounts are normalized into integer minor units using `@booth/shared` (`toMinor`) with ISO 4217 standard currency exponents (e.g. CRC exponent 2 céntimos).
+- Safe fallback: if `GEMINI_API_KEY` is omitted or unreadable/blurry receipt is encountered, extractor returns `null` or `confidence: 'LOW'`, allowing downstream verification to mark the receipt as `UNVERIFIED` for owner review without failing the request or blocking the customer.
