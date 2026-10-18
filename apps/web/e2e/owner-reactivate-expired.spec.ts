@@ -10,7 +10,11 @@ test.describe('Owner reactivates expired order', () => {
 
     // 2. Navigate to orders page and switch to "Cancelados y vencidos" tab
     await expect(page).toHaveURL(/\/dashboard/);
-    await page.goto('/dashboard/orders');
+    await page
+      .getByRole('link', { name: /Pedidos/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/dashboard\/orders/);
     const closedTab = page.getByRole('tab', { name: /Cancelados y vencidos/i });
     await expect(closedTab).toBeVisible();
     await closedTab.click();

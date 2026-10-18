@@ -35,7 +35,7 @@ test.describe('Checkout with delivery and receipt upload', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Panadería La Esquina');
 
     // 2. Add product to cart
-    const addButton = page.getByRole('button', { name: /Agregar .* al pedido/i }).first();
+    const addButton = page.getByRole('button', { name: /^Agregar /i }).first();
     await expect(addButton).toBeVisible();
     await addButton.click();
 

@@ -19,7 +19,11 @@ test.describe('Demo mode read-only restrictions', () => {
     );
 
     // 3. Navigate to settings and verify the save button is disabled
-    await page.goto('/dashboard/settings');
+    await page
+      .getByRole('link', { name: /Ajustes|Settings/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/dashboard\/settings/);
     const settingsSaveButton = page.getByRole('button', {
       name: /Guardar cambios|Save changes/i,
     });
@@ -27,7 +31,11 @@ test.describe('Demo mode read-only restrictions', () => {
     await expect(settingsSaveButton).toBeDisabled();
 
     // 4. Navigate to catalog and edit a product
-    await page.goto('/dashboard/catalog');
+    await page
+      .getByRole('link', { name: /Catálogo|Catalog/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/dashboard\/catalog/);
     const editProductLink = page.locator('a[href*="/catalog/products/"]').first();
     await expect(editProductLink).toBeVisible();
     await editProductLink.click();
