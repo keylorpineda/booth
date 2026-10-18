@@ -91,7 +91,7 @@ test.describe('Checkout with delivery and receipt upload', () => {
     await fileInput.setInputFiles(fixturePath);
 
     // 11. Verify receipt upload indicator
-    await expect(page.getByText(/Comprobante recibido|Comprobante enviado/i)).toBeVisible({
+    await expect(page.getByText(/Comprobante recibido|Comprobante enviado/i).first()).toBeVisible({
       timeout: 10_000,
     });
   });
