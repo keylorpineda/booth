@@ -16,7 +16,11 @@ import { OrderExpirationService } from '../order-expiration.service';
 export const orderDetailInclude = {
   items: { orderBy: { id: 'asc' } },
   events: { orderBy: { createdAt: 'asc' } },
-  receipt: true,
+  receipt: {
+    include: {
+      verification: true,
+    },
+  },
 } as const;
 
 /** "+506 7777", "(415) 555-2671", "7777": digits with phone punctuation, at least three digits. */
@@ -57,7 +61,15 @@ export class OwnerOrdersService {
     const orders = await this.prisma.order.findMany({
       where,
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-      include: { receipt: { select: { id: true } }, _count: { select: { items: true } } },
+      include: {
+        receipt: {
+          select: {
+            id: true,
+            verification: { select: { status: true } },
+          },
+        },
+        _count: { select: { items: true } },
+      },
       take: query.limit + 1,
       ...(query.cursor && { cursor: { id: query.cursor }, skip: 1 }),
     });

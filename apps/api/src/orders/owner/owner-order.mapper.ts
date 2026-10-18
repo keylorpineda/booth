@@ -1,21 +1,27 @@
-import { type OwnerOrder, type OwnerOrderSummary } from '@booth/shared';
+import {
+  type OwnerOrder,
+  type OwnerOrderSummary,
+  type ReceiptConfidence,
+  type ReceiptVerificationStatus,
+} from '@booth/shared';
 
 import {
   type Order,
   type OrderItem,
   type OrderStatusEvent,
   type PaymentReceipt,
+  type ReceiptVerification,
 } from '../../generated/prisma/client';
 
 type OrderForSummary = Order & {
-  receipt: Pick<PaymentReceipt, 'id'> | null;
+  receipt: { id: string; verification: { status: ReceiptVerificationStatus } | null } | null;
   _count: { items: number };
 };
 
 type OrderForDetail = Order & {
   items: OrderItem[];
   events: OrderStatusEvent[];
-  receipt: PaymentReceipt | null;
+  receipt: (PaymentReceipt & { verification: ReceiptVerification | null }) | null;
 };
 
 /** Owner list row. Money leaves the API as JSON numbers of minor units. */
@@ -34,6 +40,7 @@ export function toOwnerOrderSummary(order: OrderForSummary): OwnerOrderSummary {
     totalMinor: Number(order.totalMinor),
     itemCount: order._count.items,
     hasReceipt: order.receipt !== null,
+    receiptVerificationStatus: order.receipt?.verification?.status ?? null,
     expiresAt: order.expiresAt?.toISOString() ?? null,
     createdAt: order.createdAt.toISOString(),
   };
@@ -45,7 +52,14 @@ export function toOwnerOrder(order: OrderForDetail): OwnerOrder {
     ...toOwnerOrderSummary({
       ...order,
       _count: { items: order.items.length },
-      receipt: order.receipt ? { id: order.receipt.id } : null,
+      receipt: order.receipt
+        ? {
+            id: order.receipt.id,
+            verification: order.receipt.verification
+              ? { status: order.receipt.verification.status }
+              : null,
+          }
+        : null,
     }),
     customerNote: order.customerNote,
     deliveryZoneName: order.deliveryZoneName,
@@ -71,6 +85,29 @@ export function toOwnerOrder(order: OrderForDetail): OwnerOrder {
           mimeType: order.receipt.mimeType,
           bytes: order.receipt.bytes,
           uploadedAt: order.receipt.uploadedAt.toISOString(),
+          verification: order.receipt.verification
+            ? {
+                status: order.receipt.verification.status,
+                confidence: order.receipt.verification.confidence as ReceiptConfidence,
+                extracted: {
+                  amountMinor:
+                    order.receipt.verification.extractedAmountMinor !== null
+                      ? Number(order.receipt.verification.extractedAmountMinor)
+                      : null,
+                  currency: order.receipt.verification.extractedCurrency,
+                  recipientPhone: order.receipt.verification.recipientPhone,
+                  recipientName: order.receipt.verification.recipientName,
+                  senderName: order.receipt.verification.senderName,
+                  transactionDate: order.receipt.verification.transactionDate,
+                  referenceNumber: order.receipt.verification.referenceNumber,
+                  bankName: order.receipt.verification.bankName,
+                  confidence: order.receipt.verification.confidence as ReceiptConfidence,
+                  rawSummary: order.receipt.verification.rawSummary,
+                },
+                mismatchReason: order.receipt.verification.rejectionReason,
+                verifiedAt: order.receipt.verification.verifiedAt.toISOString(),
+              }
+            : null,
         }
       : null,
     trackingToken: order.trackingToken,
