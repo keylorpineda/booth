@@ -140,12 +140,12 @@ describe('demo seed (e2e)', () => {
 
     const loginRes = await http()
       .post('/api/auth/login')
-      .send({ email: PANADERIA_SEED.owner.email, password: DEMO_PASSWORD })
+      .send({ email: CAFE_SEED.owner.email, password: DEMO_PASSWORD })
       .expect(200);
 
     const auth = authResponseSchema.parse(loginRes.body);
     expect(auth.user.isDemo).toBe(true);
-    expect(auth.store?.slug).toBe('panaderia-demo');
+    expect(auth.store?.slug).toBe('cafe-demo');
 
     const ordersRes = await http()
       .get('/api/me/orders')
@@ -163,5 +163,13 @@ describe('demo seed (e2e)', () => {
       .send({ name: 'Hacked Name' })
       .expect(403);
     expect(apiErrorSchema.parse(writeRes.body).error.code).toBe('DEMO_READ_ONLY');
+
+    const panaderiaLogin = await http()
+      .post('/api/auth/login')
+      .send({ email: PANADERIA_SEED.owner.email, password: DEMO_PASSWORD })
+      .expect(200);
+    const panaderiaAuth = authResponseSchema.parse(panaderiaLogin.body);
+    expect(panaderiaAuth.user.isDemo).toBe(false);
+    expect(panaderiaAuth.store?.slug).toBe('panaderia-demo');
   });
 });
