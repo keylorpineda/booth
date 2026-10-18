@@ -616,3 +616,34 @@ One entry per phase: what was built, key decisions, problems solved.
 - Direct one-click confirm payment in `ReceiptVerificationCard`: Allows store owners to inspect discrepancies (e.g. slight overpayment or tip) and immediately approve the payment without having to navigate to secondary action menus.
 - Connected component pattern with test injection: `ReceiptVerificationCard` seamlessly connects to `useOrderActions` in production while accepting optional injected actions for lightweight, fast unit testing without requiring global query providers.
 - Status badges in order list: Surfacing the AI verification status directly in `OrderRow` allows merchants to identify orders needing attention (such as `Monto diferente` or `Comprobante duplicado`) immediately from the list view without opening each order.
+
+---
+
+## Playwright E2E tests in CI (#30) — 2026-10-17
+
+**Built**
+
+- Installed `@playwright/test` in `@booth/web` and configured cross-browser test runner in `apps/web/playwright.config.ts`:
+  - Desktop Chromium (1280×720), Mobile Chromium / Pixel 5 (360×800, touch).
+  - Desktop WebKit (1280×720), Mobile WebKit / iPhone 12 (360×800, touch).
+  - Retains traces and videos on failure, captures screenshots only on failure.
+  - Spawns both backend API and Vite dev web servers automatically with health-check readiness (`/health` on port 3000 and port 5173).
+- Implemented 5 complete browser E2E test scenarios in `apps/web/e2e/`:
+  1. `checkout-pickup.spec.ts`: Customer storefront navigation, item selection, floating cart bar bump, slide-over sheet checkout, pickup fulfillment, cash payment, privacy consent checkbox, order placement, and verification of WhatsApp order tracking link.
+  2. `checkout-delivery-receipt.spec.ts`: Storefront navigation, delivery fulfillment selection, zone fee calculation, exact address entry, SINPE transfer payment selection, privacy consent, order submission, transfer details verification, and payment receipt file upload.
+  3. `owner-order-flow.spec.ts`: Store owner authentication (`panaderia@demo.booth.app`), navigation to orders dashboard, opening pending order `#PAN101`, and sequentially advancing through full order lifecycle (`PENDING` -> `CONFIRMED` -> `PREPARING` -> `READY` -> `COMPLETED`).
+  4. `owner-reactivate-expired.spec.ts`: Owner login, navigating to closed/expired orders tab, inspecting expired order `#PAN108` with expired explanation banner, and reactivating order back to active `PENDING` state.
+  5. `demo-mode.spec.ts`: Logging in with read-only demo credentials (`cafe@demo.booth.app`), asserting visible `DemoBanner`, verifying that settings save button is disabled, and verifying that product edit save button in catalog is disabled.
+- Updated `apps/api` seed runner (`seed-types.ts`, `seed-runner.ts`, `panaderia-seed.ts`, `cafe-seed.ts`):
+  - Added optional `isDemo` parameter on `DemoStoreSeed.owner` (defaults to `true`).
+  - Configured `panaderia-demo` owner with `isDemo: false` to allow full order management and reactivation in E2E tests, while keeping `cafe-demo` owner with `isDemo: true` as the canonical read-only demo showcase.
+- Integrated automated Playwright E2E pipeline into `.github/workflows/ci.yml`:
+  - Migrates and seeds PostgreSQL test container service with `DATABASE_URL_TEST`.
+  - Installs Chromium and WebKit system binaries with dependencies via `playwright install --with-deps chromium webkit`.
+  - Runs full E2E test suite in CI with failure report artifact upload (`actions/upload-artifact@v4`).
+- Refined `apps/web/vite.config.ts` to explicitly isolate unit tests (`src/**/*.{test,spec}.{ts,tsx}`) from E2E specs (`e2e/**`), preventing Vitest runner conflicts.
+
+**Key decisions**
+
+- Playwright network route interception for Cloudinary upload in `checkout-delivery-receipt.spec.ts`: Intercepts `**/public/orders/*/receipt` to fetch the real placed order via `page.request.get` and respond with verified receipt metadata, ensuring tests run reliably in CI without third-party external cloud storage dependencies.
+- Distinct demo vs active accounts: Having `cafe@demo.booth.app` as `isDemo: true` and `panaderia@demo.booth.app` as `isDemo: false` allows exercising both the restrictive read-only security guards and the full order state machine without artificial test bypasses.

@@ -190,7 +190,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 - [ ] Analytics page: orders and revenue per day, top products, store views vs orders
 - [ ] Printable QR code for the store link
 - [ ] Portuguese (`pt-BR`) locale
-- [ ] Playwright E2E (checkout, tracking, owner order flow) in CI
+- [x] Playwright E2E (checkout, tracking, owner order flow) in CI (#30)
 - [ ] Nightly demo reset (scheduled workflow re-running the seed)
 
 **Done when**
