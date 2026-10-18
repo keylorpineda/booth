@@ -203,7 +203,7 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 - [x] AI receipts: Gemini vision extractor and structured schemas (#76)
 - [x] AI receipts: verification rules, duplicate check and auto-approval (#77)
-- [ ] AI receipts: dashboard verification card, mismatch alerts and review (#78)
+- [x] AI receipts: dashboard verification card, mismatch alerts and review (#78)
 
 **Done when**
 
