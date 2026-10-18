@@ -65,6 +65,7 @@ export interface DemoStoreSeed {
   owner: {
     email: string;
     name: string;
+    isDemo?: boolean;
   };
   store: {
     slug: string;

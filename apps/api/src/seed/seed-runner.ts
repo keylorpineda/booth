@@ -44,14 +44,15 @@ async function seedOneStore(
   const timezone = profile.timezone;
   const locale = definition.store.locale;
 
+  const isDemo = definition.owner.isDemo ?? true;
   const owner = await prisma.user.upsert({
     where: { email: definition.owner.email },
-    update: { name: definition.owner.name, passwordHash, isDemo: true },
+    update: { name: definition.owner.name, passwordHash, isDemo },
     create: {
       email: definition.owner.email,
       name: definition.owner.name,
       passwordHash,
-      isDemo: true,
+      isDemo,
     },
   });
 
