@@ -55,6 +55,8 @@ export const envSchema = z
     CLOUDINARY_CLOUD_NAME: optionalString,
     CLOUDINARY_API_KEY: optionalString,
     CLOUDINARY_API_SECRET: optionalString,
+    /** Google Gemini API key for smart receipt verification. Optional; fallback to manual when null. */
+    GEMINI_API_KEY: optionalString,
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV === 'production' && env.JWT_ACCESS_SECRET.startsWith('change-me')) {
