@@ -197,6 +197,21 @@ The original target is Latin America with Costa Rica first. To work in any count
 
 - Each item works in production, has tests, and `v1.1.0` is tagged.
 
+---
+
+## v1.2 — Smart receipts (AI payment verification)
+
+- [x] AI receipts: Gemini vision extractor and structured schemas (#76)
+- [ ] AI receipts: verification rules, duplicate check and auto-approval (#77)
+- [ ] AI receipts: dashboard verification card, mismatch alerts and review (#78)
+
+**Done when**
+
+- Uploaded SINPE Móvil and transfer screenshots are parsed by Gemini Flash in under 3 seconds.
+- Exactly matching amounts and new reference numbers automatically approve orders and transition payment to `PAID`.
+- Mismatched amounts and recycled/duplicate reference numbers flag clear warning alerts in the owner dashboard for manual review.
+- Missing `GEMINI_API_KEY` falls back gracefully to manual review without breaking the upload or order flow.
+
 ## Backlog
 
 - Subdomain tenant resolution (`slug.domain.com`) and custom domains
