@@ -38,6 +38,18 @@ export class MembershipsController {
     return { members, invitations };
   }
 
+  @Get('members')
+  @ApiOperation({ summary: 'List all team members' })
+  listMembers(@CurrentStore() storeId: string): Promise<StoreMembership[]> {
+    return this.memberships.listMembers(storeId);
+  }
+
+  @Get('invitations')
+  @ApiOperation({ summary: 'List all pending invitations' })
+  listInvitations(@CurrentStore() storeId: string): Promise<StoreInvitation[]> {
+    return this.memberships.listInvitations(storeId);
+  }
+
   @Post('invitations')
   @ApiOperation({ summary: 'Invite a new team member by email' })
   @ApiZodBody(createInvitationInputSchema)
