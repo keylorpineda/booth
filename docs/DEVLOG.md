@@ -591,3 +591,28 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - Partial unique index on PostgreSQL (`WHERE "status" = 'MATCHED' AND "referenceNumber" IS NOT NULL`): ensures database-level uniqueness across approved receipts while still allowing duplicate attempts to be recorded in the database as `DUPLICATE_REFERENCE` for owner review without causing unique constraint insert errors.
 - Graceful error isolation in `TrackingService.uploadReceipt`: verification errors or unconfigured AI credentials never fail the customer's upload request, leaving the order in `RECEIPT_SUBMITTED` for standard manual review.
+
+---
+
+## AI receipts: dashboard verification card, mismatch alerts and review (#78) — 2026-10-17
+
+**Built**
+
+- `@booth/shared`: extended `ownerOrderSummarySchema` with `receiptVerificationStatus` and `ownerOrderSchema` with `receipt.verification` details (`receiptVerificationResultSchema`).
+- `apps/api`:
+  - Updated `OwnerOrdersService` to query `receipt.verification` for order lists and order details.
+  - Updated `owner-order.mapper` to map `receiptVerificationStatus` to order summaries and full verification payload (`extracted`, `confidence`, `mismatchReason`, `verifiedAt`) to detailed orders.
+  - Added unit tests in `owner-order.mapper.spec.ts` for mapped orders and receipt verification data.
+- `apps/web`:
+  - Created `ReceiptVerificationBadge` component displaying status indicators (`MATCHED`, `AMOUNT_MISMATCH`, `DUPLICATE_REFERENCE`, `RECIPIENT_MISMATCH`, `UNVERIFIED`) with dedicated tones and Lucide icons.
+  - Created `ReceiptVerificationCard` component featuring status alert banners, data comparison table (detected amount vs order total, reference number, bank/app name, destination phone/name, sender, transaction date, AI confidence badge, raw extraction summary), view original receipt button, and one-click payment confirmation.
+  - Integrated `ReceiptVerificationCard` into `OrderDetailPage` whenever an order includes a receipt, placing AI feedback at the top of the action column.
+  - Displayed `ReceiptVerificationBadge` alongside `PaymentBadge` in `OrderRow` for instant at-a-glance status in the dashboard orders list.
+  - Added comprehensive Spanish and English translations in `es.json` and `en.json` with 100% key parity.
+  - Added unit test suite in `receipt-verification-card.test.tsx` and updated `order-row.test.tsx` covering all verification outcomes, actions, and read-only demo account protection.
+
+**Key decisions**
+
+- Direct one-click confirm payment in `ReceiptVerificationCard`: Allows store owners to inspect discrepancies (e.g. slight overpayment or tip) and immediately approve the payment without having to navigate to secondary action menus.
+- Connected component pattern with test injection: `ReceiptVerificationCard` seamlessly connects to `useOrderActions` in production while accepting optional injected actions for lightweight, fast unit testing without requiring global query providers.
+- Status badges in order list: Surfacing the AI verification status directly in `OrderRow` allows merchants to identify orders needing attention (such as `Monto diferente` or `Comprobante duplicado`) immediately from the list view without opening each order.
