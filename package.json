@@ -22,6 +22,7 @@
     "typecheck": "pnpm build:shared && pnpm --recursive typecheck",
     "test": "pnpm build:shared && pnpm --recursive test",
     "test:cov": "pnpm build:shared && pnpm --filter @booth/shared test && pnpm --filter @booth/api test:cov && pnpm --filter @booth/web test",
+    "test:e2e": "pnpm build:shared && pnpm --filter @booth/api build && pnpm --filter @booth/web test:e2e",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "db:up": "docker compose up -d --wait",
