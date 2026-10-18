@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { storeRoleSchema } from './memberships/roles';
+
 export const PASSWORD_MIN_LENGTH = 8;
 export const PASSWORD_MAX_LENGTH = 128;
 
@@ -42,6 +44,7 @@ export const authStoreSummarySchema = z.object({
 export const sessionSchema = z.object({
   user: authUserSchema,
   store: authStoreSummarySchema.nullable(),
+  role: storeRoleSchema.nullable().default('OWNER'),
 });
 
 export type Session = z.infer<typeof sessionSchema>;

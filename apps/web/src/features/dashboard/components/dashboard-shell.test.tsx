@@ -23,6 +23,7 @@ function renderShell(isDemo: boolean) {
     session: {
       user: { id: 'u1', email: 'ana@example.com', name: 'Ana Mora', isDemo },
       store: { id: 's1', slug: 'la-esquina', name: 'La Esquina' },
+      role: 'OWNER',
     },
   });
   const router = createMemoryRouter(

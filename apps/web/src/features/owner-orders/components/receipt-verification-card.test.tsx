@@ -87,6 +87,7 @@ describe('ReceiptVerificationCard', () => {
       session: {
         user: { id: 'u1', email: 'owner@test.com', name: 'Owner', isDemo: false },
         store: { id: 's1', slug: 'tienda', name: 'Mi Tienda' },
+        role: 'OWNER',
       },
     });
   });
@@ -187,6 +188,7 @@ describe('ReceiptVerificationCard', () => {
       session: {
         user: { id: 'u1', email: 'demo@test.com', name: 'Demo', isDemo: true },
         store: { id: 's1', slug: 'demo', name: 'Demo Store' },
+        role: 'OWNER',
       },
     });
 

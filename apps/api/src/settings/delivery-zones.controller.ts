@@ -23,10 +23,12 @@ import {
 
 import { DeliveryZonesService } from './delivery-zones.service';
 import { CurrentStore } from '../auth/decorators/current-store.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody } from '../common/validation/zod.decorators';
 
 @ApiTags('settings')
 @ApiBearerAuth()
+@Roles('OWNER')
 @Controller('me/delivery-zones')
 export class DeliveryZonesController {
   constructor(private readonly zones: DeliveryZonesService) {}

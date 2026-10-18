@@ -83,6 +83,48 @@ async function seedOneStore(
     create: storeData,
   });
 
+  await prisma.storeMembership.upsert({
+    where: {
+      userId_storeId: {
+        userId: owner.id,
+        storeId: store.id,
+      },
+    },
+    update: { role: 'OWNER' },
+    create: {
+      userId: owner.id,
+      storeId: store.id,
+      role: 'OWNER',
+    },
+  });
+
+  if (definition.store.slug === 'panaderia-demo') {
+    const staffUser = await prisma.user.upsert({
+      where: { email: 'staff@demo.booth.app' },
+      update: { name: 'Sebastián Auxiliar', passwordHash, isDemo: false },
+      create: {
+        email: 'staff@demo.booth.app',
+        name: 'Sebastián Auxiliar',
+        passwordHash,
+        isDemo: false,
+      },
+    });
+    await prisma.storeMembership.upsert({
+      where: {
+        userId_storeId: {
+          userId: staffUser.id,
+          storeId: store.id,
+        },
+      },
+      update: { role: 'STAFF' },
+      create: {
+        userId: staffUser.id,
+        storeId: store.id,
+        role: 'STAFF',
+      },
+    });
+  }
+
   // Delivery zones
   for (const [position, zone] of definition.zones.entries()) {
     const feeMinor = BigInt(toMinor(zone.fee, currency));

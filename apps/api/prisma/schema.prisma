@@ -23,6 +23,7 @@ model User {
   updatedAt    DateTime @updatedAt @db.Timestamptz(3)
 
   store         Store?
+  memberships   StoreMembership[]
   refreshTokens RefreshToken[]
 }
 
@@ -91,6 +92,8 @@ model Store {
   orders         Order[]
   verifications  ReceiptVerification[]
   customDomain   CustomDomain?
+  memberships    StoreMembership[]
+  invitations    StoreInvitation[]
 }
 
 // ---------- Catalog ----------
@@ -369,5 +372,45 @@ model CustomDomain {
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@index([domain, status])
+}
+
+// ---------- Memberships & Roles ----------
+
+enum StoreRole {
+  OWNER
+  STAFF
+  CATALOG_MANAGER
+}
+
+model StoreMembership {
+  id        String    @id @default(cuid(2))
+  userId    String
+  storeId   String
+  role      StoreRole @default(STAFF)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storeId])
+  @@index([userId])
+  @@index([storeId])
+}
+
+model StoreInvitation {
+  id         String    @id @default(cuid(2))
+  storeId    String
+  email      String
+  role       StoreRole @default(STAFF)
+  token      String    @unique
+  expiresAt  DateTime  @db.Timestamptz(3)
+  acceptedAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([email])
 }
 

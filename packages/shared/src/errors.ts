@@ -36,6 +36,11 @@ export const ERROR_CODES = [
   // Settings
   'CURRENCY_LOCKED',
   'ZONE_NAME_TAKEN',
+  // Team & Memberships
+  'INVITATION_EXPIRED',
+  'ALREADY_MEMBER',
+  'CANNOT_MODIFY_OWNER',
+  'CANNOT_REMOVE_OWNER',
 ] as const;
 
 export type ErrorCode = (typeof ERROR_CODES)[number];

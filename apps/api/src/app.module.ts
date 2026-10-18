@@ -11,6 +11,7 @@ import { ConfigModule } from './config/config.module';
 import { CustomDomainsModule } from './domains/custom-domains.module';
 import { HealthModule } from './health/health.module';
 import { MediaModule } from './media/media.module';
+import { MembershipsModule } from './memberships/memberships.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PublicModule } from './public/public.module';
@@ -40,6 +41,7 @@ const scheduler = process.env.NODE_ENV === 'test' ? [] : [ScheduleModule.forRoot
     PublicModule,
     ReceiptsModule,
     CustomDomainsModule,
+    MembershipsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

@@ -29,12 +29,14 @@ import {
 import { ProductImagesService } from './product-images.service';
 import { ProductsService } from './products.service';
 import { CurrentStore } from '../../auth/decorators/current-store.decorator';
+import { Roles } from '../../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody, ZodQuery } from '../../common/validation/zod.decorators';
 import { assertImageFile } from '../../media/image-file';
 import { ImageUpload } from '../../media/image-upload.decorator';
 
 @ApiTags('catalog')
 @ApiBearerAuth()
+@Roles('OWNER', 'CATALOG_MANAGER')
 @Controller('me/products')
 export class ProductsController {
   constructor(

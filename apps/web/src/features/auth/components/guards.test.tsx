@@ -33,7 +33,11 @@ function renderAt(path: string) {
 }
 
 const user = { id: 'u1', email: 'ana@example.com', name: 'Ana', isDemo: false };
-const withStore: Session = { user, store: { id: 's1', slug: 'la-esquina', name: 'La Esquina' } };
+const withStore: Session = {
+  user,
+  store: { id: 's1', slug: 'la-esquina', name: 'La Esquina' },
+  role: 'OWNER',
+};
 
 function setSession(status: SessionStatus, session: Session | null = null) {
   useSessionStore.setState({ status, session, accessToken: session ? 'token' : null });
@@ -52,7 +56,7 @@ describe('route guards', () => {
   });
 
   it('sends owners without a store to onboarding', () => {
-    setSession('signedIn', { user, store: null });
+    setSession('signedIn', { user, store: null, role: null });
     expect(renderAt('/dashboard')()).toBe('/onboarding');
   });
 

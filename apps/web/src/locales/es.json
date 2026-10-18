@@ -525,7 +525,8 @@
       "delivery": "Entrega",
       "payments": "Pagos",
       "hours": "Horario",
-      "localization": "Región y privacidad"
+      "localization": "Región y privacidad",
+      "team": "Equipo"
     },
     "save": "Guardar cambios",
     "saved": "Cambios guardados",
@@ -699,6 +700,40 @@
       "notice": "Texto del aviso",
       "versionHint": "Guardar un cambio crea una nueva versión y la registra en los próximos pedidos.",
       "resetDefault": "Restablecer al aviso del país"
+    },
+    "team": {
+      "title": "Equipo de trabajo",
+      "description": "Gestiona los miembros de tu tienda y asigna permisos por rol.",
+      "inviteButton": "Invitar miembro",
+      "inviteTitle": "Invitar a un nuevo miembro",
+      "roleLabel": "Rol en la tienda",
+      "sendInvite": "Enviar invitación",
+      "inviteSent": "Invitación enviada con éxito.",
+      "pendingInvitations": "Invitaciones pendientes",
+      "activeMembers": "Miembros del equipo",
+      "expiresAt": "Vence el {{date}}",
+      "copyInviteLink": "Copiar enlace de invitación",
+      "roleUpdated": "Rol actualizado con éxito.",
+      "memberRemoved": "Miembro eliminado del equipo.",
+      "inviteCanceled": "Invitación cancelada.",
+      "removeMember": "Eliminar miembro",
+      "removeMemberTitle": "¿Eliminar miembro del equipo?",
+      "removeMemberDescription": "¿Estás seguro de que deseas eliminar a {{name}}? Perderá el acceso a la tienda de inmediato.",
+      "removeConfirm": "Sí, eliminar miembro",
+      "roles": {
+        "owner": "Propietario",
+        "staff": "Equipo de pedidos",
+        "catalog_manager": "Gestor de catálogo"
+      }
     }
+  },
+  "invite": {
+    "joinTitle": "Únete al equipo",
+    "joinSubtitle": "Te han invitado a colaborar en {{store}}",
+    "acceptedSuccess": "¡Te has unido con éxito a {{store}}!",
+    "acceptButton": "Aceptar invitación y entrar",
+    "invalidTitle": "Invitación no válida",
+    "invalidSubtitle": "No pudimos procesar este enlace de invitación",
+    "expiredOrInvalidMessage": "Este enlace de invitación ha expirado o ya ha sido utilizado. Solicita una nueva invitación al dueño de la tienda."
   }
 }
