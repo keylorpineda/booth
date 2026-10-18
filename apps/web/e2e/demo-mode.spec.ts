@@ -42,7 +42,7 @@ test.describe('Demo mode read-only restrictions', () => {
 
     // 5. Verify the catalog form save button is disabled
     const catalogSaveButton = page.getByRole('button', {
-      name: /Guardar producto|Save product/i,
+      name: /Guardar cambios|Save changes/i,
     });
     await expect(catalogSaveButton).toBeVisible();
     await expect(catalogSaveButton).toBeDisabled();
