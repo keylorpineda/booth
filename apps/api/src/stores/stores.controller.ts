@@ -18,6 +18,7 @@ import { StoresService } from './stores.service';
 import { type AuthContext } from '../auth/auth-context';
 import { CurrentStore } from '../auth/decorators/current-store.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody, ZodParam, ZodQuery } from '../common/validation/zod.decorators';
 import { assertImageFile } from '../media/image-file';
 import { ImageUpload } from '../media/image-upload.decorator';
@@ -44,12 +45,14 @@ export class StoresController {
   }
 
   @Get()
+  @Roles('OWNER', 'STAFF', 'CATALOG_MANAGER')
   @ApiOperation({ summary: "The signed-in owner's store settings" })
   get(@CurrentStore() storeId: string): Promise<Store> {
     return this.stores.get(storeId);
   }
 
   @Patch()
+  @Roles('OWNER')
   @ApiOperation({ summary: 'Update store info and branding' })
   @ApiZodBody(updateStoreSchema)
   update(
@@ -68,6 +71,7 @@ export class StoresController {
   }
 
   @Post(':kind')
+  @Roles('OWNER')
   @imageKindParam
   @ImageUpload()
   @ApiOperation({ summary: 'Upload the logo or cover image (replaces the current one)' })
@@ -80,6 +84,7 @@ export class StoresController {
   }
 
   @Delete(':kind')
+  @Roles('OWNER')
   @imageKindParam
   @ApiOperation({ summary: 'Remove the logo or cover image' })
   removeImage(

@@ -4,19 +4,25 @@ import { NavLink } from 'react-router';
 
 import { cn } from '../../../lib/cn';
 import { spring } from '../../../lib/motion';
-import { NAV_ITEMS } from '../nav-items';
+import { useSessionStore } from '../../auth/session-store';
+import { getNavItemsForRole } from '../nav-items';
 
 /** Phone navigation: fixed at the bottom, within thumb reach, clear of the home indicator. */
 export function BottomNav() {
   const { t } = useTranslation();
+  const role = useSessionStore((state) => state.session?.role);
+  const navItems = getNavItemsForRole(role);
 
   return (
     <nav
       aria-label={t('dashboard.navLabel')}
       className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface-raised/90 px-2 pt-1.5 backdrop-blur-xl md:hidden"
     >
-      <ul className="grid grid-cols-4">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+      <ul
+        className="grid"
+        style={{ gridTemplateColumns: `repeat(${navItems.length}, minmax(0, 1fr))` }}
+      >
+        {navItems.map(({ to, label, icon: Icon, end }) => (
           <li key={to}>
             <NavLink
               to={to}

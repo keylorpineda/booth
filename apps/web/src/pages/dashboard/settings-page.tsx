@@ -11,8 +11,17 @@ import { LocalizationPanel } from '../../features/settings/localization/localiza
 import { OrderingPanel } from '../../features/settings/ordering/ordering-panel';
 import { PaymentMethodsPanel } from '../../features/settings/payment-methods/payment-methods-panel';
 import { ProfilePanel } from '../../features/settings/profile/profile-panel';
+import { TeamPanel } from '../../features/settings/team/team-panel';
 
-const TABS = ['profile', 'domain', 'delivery', 'payments', 'hours', 'localization'] as const;
+const TABS = [
+  'profile',
+  'domain',
+  'delivery',
+  'payments',
+  'hours',
+  'localization',
+  'team',
+] as const;
 type SettingsTab = (typeof TABS)[number];
 
 function isSettingsTab(value: string | null): value is SettingsTab {
@@ -79,6 +88,13 @@ export function SettingsPage() {
         <TabPanel value="localization">
           {store.data ? (
             <LocalizationPanel store={store.data} />
+          ) : (
+            <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
+          )}
+        </TabPanel>
+        <TabPanel value="team">
+          {store.data ? (
+            <TeamPanel store={store.data} />
           ) : (
             <Skeleton className="h-[32rem] max-w-2xl rounded-card" />
           )}

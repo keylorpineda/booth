@@ -39,6 +39,12 @@ export class StoresService {
           currency: input.currency ?? profile.currency,
           timezone: input.timezone ?? profile.timezone,
           locale: input.locale ?? resolveAppLocale(profile.locale),
+          memberships: {
+            create: {
+              userId: ownerId,
+              role: 'OWNER',
+            },
+          },
         },
       });
       return await this.presenter.present(store);

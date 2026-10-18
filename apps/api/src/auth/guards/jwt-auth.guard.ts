@@ -33,11 +33,23 @@ export class JwtAuthGuard implements CanActivate {
 
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, isDemo: true, store: { select: { id: true } } },
+      select: {
+        id: true,
+        isDemo: true,
+        store: { select: { id: true } },
+        memberships: {
+          select: { storeId: true, role: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
     });
     if (!user) throw unauthenticated();
 
-    request.auth = { userId: user.id, isDemo: user.isDemo, storeId: user.store?.id ?? null };
+    const primaryMembership = user.memberships[0];
+    const storeId = primaryMembership?.storeId ?? user.store?.id ?? null;
+    const role = primaryMembership?.role ?? (user.store ? 'OWNER' : null);
+
+    request.auth = { userId: user.id, isDemo: user.isDemo, storeId, role };
     return true;
   }
 }

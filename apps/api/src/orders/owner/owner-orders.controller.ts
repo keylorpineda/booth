@@ -17,10 +17,12 @@ import {
 import { OrderActionsService } from './order-actions.service';
 import { OwnerOrdersService } from './owner-orders.service';
 import { CurrentStore } from '../../auth/decorators/current-store.decorator';
+import { Roles } from '../../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody, ZodQuery } from '../../common/validation/zod.decorators';
 
 @ApiTags('orders')
 @ApiBearerAuth()
+@Roles('OWNER', 'STAFF')
 @Controller('me/orders')
 export class OwnerOrdersController {
   constructor(

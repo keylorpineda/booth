@@ -9,10 +9,12 @@ import {
 
 import { CustomDomainsService } from './custom-domains.service';
 import { CurrentStore } from '../auth/decorators/current-store.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody } from '../common/validation/zod.decorators';
 
 @ApiTags('settings')
 @ApiBearerAuth()
+@Roles('OWNER')
 @Controller('me/custom-domain')
 export class CustomDomainsController {
   constructor(private readonly customDomains: CustomDomainsService) {}

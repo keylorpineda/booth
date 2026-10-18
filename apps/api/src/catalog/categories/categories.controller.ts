@@ -23,10 +23,12 @@ import {
 
 import { CategoriesService } from './categories.service';
 import { CurrentStore } from '../../auth/decorators/current-store.decorator';
+import { Roles } from '../../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody } from '../../common/validation/zod.decorators';
 
 @ApiTags('catalog')
 @ApiBearerAuth()
+@Roles('OWNER', 'CATALOG_MANAGER')
 @Controller('me/categories')
 export class CategoriesController {
   constructor(private readonly categories: CategoriesService) {}

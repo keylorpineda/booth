@@ -25,6 +25,7 @@ describe('CategoriesPanel', () => {
       session: {
         user: { id: 'u1', email: 'ana@example.com', name: 'Ana', isDemo: false },
         store: { id: 's1', slug: 'la-esquina', name: 'La Esquina' },
+        role: 'OWNER',
       },
     });
     fetchMock.mockImplementation((_url, init) =>

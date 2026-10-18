@@ -525,7 +525,8 @@
       "delivery": "Delivery",
       "payments": "Payments",
       "hours": "Hours",
-      "localization": "Region & privacy"
+      "localization": "Region & privacy",
+      "team": "Team"
     },
     "save": "Save changes",
     "saved": "Changes saved",
@@ -699,6 +700,40 @@
       "notice": "Notice text",
       "versionHint": "Saving a change starts a new version and records that version number on future orders.",
       "resetDefault": "Reset to country default"
+    },
+    "team": {
+      "title": "Team members",
+      "description": "Manage your store team and assign permissions by role.",
+      "inviteButton": "Invite member",
+      "inviteTitle": "Invite a new member",
+      "roleLabel": "Store role",
+      "sendInvite": "Send invitation",
+      "inviteSent": "Invitation sent successfully.",
+      "pendingInvitations": "Pending invitations",
+      "activeMembers": "Team members",
+      "expiresAt": "Expires on {{date}}",
+      "copyInviteLink": "Copy invite link",
+      "roleUpdated": "Role updated successfully.",
+      "memberRemoved": "Member removed from team.",
+      "inviteCanceled": "Invitation cancelled.",
+      "removeMember": "Remove member",
+      "removeMemberTitle": "Remove team member?",
+      "removeMemberDescription": "Are you sure you want to remove {{name}}? They will immediately lose access to this store.",
+      "removeConfirm": "Yes, remove member",
+      "roles": {
+        "owner": "Owner",
+        "staff": "Order staff",
+        "catalog_manager": "Catalog manager"
+      }
     }
+  },
+  "invite": {
+    "joinTitle": "Join the team",
+    "joinSubtitle": "You have been invited to join {{store}}",
+    "acceptedSuccess": "You have successfully joined {{store}}!",
+    "acceptButton": "Accept invitation & sign in",
+    "invalidTitle": "Invalid invitation",
+    "invalidSubtitle": "We couldn't process this invitation link",
+    "expiredOrInvalidMessage": "This invitation link has expired or has already been used. Ask the store owner for a new invitation."
   }
 }

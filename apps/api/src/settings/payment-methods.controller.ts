@@ -23,10 +23,12 @@ import {
 
 import { PaymentMethodsService } from './payment-methods.service';
 import { CurrentStore } from '../auth/decorators/current-store.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody } from '../common/validation/zod.decorators';
 
 @ApiTags('settings')
 @ApiBearerAuth()
+@Roles('OWNER')
 @Controller('me/payment-methods')
 export class PaymentMethodsController {
   constructor(private readonly methods: PaymentMethodsService) {}

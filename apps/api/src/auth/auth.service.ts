@@ -89,10 +89,20 @@ export class AuthService {
         name: true,
         isDemo: true,
         store: { select: { id: true, slug: true, name: true } },
+        memberships: {
+          select: {
+            role: true,
+            store: { select: { id: true, slug: true, name: true } },
+          },
+          take: 1,
+        },
       },
     });
-    const { store, ...rest } = user;
-    return { user: rest, store };
+    const primaryMembership = user.memberships[0];
+    const store = user.store ?? primaryMembership?.store ?? null;
+    const role = primaryMembership?.role ?? (user.store ? 'OWNER' : null);
+    const { store: _ownedStore, memberships: _memberships, ...rest } = user;
+    return { user: rest, store, role };
   }
 
   private async startSession(userId: string, client: ClientInfo): Promise<AuthResult> {

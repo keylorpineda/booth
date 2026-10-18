@@ -22,8 +22,8 @@ export const useSessionStore = create<SessionState>()((set) => ({
   accessToken: null,
   session: null,
   status: 'unknown',
-  signIn: ({ accessToken, user, store }) => {
-    set({ accessToken, session: { user, store }, status: 'signedIn' });
+  signIn: ({ accessToken, user, store, role }) => {
+    set({ accessToken, session: { user, store, role: role ?? 'OWNER' }, status: 'signedIn' });
   },
   setSession: (session) => {
     set({ session });

@@ -5,10 +5,12 @@ import { type BusinessHour, type WeeklyHoursInput, weeklyHoursSchema } from '@bo
 
 import { BusinessHoursService } from './business-hours.service';
 import { CurrentStore } from '../auth/decorators/current-store.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody } from '../common/validation/zod.decorators';
 
 @ApiTags('settings')
 @ApiBearerAuth()
+@Roles('OWNER')
 @Controller('me/business-hours')
 export class BusinessHoursController {
   constructor(private readonly hours: BusinessHoursService) {}
