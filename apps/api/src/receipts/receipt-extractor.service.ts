@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 
 import { type ReceiptExtractionResult, receiptExtractionSchema, toMinor } from '@booth/shared';
 
@@ -48,11 +48,14 @@ If the image is not a payment receipt or is completely unreadable, return confid
 @Injectable()
 export class ReceiptExtractorService {
   private readonly logger = new Logger(ReceiptExtractorService.name);
+  private readonly fetchFn: typeof fetch;
 
   constructor(
     @InjectConfig() private readonly config: AppConfig,
-    private readonly fetchFn: typeof fetch = fetch,
-  ) {}
+    @Optional() fetchFn?: typeof fetch,
+  ) {
+    this.fetchFn = fetchFn ?? fetch;
+  }
 
   /**
    * Extracts payment details from an uploaded receipt buffer using Gemini Flash.
