@@ -14,9 +14,7 @@ test.describe('Demo mode read-only restrictions', () => {
     await expect(page).toHaveURL(/\/dashboard/);
     const demoBanner = page.getByRole('status');
     await expect(demoBanner).toBeVisible();
-    await expect(demoBanner).toContainText(
-      /Estás explorando una cuenta demo de solo lectura|read-only demo account/i,
-    );
+    await expect(demoBanner).toContainText(/cuenta demo de solo lectura|read-only demo account/i);
 
     // 3. Navigate to settings and verify the save button is disabled
     await page

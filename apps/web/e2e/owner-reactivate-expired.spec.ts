@@ -1,6 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import { resetDemoSeed } from './helpers/seed';
+
 test.describe('Owner reactivates expired order', () => {
+  test.beforeEach(() => {
+    resetDemoSeed();
+  });
+
   test('owner finds an expired order and reactivates it back to pending', async ({ page }) => {
     // 1. Sign in as store owner
     await page.goto('/login');
@@ -20,7 +26,7 @@ test.describe('Owner reactivates expired order', () => {
     await closedTab.click();
 
     // 3. Find and open the expired order (#PAN108)
-    const expiredOrderLink = page.getByRole('link', { name: /#PAN108/i });
+    const expiredOrderLink = page.locator('a[href*="/dashboard/orders/demo-order-cr-8"]');
     await expect(expiredOrderLink).toBeVisible();
     await expiredOrderLink.click();
 

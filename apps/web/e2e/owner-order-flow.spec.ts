@@ -1,6 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import { resetDemoSeed } from './helpers/seed';
+
 test.describe('Owner order flow', () => {
+  test.beforeEach(() => {
+    resetDemoSeed();
+  });
+
   test('owner advances order through its entire lifecycle to completion', async ({ page }) => {
     // 1. Sign in as store owner
     await page.goto('/login');
@@ -18,7 +24,7 @@ test.describe('Owner order flow', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Pedidos/i })).toBeVisible();
 
     // 3. Find and open the pending order (#PAN101)
-    const pendingOrderLink = page.getByRole('link', { name: /#PAN101/i });
+    const pendingOrderLink = page.locator('a[href*="/dashboard/orders/demo-order-cr-1"]');
     await expect(pendingOrderLink).toBeVisible();
     await pendingOrderLink.click();
 

@@ -28,7 +28,7 @@ test.describe('Checkout with pickup', () => {
     await page.locator('input[name="phone"]').fill('8888 1234');
 
     // 6. Ensure pickup is selected
-    const pickupOption = page.getByRole('radio', { name: /Pasar a recoger/i });
+    const pickupOption = page.getByRole('radio', { name: /Retiro en tienda|Pasar a recoger/i });
     await expect(pickupOption).toBeVisible();
     await pickupOption.click();
 
