@@ -4,6 +4,7 @@ export const CAFE_SEED: DemoStoreSeed = {
   owner: {
     email: 'cafe@demo.booth.app',
     name: 'Mateo Restrepo',
+    isDemo: true,
   },
   store: {
     slug: 'cafe-demo',

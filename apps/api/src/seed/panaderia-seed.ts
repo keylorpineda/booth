@@ -4,6 +4,7 @@ export const PANADERIA_SEED: DemoStoreSeed = {
   owner: {
     email: 'panaderia@demo.booth.app',
     name: 'Elena Vargas',
+    isDemo: false,
   },
   store: {
     slug: 'panaderia-demo',
