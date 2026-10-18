@@ -10,7 +10,11 @@ test.describe('Owner order flow', () => {
 
     // 2. Navigate to orders page
     await expect(page).toHaveURL(/\/dashboard/);
-    await page.goto('/dashboard/orders');
+    await page
+      .getByRole('link', { name: /Pedidos/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/dashboard\/orders/);
     await expect(page.getByRole('heading', { level: 1, name: /Pedidos/i })).toBeVisible();
 
     // 3. Find and open the pending order (#PAN101)
