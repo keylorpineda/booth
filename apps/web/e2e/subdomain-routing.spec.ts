@@ -43,8 +43,15 @@ test.describe('Subdomains and custom domain routing', () => {
     await page.getByRole('button', { name: /Iniciar sesión/i }).click();
     await expect(page).toHaveURL(/\/dashboard/);
 
-    // 2. Open Settings -> Dominio tab
-    await page.goto('/dashboard/settings?tab=domain');
+    // 2. Navigate to settings and open Dominio tab
+    await page
+      .getByRole('link', { name: /Ajustes|Settings/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/dashboard\/settings/);
+
+    await page.getByRole('tab', { name: /Dominio|Domain/i }).click();
+
     await expect(
       page.getByRole('heading', { name: /Subdominio de Booth|Booth Subdomain/i }),
     ).toBeVisible();

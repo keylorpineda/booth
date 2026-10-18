@@ -52,7 +52,7 @@ test.describe('Owner order flow', () => {
     await deliverButton.click();
 
     // 8. Verify the order is marked COMPLETED
-    await expect(page.getByText(/Entregado|Este pedido ya se entregó/i)).toBeVisible({
+    await expect(page.getByText(/Entregado|Este pedido ya se entregó/i).first()).toBeVisible({
       timeout: 10_000,
     });
   });
