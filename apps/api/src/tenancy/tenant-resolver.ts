@@ -5,7 +5,7 @@ import { type Request } from 'express';
  * resolver (`slug.domain.com`) can be added later without touching controllers.
  */
 export interface TenantResolver {
-  resolveSlug(request: Request): string | null;
+  resolveSlug(request: Request): string | null | Promise<string | null>;
 }
 
 export const TENANT_RESOLVERS = Symbol('TENANT_RESOLVERS');

@@ -13,3 +13,4 @@ export * from './phone';
 export * from './privacy';
 export * from './receipts';
 export * from './stores';
+export * from './domains';

@@ -30,7 +30,37 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     next();
   });
   app.use(cookieParser());
-  app.enableCors({ origin: config.corsOrigins, credentials: true });
+  app.enableCors({
+    origin: (requestOrigin, callback) => {
+      if (!requestOrigin) {
+        callback(null, true);
+        return;
+      }
+      if (config.corsOrigins.includes(requestOrigin)) {
+        callback(null, true);
+        return;
+      }
+      try {
+        const parsed = new URL(requestOrigin);
+        if (parsed.hostname.endsWith('.localhost') || parsed.hostname === 'localhost') {
+          callback(null, true);
+          return;
+        }
+        if (parsed.hostname.endsWith('.booth.app') || parsed.hostname === 'booth.app') {
+          callback(null, true);
+          return;
+        }
+      } catch {
+        // Ignore invalid URL parsing from origin header
+      }
+      if (config.env !== 'production') {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
+    credentials: true,
+  });
   // /health stays at the root for the Render health check.
   app.setGlobalPrefix(API_PREFIX, { exclude: ['health'] });
   setupSwagger(app);

@@ -6,7 +6,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-Dmzl9TFbT00dIsfINgnjIWGmfslDPxoibG4QCBA+roQ=' 'sha256-+8c18fta+G8M0RNYXtSPy5hqfk6prBvGvcjVPAxImUg='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; connect-src 'self' https://res.cloudinary.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' 'sha256-Dmzl9TFbT00dIsfINgnjIWGmfslDPxoibG4QCBA+roQ=' 'sha256-28TEY3XM6mI7xb+YK6TDkBFYw2dlJo2ALjzvUEhbv80='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; connect-src 'self' https://res.cloudinary.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         },
         {
           "key": "X-Content-Type-Options",

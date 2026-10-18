@@ -23,10 +23,10 @@ import { type Tenant } from '../tenancy/tenant-resolver';
 import { TenantGuard } from '../tenancy/tenant.guard';
 
 @ApiTags('storefront')
-@ApiParam({ name: 'slug', example: 'panaderia-la-esquina' })
+@ApiParam({ name: 'slug', example: 'panaderia-la-esquina', required: false })
 @Public()
 @UseGuards(TenantGuard)
-@Controller('public/stores/:slug')
+@Controller(['public/stores/:slug', 'public/storefront'])
 export class PublicStoresController {
   constructor(
     private readonly stores: PublicStoreService,

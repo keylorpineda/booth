@@ -22,9 +22,51 @@
       // Starts the storefront API requests while the JS bundle downloads, so the first paint of a
       // store does not wait for "download JS, then fetch data". Consumed once by lib/prefetch.ts.
       (function () {
-        var match = location.pathname.match(/^\/s\/([^/]+)\/?$/);
-        if (!match) return;
-        var base = '/api/public/stores/' + match[1];
+        var host = location.hostname.toLowerCase();
+        var pathname = location.pathname;
+        var slug = null;
+        var isStoreDomain = false;
+
+        var match = pathname.match(/^\/s\/([^/]+)\/?$/);
+        if (match) {
+          slug = decodeURIComponent(match[1]);
+        } else if (pathname === '/' || pathname === '') {
+          if (host.endsWith('.localhost')) {
+            var sub = host.slice(0, -'.localhost'.length);
+            if (
+              sub &&
+              !sub.includes('.') &&
+              sub !== 'api' &&
+              sub !== 'app' &&
+              sub !== 'admin' &&
+              sub !== 'www'
+            ) {
+              slug = sub;
+              isStoreDomain = true;
+            }
+          } else if (host.endsWith('.booth.app')) {
+            var sub = host.slice(0, -'.booth.app'.length);
+            if (
+              sub &&
+              !sub.includes('.') &&
+              sub !== 'api' &&
+              sub !== 'app' &&
+              sub !== 'admin' &&
+              sub !== 'www'
+            ) {
+              slug = sub;
+              isStoreDomain = true;
+            }
+          } else if (host !== 'localhost' && host !== '127.0.0.1' && host !== 'booth.app') {
+            isStoreDomain = true;
+          }
+        }
+
+        if (!slug && !isStoreDomain) return;
+
+        var base = slug
+          ? '/api/public/stores/' + encodeURIComponent(slug)
+          : '/api/public/storefront';
         var get = function (url) {
           var request = fetch(url, { credentials: 'include' }).then(function (response) {
             return response.ok ? response.json() : Promise.reject(response.status);
@@ -33,7 +75,7 @@
           return request;
         };
         window.__BOOTH_PREFETCH__ = {
-          slug: decodeURIComponent(match[1]),
+          slug: slug || '',
           store: get(base),
           catalog: get(base + '/catalog'),
         };

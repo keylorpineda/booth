@@ -13,15 +13,18 @@ export class TenantService {
 
   /** First resolver that yields a slug wins. Inactive or unknown stores resolve to null. */
   async resolve(request: Request): Promise<Tenant | null> {
-    const slug = this.resolvers
-      .map((resolver) => resolver.resolveSlug(request))
-      .find((value) => value !== null);
-    if (!slug) return null;
-
-    const store = await this.prisma.store.findFirst({
-      where: { slug, isActive: true },
-      select: { id: true, slug: true },
-    });
-    return store ? { storeId: store.id, slug: store.slug } : null;
+    for (const resolver of this.resolvers) {
+      const slug = await resolver.resolveSlug(request);
+      if (slug) {
+        const store = await this.prisma.store.findFirst({
+          where: { slug, isActive: true },
+          select: { id: true, slug: true },
+        });
+        if (store) {
+          return { storeId: store.id, slug: store.slug };
+        }
+      }
+    }
+    return null;
   }
 }
