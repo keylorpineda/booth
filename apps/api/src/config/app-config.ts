@@ -17,6 +17,8 @@ export interface AppConfig {
   receiptUrlTtlSeconds: number;
   /** null disables the internal jobs endpoint. */
   jobSecret: string | null;
+  /** null when AI receipt extraction is unconfigured. */
+  geminiApiKey: string | null;
   /** null when uploads are not configured (development only). */
   cloudinary: { cloudName: string; apiKey: string; apiSecret: string } | null;
   rateLimit: {
@@ -64,6 +66,7 @@ export function loadConfig(source: NodeJS.ProcessEnv = process.env): AppConfig {
     },
     receiptUrlTtlSeconds: env.RECEIPT_URL_TTL_SECONDS,
     jobSecret: env.JOB_SECRET ?? null,
+    geminiApiKey: env.GEMINI_API_KEY ?? null,
     cloudinary:
       env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET
         ? {
