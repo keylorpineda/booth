@@ -570,3 +570,24 @@ One entry per phase: what was built, key decisions, problems solved.
 - Direct REST call to Gemini 2.0 Flash (`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`) with `responseMimeType: "application/json"` using Node 24 native `fetch`, eliminating additional heavy SDK dependencies.
 - Extracted amounts are normalized into integer minor units using `@booth/shared` (`toMinor`) with ISO 4217 standard currency exponents (e.g. CRC exponent 2 céntimos).
 - Safe fallback: if `GEMINI_API_KEY` is omitted or unreadable/blurry receipt is encountered, extractor returns `null` or `confidence: 'LOW'`, allowing downstream verification to mark the receipt as `UNVERIFIED` for owner review without failing the request or blocking the customer.
+
+---
+
+## AI receipts: verification rules, duplicate check and auto-approval (#77) — 2026-10-17
+
+**Built**
+
+- Prisma schema & migration (`20261018014500_add_receipt_verification`): created `ReceiptVerification` model with `extractedAmountMinor`, `extractedCurrency`, `referenceNumber`, `recipientPhone`, `recipientName`, `senderName`, `transactionDate`, `bankName`, `status` (`MATCHED`, `AMOUNT_MISMATCH`, `RECIPIENT_MISMATCH`, `DUPLICATE_REFERENCE`, `UNVERIFIED`), `confidence`, `rejectionReason`, `verifiedAt`, and partial unique index on `(storeId, referenceNumber)` for `status = 'MATCHED'`.
+- `ReceiptVerificationService` (`apps/api/src/receipts/receipt-verification.service.ts`):
+  - Validates `extractedAmountMinor === order.totalMinor` and matching currencies.
+  - Checks recipient phone number against store WhatsApp phone when detectable.
+  - Queries existing matched verifications within the same store to guard against recycled voucher fraud (`DUPLICATE_REFERENCE`).
+  - Verifies date recency (marks `UNVERIFIED` if transaction date is older than 48 hours).
+  - Automatically transitions `order.paymentStatus` to `PAID`, clears `expiresAt`, and creates an `OrderStatusEvent` with actor `system` upon matching.
+- Hooked `ReceiptVerificationService` into `TrackingService.uploadReceipt`, ensuring private storage and order status transitions are synchronized.
+- Added comprehensive unit tests in `receipt-verification.service.spec.ts` covering valid auto-approval, amount mismatch, duplicate reference rejection, recipient phone mismatch, and old transaction dates.
+
+**Key decisions**
+
+- Partial unique index on PostgreSQL (`WHERE "status" = 'MATCHED' AND "referenceNumber" IS NOT NULL`): ensures database-level uniqueness across approved receipts while still allowing duplicate attempts to be recorded in the database as `DUPLICATE_REFERENCE` for owner review without causing unique constraint insert errors.
+- Graceful error isolation in `TrackingService.uploadReceipt`: verification errors or unconfigured AI credentials never fail the customer's upload request, leaving the order in `RECEIPT_SUBMITTED` for standard manual review.
