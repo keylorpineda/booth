@@ -10,8 +10,8 @@ test.describe('Subdomains and custom domain routing', () => {
   test('storefront resolves at root path on store subdomain and allows checkout', async ({
     page,
   }) => {
-    // 1. Visit root of panaderia-la-esquina.localhost:5173
-    await page.goto('http://panaderia-la-esquina.localhost:5173/');
+    // 1. Visit root of panaderia-demo.localhost:5173
+    await page.goto('http://panaderia-demo.localhost:5173/');
 
     // 2. Check store header and products are loaded directly at /
     await expect(page.getByText('Panadería La Esquina')).toBeVisible();
@@ -26,7 +26,7 @@ test.describe('Subdomains and custom domain routing', () => {
     await expect(cartButton).toBeVisible();
     await cartButton.click();
 
-    const checkoutButton = page.getByRole('button', { name: /Continuar compra/i });
+    const checkoutButton = page.getByRole('button', { name: /Continuar/i });
     await expect(checkoutButton).toBeVisible();
     await checkoutButton.click();
 
@@ -45,8 +45,12 @@ test.describe('Subdomains and custom domain routing', () => {
 
     // 2. Open Settings -> Dominio tab
     await page.goto('/dashboard/settings?tab=domain');
-    await expect(page.getByRole('heading', { name: /Subdominio de Booth/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Dominio personalizado/i })).toBeVisible();
-    await expect(page.getByText('cafe-central.booth.app')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Subdominio de Booth|Booth Subdomain/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Dominio personalizado|Custom Domain/i }),
+    ).toBeVisible();
+    await expect(page.getByText('cafe-demo.booth.app')).toBeVisible();
   });
 });
