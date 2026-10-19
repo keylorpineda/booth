@@ -12,7 +12,8 @@ export const PANADERIA_SEED: DemoStoreSeed = {
     description:
       'Pan de masa madre horneado cada mañana en San Pedro, repostería artesanal y café chorreado de Tarrazú.',
     whatsappPhone: '+50688881111',
-    brandColor: '#B45309',
+    // Calm warm neutral: readable on white and on the dark theme.
+    brandColor: '#57534E',
     country: 'CR',
     locale: 'es',
     acceptOrdersWhenClosed: true,
@@ -34,6 +35,12 @@ export const PANADERIA_SEED: DemoStoreSeed = {
       preset: 'SINPE_MOVIL',
       accountHolder: 'Panadería La Esquina S.A.',
       accountIdentifier: '8888-1111',
+    },
+    {
+      id: 'demo-pm-panaderia-iban',
+      preset: 'IBAN_CR',
+      accountHolder: 'Panadería La Esquina S.A.',
+      accountIdentifier: 'CR05 0152 0200 1026 2840 66',
     },
   ],
   hours: [1, 2, 3, 4, 5, 6].map((weekday) => ({
