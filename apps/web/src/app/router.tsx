@@ -2,26 +2,38 @@ import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from './root-layout';
 import { getDomainInfo } from '../lib/domain';
-import { HomePage } from '../pages/home-page';
 import { NotFoundPage } from '../pages/not-found-page';
-import { StorefrontPage } from '../pages/storefront-page';
 
 const domainInfo = getDomainInfo();
 
+// The page the visitor opened starts downloading right away, in parallel with React's startup,
+// instead of after the router mounts (store data is already being prefetched by index.html).
+const path = typeof window === 'undefined' ? '' : window.location.pathname;
+const isStorePath = domainInfo.isStoreDomain ? path === '/' : /^\/s\/[^/]+\/?$/.test(path);
+const storefrontModule = isStorePath ? import('../pages/storefront-page') : null;
+const homeModule = !domainInfo.isStoreDomain && path === '/' ? import('../pages/home-page') : null;
+
+const loadHome = async () => ({
+  Component: (await (homeModule ?? import('../pages/home-page'))).HomePage,
+});
+const loadStorefront = async () => ({
+  Component: (await (storefrontModule ?? import('../pages/storefront-page'))).StorefrontPage,
+});
+
 /**
- * Storefront loads eagerly (first visit); checkout, tracking and every owner page are split into
- * their own chunks, so shoppers never download the dashboard.
+ * Every page is its own chunk: the landing never downloads the storefront (and vice versa), and
+ * shoppers never download the dashboard. Store data is prefetched by index.html meanwhile.
  */
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/', element: domainInfo.isStoreDomain ? <StorefrontPage /> : <HomePage /> },
+      { path: '/', lazy: domainInfo.isStoreDomain ? loadStorefront : loadHome },
       {
         path: '/checkout',
         lazy: async () => ({ Component: (await import('../pages/checkout-page')).CheckoutPage }),
       },
-      { path: '/s/:slug', element: <StorefrontPage /> },
+      { path: '/s/:slug', lazy: loadStorefront },
       {
         path: '/s/:slug/checkout',
         lazy: async () => ({ Component: (await import('../pages/checkout-page')).CheckoutPage }),
