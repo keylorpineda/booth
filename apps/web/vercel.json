@@ -37,7 +37,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://booth-api.onrender.com/api/:path*"
+      "destination": "https://booth-api-ol1v.onrender.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",
