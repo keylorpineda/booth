@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router';
 
 import { RootLayout } from './root-layout';
+import { RouteError } from '../components/feedback/route-error';
 import { getDomainInfo } from '../lib/domain';
 import { NotFoundPage } from '../pages/not-found-page';
 
@@ -27,6 +28,7 @@ const loadStorefront = async () => ({
 export const router = createBrowserRouter([
   {
     element: <RootLayout />,
+    errorElement: <RouteError />,
     children: [
       { path: '/', lazy: domainInfo.isStoreDomain ? loadStorefront : loadHome },
       {
@@ -87,47 +89,54 @@ export const router = createBrowserRouter([
                 }),
                 children: [
                   {
-                    index: true,
-                    lazy: async () => ({
-                      Component: (await import('../pages/dashboard-page')).DashboardPage,
-                    }),
-                  },
-                  {
-                    path: 'orders',
-                    lazy: async () => ({
-                      Component: (await import('../pages/orders-page')).OrdersPage,
-                    }),
-                  },
-                  {
-                    path: 'orders/:id',
-                    lazy: async () => ({
-                      Component: (await import('../pages/order-detail-page')).OrderDetailPage,
-                    }),
-                  },
-                  {
-                    path: 'catalog',
-                    lazy: async () => ({
-                      Component: (await import('../pages/catalog-page')).CatalogPage,
-                    }),
-                  },
-                  {
-                    // `/new` and `/:id` share the page: no `id` param means a new product.
-                    path: 'catalog/products/new',
-                    lazy: async () => ({
-                      Component: (await import('../pages/product-form-page')).ProductFormPage,
-                    }),
-                  },
-                  {
-                    path: 'catalog/products/:id',
-                    lazy: async () => ({
-                      Component: (await import('../pages/product-form-page')).ProductFormPage,
-                    }),
-                  },
-                  {
-                    path: 'settings',
-                    lazy: async () => ({
-                      Component: (await import('../pages/dashboard/settings-page')).SettingsPage,
-                    }),
+                    // Crashes inside a section keep the dashboard navigation around them.
+                    errorElement: <RouteError />,
+                    children: [
+                      {
+                        index: true,
+                        lazy: async () => ({
+                          Component: (await import('../pages/dashboard-page')).DashboardPage,
+                        }),
+                      },
+                      {
+                        path: 'orders',
+                        lazy: async () => ({
+                          Component: (await import('../pages/orders-page')).OrdersPage,
+                        }),
+                      },
+                      {
+                        path: 'orders/:id',
+                        lazy: async () => ({
+                          Component: (await import('../pages/order-detail-page')).OrderDetailPage,
+                        }),
+                      },
+                      {
+                        path: 'catalog',
+                        lazy: async () => ({
+                          Component: (await import('../pages/catalog-page')).CatalogPage,
+                        }),
+                      },
+                      {
+                        // `/new` and `/:id` share the page: no `id` param means a new product.
+                        path: 'catalog/products/new',
+                        lazy: async () => ({
+                          Component: (await import('../pages/product-form-page')).ProductFormPage,
+                        }),
+                      },
+                      {
+                        path: 'catalog/products/:id',
+                        lazy: async () => ({
+                          Component: (await import('../pages/product-form-page')).ProductFormPage,
+                        }),
+                      },
+                      {
+                        path: 'settings',
+                        lazy: async () => ({
+                          Component: (await import('../pages/dashboard/settings-page'))
+                            .SettingsPage,
+                        }),
+                      },
+                    ],
                   },
                 ],
               },

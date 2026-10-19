@@ -168,7 +168,9 @@
   "feedback": {
     "oops": "¡Uy!",
     "errorTitle": "Algo salió mal",
-    "waking": "Estamos despertando la tienda. La primera carga puede tardar hasta un minuto."
+    "waking": "Estamos despertando la tienda. La primera carga puede tardar hasta un minuto.",
+    "crashDescription": "No pudimos mostrar esta página. Intenta de nuevo.",
+    "reference": "Referencia: {{id}}"
   },
   "notFound": {
     "title": "Página no encontrada",
