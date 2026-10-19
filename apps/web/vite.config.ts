@@ -25,21 +25,19 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         output: {
+          // Long-lived vendor chunks for better caching across deploys. Matching the exact package
+          // folder matters: a loose `includes('react-dom/')` also caught `@floating-ui/react-dom`
+          // (and `'react/'` caught `lucide-react`), forcing them into every first load.
           manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('react/') || id.includes('react-dom/') || id.includes('scheduler/')) {
-                return 'vendor-react';
-              }
-              if (id.includes('react-router')) {
-                return 'vendor-router';
-              }
-              if (id.includes('@tanstack/react-query')) {
-                return 'vendor-query';
-              }
-              if (id.includes('i18next') || id.includes('react-i18next')) {
-                return 'vendor-i18n';
-              }
+            // The last node_modules segment: pnpm paths start with node_modules/.pnpm/<name@ver>/.
+            const pkg = /.*[\\/]node_modules[\\/]((?:@[^\\/]+[\\/])?[^\\/]+)[\\/]/.exec(id)?.[1];
+            if (!pkg) return undefined;
+            if (['react', 'react-dom', 'scheduler'].includes(pkg)) return 'vendor-react';
+            if (pkg === 'react-router') return 'vendor-router';
+            if (pkg === '@tanstack/react-query' || pkg === '@tanstack/query-core') {
+              return 'vendor-query';
             }
+            if (pkg === 'i18next' || pkg === 'react-i18next') return 'vendor-i18n';
             return undefined;
           },
         },
