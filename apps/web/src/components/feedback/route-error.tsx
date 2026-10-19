@@ -2,7 +2,9 @@ import { House, RotateCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router';
 
+import { UpdateAvailable } from './update-available';
 import { ApiError } from '../../lib/api-client';
+import { isChunkLoadError } from '../../lib/stale-deploy';
 import { NotFoundPage } from '../../pages/not-found-page';
 import { StoreSignIllustration } from '../illustrations/store-sign';
 import { Button, buttonVariants } from '../ui/button';
@@ -17,6 +19,7 @@ export function RouteError() {
   const error = useRouteError();
 
   if (isRouteErrorResponse(error) && error.status === 404) return <NotFoundPage />;
+  if (isChunkLoadError(error)) return <UpdateAvailable />;
 
   const requestId = error instanceof ApiError ? error.requestId : undefined;
 

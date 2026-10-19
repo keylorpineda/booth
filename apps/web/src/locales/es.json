@@ -170,7 +170,10 @@
     "errorTitle": "Algo salió mal",
     "waking": "Estamos despertando la tienda. La primera carga puede tardar hasta un minuto.",
     "crashDescription": "No pudimos mostrar esta página. Intenta de nuevo.",
-    "reference": "Referencia: {{id}}"
+    "reference": "Referencia: {{id}}",
+    "updateTitle": "Hay una versión nueva",
+    "updateDescription": "Actualiza la página para seguir.",
+    "update": "Actualizar"
   },
   "notFound": {
     "title": "Página no encontrada",
