@@ -168,7 +168,9 @@
   "feedback": {
     "oops": "Oops",
     "errorTitle": "Something went wrong",
-    "waking": "Waking up the store. The first load can take up to a minute."
+    "waking": "Waking up the store. The first load can take up to a minute.",
+    "crashDescription": "We could not show this page. Please try again.",
+    "reference": "Reference: {{id}}"
   },
   "notFound": {
     "title": "Page not found",
