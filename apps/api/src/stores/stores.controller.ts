@@ -22,6 +22,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiZodBody, ZodBody, ZodParam, ZodQuery } from '../common/validation/zod.decorators';
 import { assertImageFile } from '../media/image-file';
 import { ImageUpload } from '../media/image-upload.decorator';
+import { CrossStore } from '../prisma/cross-store.decorator';
 
 const imageKindParam = ApiParam({ name: 'kind', enum: storeImageKindSchema.options });
 
@@ -63,6 +64,7 @@ export class StoresController {
   }
 
   @Get('slug-availability')
+  @CrossStore()
   @ApiOperation({ summary: 'Check whether a store URL can be used' })
   slugAvailability(
     @ZodQuery(slugAvailabilityQuerySchema) query: { slug: string },

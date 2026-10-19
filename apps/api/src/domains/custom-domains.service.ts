@@ -60,7 +60,8 @@ export class CustomDomainsService {
       );
     }
 
-    const domainTaken = await this.prisma.customDomain.findUnique({
+    // Other stores are invisible inside the store scope: check the whole table on purpose.
+    const domainTaken = await this.prisma.unscoped.customDomain.findUnique({
       where: { domain: input.domain },
     });
     if (domainTaken) {

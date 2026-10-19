@@ -30,6 +30,14 @@ export class PrismaService extends PrismaClient implements OnModuleDestroy {
     }
   }
 
+  /**
+   * The client outside any store scope, for deliberate cross-store lookups inside an owner request
+   * (e.g. "is this custom domain used by another store?"). Never write tenant data through it.
+   */
+  get unscoped(): PrismaClient {
+    return this;
+  }
+
   async onModuleDestroy(): Promise<void> {
     await this.$disconnect();
   }
