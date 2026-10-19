@@ -9,8 +9,13 @@ import { PrismaService } from '../prisma/prisma.service';
 export interface VerifyReceiptResult {
   status: ReceiptVerificationStatus;
   rejectionReason: string | null;
-  autoApproved: boolean;
   verification: ReceiptVerification;
+}
+
+/** A phone-like account identifier (SINPE Móvil, Nequi...): 8 to 15 digits once cleaned. */
+function phoneDigits(value: string | null | undefined): string | null {
+  const digits = value?.replace(/\D/g, '') ?? '';
+  return digits.length >= 8 && digits.length <= 15 ? digits : null;
 }
 
 const MAX_RECEIPT_AGE_MS = 48 * 60 * 60 * 1000; // 48 hours
@@ -28,10 +33,13 @@ export class ReceiptVerificationService {
    * Verifies an uploaded payment receipt for an order using AI extraction and fraud guards:
    * 1. Extracts metadata via ReceiptExtractorService (Gemini Vision).
    * 2. Validates amount and currency match order totals exactly.
-   * 3. Checks recipient phone against store phone when detectable.
+   * 3. Checks the recipient against the account of the payment method the customer chose.
    * 4. Checks against duplicate reference numbers previously used on approved orders.
    * 5. Checks date recency (transaction within last 48 hours).
-   * 6. Automatically transitions paymentStatus to PAID when verification passes.
+   *
+   * The result is a suggestion for the owner, never a payment confirmation: a receipt image can
+   * be edited and the AI cannot see the bank, so the owner marks the order as paid after checking
+   * their bank (one tap in the dashboard).
    */
   async verifyReceipt(
     orderId: string,
@@ -42,7 +50,8 @@ export class ReceiptVerificationService {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: {
-        store: { select: { id: true, whatsappPhone: true, name: true } },
+        store: { select: { id: true, name: true } },
+        paymentMethod: { select: { accountIdentifier: true } },
       },
     });
 
@@ -59,7 +68,6 @@ export class ReceiptVerificationService {
 
     let status: ReceiptVerificationStatus | null = null;
     let rejectionReason: string | null = null;
-    let autoApproved = false;
 
     if (!extracted) {
       status = 'UNVERIFIED';
@@ -86,18 +94,14 @@ export class ReceiptVerificationService {
         rejectionReason = `Extracted currency ${extracted.currency} does not match order currency ${order.currency}`;
       }
 
-      // 2. Recipient phone check (if present on receipt)
-      if (!status && extracted.recipientPhone) {
-        const cleanRecipient = extracted.recipientPhone.replace(/\D/g, '');
-        const cleanStore = order.store.whatsappPhone.replace(/\D/g, '');
-        if (
-          cleanRecipient.length >= 8 &&
-          cleanStore.length >= 8 &&
-          !cleanStore.endsWith(cleanRecipient) &&
-          !cleanRecipient.endsWith(cleanStore)
-        ) {
+      // 2. Recipient check against the account the customer was asked to pay (a SINPE number
+      // may differ from the store WhatsApp). Skipped when either side is not phone-like.
+      const recipient = phoneDigits(extracted.recipientPhone);
+      const account = phoneDigits(order.paymentMethod?.accountIdentifier);
+      if (!status && recipient && account) {
+        if (!account.endsWith(recipient) && !recipient.endsWith(account)) {
           status = 'RECIPIENT_MISMATCH';
-          rejectionReason = `Recipient phone ${extracted.recipientPhone} does not match store phone ${order.store.whatsappPhone}`;
+          rejectionReason = `Recipient ${extracted.recipientPhone ?? ''} does not match the payment account ${order.paymentMethod?.accountIdentifier ?? ''}`;
         }
       }
 
@@ -140,82 +144,55 @@ export class ReceiptVerificationService {
         }
       }
 
-      // If all verification checks passed:
-      if (!status) {
-        status = 'MATCHED';
-        autoApproved = true;
-      }
+      // Every check passed: the receipt looks right (the owner still confirms the payment).
+      status ??= 'MATCHED';
     }
 
-    const verification = await this.prisma.$transaction(async (tx) => {
-      const saved = await tx.receiptVerification.upsert({
-        where: { receiptId },
-        create: {
-          receiptId,
-          storeId: order.storeId,
-          status,
-          confidence: extracted?.confidence ?? 'LOW',
-          extractedAmountMinor:
-            extracted?.amountMinor !== null && extracted?.amountMinor !== undefined
-              ? BigInt(extracted.amountMinor)
-              : null,
-          extractedCurrency: extracted?.currency ?? null,
-          referenceNumber: extracted?.referenceNumber ?? null,
-          recipientPhone: extracted?.recipientPhone ?? null,
-          recipientName: extracted?.recipientName ?? null,
-          senderName: extracted?.senderName ?? null,
-          transactionDate: extracted?.transactionDate ?? null,
-          bankName: extracted?.bankName ?? null,
-          rawSummary: extracted?.rawSummary ?? null,
-          rejectionReason,
-          verifiedAt: new Date(),
-        },
-        update: {
-          status,
-          confidence: extracted?.confidence ?? 'LOW',
-          extractedAmountMinor:
-            extracted?.amountMinor !== null && extracted?.amountMinor !== undefined
-              ? BigInt(extracted.amountMinor)
-              : null,
-          extractedCurrency: extracted?.currency ?? null,
-          referenceNumber: extracted?.referenceNumber ?? null,
-          recipientPhone: extracted?.recipientPhone ?? null,
-          recipientName: extracted?.recipientName ?? null,
-          senderName: extracted?.senderName ?? null,
-          transactionDate: extracted?.transactionDate ?? null,
-          bankName: extracted?.bankName ?? null,
-          rawSummary: extracted?.rawSummary ?? null,
-          rejectionReason,
-          verifiedAt: new Date(),
-        },
-      });
-
-      if (autoApproved) {
-        await tx.order.update({
-          where: { id: order.id },
-          data: {
-            paymentStatus: 'PAID',
-            expiresAt: null,
-          },
-        });
-
-        await tx.orderStatusEvent.create({
-          data: {
-            orderId: order.id,
-            status: order.status,
-            actor: 'system',
-            note: `Payment verified automatically via AI (Ref: ${extracted?.referenceNumber ?? 'N/A'})`,
-          },
-        });
-      }
-
-      return saved;
+    const verification = await this.prisma.receiptVerification.upsert({
+      where: { receiptId },
+      create: {
+        receiptId,
+        storeId: order.storeId,
+        status,
+        confidence: extracted?.confidence ?? 'LOW',
+        extractedAmountMinor:
+          extracted?.amountMinor !== null && extracted?.amountMinor !== undefined
+            ? BigInt(extracted.amountMinor)
+            : null,
+        extractedCurrency: extracted?.currency ?? null,
+        referenceNumber: extracted?.referenceNumber ?? null,
+        recipientPhone: extracted?.recipientPhone ?? null,
+        recipientName: extracted?.recipientName ?? null,
+        senderName: extracted?.senderName ?? null,
+        transactionDate: extracted?.transactionDate ?? null,
+        bankName: extracted?.bankName ?? null,
+        rawSummary: extracted?.rawSummary ?? null,
+        rejectionReason,
+        verifiedAt: new Date(),
+      },
+      update: {
+        status,
+        confidence: extracted?.confidence ?? 'LOW',
+        extractedAmountMinor:
+          extracted?.amountMinor !== null && extracted?.amountMinor !== undefined
+            ? BigInt(extracted.amountMinor)
+            : null,
+        extractedCurrency: extracted?.currency ?? null,
+        referenceNumber: extracted?.referenceNumber ?? null,
+        recipientPhone: extracted?.recipientPhone ?? null,
+        recipientName: extracted?.recipientName ?? null,
+        senderName: extracted?.senderName ?? null,
+        transactionDate: extracted?.transactionDate ?? null,
+        bankName: extracted?.bankName ?? null,
+        rawSummary: extracted?.rawSummary ?? null,
+        rejectionReason,
+        verifiedAt: new Date(),
+      },
     });
 
     return {
       status,
       rejectionReason,
-      autoApproved,
       verification,
     };
   }

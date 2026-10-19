@@ -1,3 +1,5 @@
+import { type ReceiptExtractionResult } from '@booth/shared';
+
 import { type ReceiptExtractorService } from './receipt-extractor.service';
 import { ReceiptVerificationService } from './receipt-verification.service';
 import { type PrismaService } from '../prisma/prisma.service';
@@ -12,271 +14,116 @@ describe('ReceiptVerificationService', () => {
     totalMinor: 500000n, // 5000 CRC
     currency: 'CRC',
     createdAt: new Date('2026-10-17T12:00:00.000Z'),
-    store: {
-      id: 'store_1',
-      name: 'Panadería La Esquina',
-      whatsappPhone: '+50688887777',
-    },
+    store: { id: 'store_1', name: 'Panadería La Esquina' },
+    // The SINPE Móvil number the customer was asked to pay: not the store WhatsApp.
+    paymentMethod: { accountIdentifier: '8888-1111' },
   };
 
-  const createMockPrisma = () => {
-    const tx = {
-      receiptVerification: {
-        upsert: jest.fn().mockImplementation(({ create }) =>
-          Promise.resolve({
-            id: 'verif_1',
-            ...create,
-          }),
-        ),
-      },
-      order: {
-        update: jest.fn().mockResolvedValue({ id: 'order_1', paymentStatus: 'PAID' }),
-      },
-      orderStatusEvent: {
-        create: jest.fn().mockResolvedValue({ id: 'event_1' }),
-      },
-    };
+  const matching: ReceiptExtractionResult = {
+    amountMinor: 500000,
+    currency: 'CRC',
+    referenceNumber: 'SINPE-998877',
+    recipientPhone: '+506 8888 1111',
+    recipientName: 'Panadería La Esquina',
+    senderName: 'Carlos M',
+    transactionDate: '2026-10-17T11:45:00.000Z',
+    bankName: 'BAC Credomatic',
+    confidence: 'HIGH',
+    rawSummary: 'Transferencia SINPE por ₡5.000',
+  };
 
-    return {
+  function setup(extracted: Partial<ReceiptExtractionResult> | null, order = baseOrder) {
+    const prisma = {
       order: {
-        findUnique: jest.fn().mockResolvedValue(baseOrder),
+        findUnique: jest.fn().mockResolvedValue(order),
+        update: jest.fn(),
       },
       receiptVerification: {
         findFirst: jest.fn().mockResolvedValue(null),
+        upsert: jest
+          .fn()
+          .mockImplementation(({ create }: { create: object }) =>
+            Promise.resolve({ id: 'verif_1', ...create }),
+          ),
       },
-      $transaction: jest
-        .fn()
-        .mockImplementation((cb: (t: typeof tx) => Promise<unknown>) => cb(tx)),
-      _tx: tx,
+      orderStatusEvent: { create: jest.fn() },
     };
-  };
-
-  it('auto-approves order and marks status MATCHED when amount and reference match', async () => {
-    const mockPrisma = createMockPrisma();
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: 500000,
-        currency: 'CRC',
-        referenceNumber: 'SINPE-998877',
-        recipientPhone: '+50688887777',
-        recipientName: 'Panadería La Esquina',
-        senderName: 'Carlos M',
-        transactionDate: '2026-10-17T11:45:00.000Z',
-        bankName: 'BAC Credomatic',
-        confidence: 'HIGH',
-        rawSummary: 'Transferencia SINPE por ₡5.000',
-      }),
+    const extractor: Partial<ReceiptExtractorService> = {
+      extractReceipt: jest.fn().mockResolvedValue(extracted && { ...matching, ...extracted }),
     };
-
     const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
+      prisma as unknown as PrismaService,
+      extractor as ReceiptExtractorService,
     );
+    const verify = () =>
+      service.verifyReceipt('order_1', 'receipt_1', Buffer.from('x'), 'image/jpeg');
+    return { prisma, verify };
+  }
 
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('receipt'),
-      'image/jpeg',
-    );
+  it('marks a matching receipt as MATCHED but never confirms the payment itself', async () => {
+    const { prisma, verify } = setup({});
+
+    const result = await verify();
 
     expect(result.status).toBe('MATCHED');
-    expect(result.autoApproved).toBe(true);
     expect(result.rejectionReason).toBeNull();
-    expect(mockPrisma._tx.order.update).toHaveBeenCalledWith({
-      where: { id: 'order_1' },
-      data: { paymentStatus: 'PAID', expiresAt: null },
-    });
-    expect(mockPrisma._tx.orderStatusEvent.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
-        orderId: 'order_1',
-        actor: 'system',
-        note: expect.stringContaining('SINPE-998877'),
-      }),
-    });
+    // The owner confirms after checking the bank: no PAID, no system event.
+    expect(prisma.order.update).not.toHaveBeenCalled();
+    expect(prisma.orderStatusEvent.create).not.toHaveBeenCalled();
   });
 
-  it('rejects with AMOUNT_MISMATCH when extracted amount does not match order total', async () => {
-    const mockPrisma = createMockPrisma();
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: 300000, // 3000 CRC vs 5000 CRC
-        currency: 'CRC',
-        referenceNumber: 'SINPE-123456',
-        recipientPhone: '+50688887777',
-        recipientName: 'Panadería La Esquina',
-        senderName: null,
-        transactionDate: '2026-10-17T11:45:00.000Z',
-        bankName: 'BAC Credomatic',
-        confidence: 'HIGH',
-        rawSummary: 'Transferencia por ₡3.000',
-      }),
-    };
+  it('accepts a SINPE number that differs from the store WhatsApp when it is the chosen account', async () => {
+    const { verify } = setup({ recipientPhone: '88881111' });
+    expect((await verify()).status).toBe('MATCHED');
+  });
 
-    const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
+  it('flags RECIPIENT_MISMATCH when the money went to another account', async () => {
+    const { verify } = setup({ recipientPhone: '+50611112222' });
+    const result = await verify();
+    expect(result.status).toBe('RECIPIENT_MISMATCH');
+    expect(result.rejectionReason).toContain('does not match the payment account');
+  });
+
+  it('skips the recipient check when the chosen method is not phone-like (IBAN)', async () => {
+    const { verify } = setup(
+      { recipientPhone: '+50611112222' },
+      { ...baseOrder, paymentMethod: { accountIdentifier: 'CR05 0152 0200 1026 2840 66' } },
     );
+    expect((await verify()).status).toBe('MATCHED');
+  });
 
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('receipt'),
-      'image/jpeg',
-    );
-
+  it('flags AMOUNT_MISMATCH when the amount differs from the order total', async () => {
+    const { verify } = setup({ amountMinor: 300000 });
+    const result = await verify();
     expect(result.status).toBe('AMOUNT_MISMATCH');
-    expect(result.autoApproved).toBe(false);
     expect(result.rejectionReason).toContain('does not match order total');
-    expect(mockPrisma._tx.order.update).not.toHaveBeenCalled();
-    expect(mockPrisma._tx.orderStatusEvent.create).not.toHaveBeenCalled();
   });
 
-  it('rejects with DUPLICATE_REFERENCE when reference was already matched on another order', async () => {
-    const mockPrisma = createMockPrisma();
-    mockPrisma.receiptVerification.findFirst.mockResolvedValueOnce({
-      id: 'existing_verif',
+  it('flags DUPLICATE_REFERENCE when the reference was already matched on another order', async () => {
+    const { prisma, verify } = setup({});
+    prisma.receiptVerification.findFirst.mockResolvedValueOnce({
+      id: 'existing',
       referenceNumber: 'SINPE-998877',
       status: 'MATCHED',
-      receipt: {
-        order: { code: 'ORD-PREV-88' },
-      },
+      receipt: { order: { code: 'ORD-PREV-88' } },
     });
-
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: 500000,
-        currency: 'CRC',
-        referenceNumber: 'SINPE-998877',
-        recipientPhone: '+50688887777',
-        recipientName: 'Panadería La Esquina',
-        senderName: null,
-        transactionDate: '2026-10-17T11:45:00.000Z',
-        bankName: 'BAC Credomatic',
-        confidence: 'HIGH',
-        rawSummary: 'Transferencia por ₡5.000',
-      }),
-    };
-
-    const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
-    );
-
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('receipt'),
-      'image/jpeg',
-    );
-
+    const result = await verify();
     expect(result.status).toBe('DUPLICATE_REFERENCE');
-    expect(result.autoApproved).toBe(false);
-    expect(result.rejectionReason).toContain('was already used on order ORD-PREV-88');
-    expect(mockPrisma._tx.order.update).not.toHaveBeenCalled();
+    expect(result.rejectionReason).toContain('ORD-PREV-88');
   });
 
-  it('rejects with RECIPIENT_MISMATCH when recipient phone does not match store phone', async () => {
-    const mockPrisma = createMockPrisma();
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: 500000,
-        currency: 'CRC',
-        referenceNumber: 'SINPE-123456',
-        recipientPhone: '+50611112222', // Completely different destination phone
-        recipientName: 'Persona Desconocida',
-        senderName: null,
-        transactionDate: '2026-10-17T11:45:00.000Z',
-        bankName: 'BAC Credomatic',
-        confidence: 'HIGH',
-        rawSummary: 'Transferencia por ₡5.000',
-      }),
-    };
-
-    const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
-    );
-
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('receipt'),
-      'image/jpeg',
-    );
-
-    expect(result.status).toBe('RECIPIENT_MISMATCH');
-    expect(result.autoApproved).toBe(false);
-    expect(result.rejectionReason).toContain('does not match store phone');
-    expect(mockPrisma._tx.order.update).not.toHaveBeenCalled();
-  });
-
-  it('marks UNVERIFIED when transaction date is older than 48 hours', async () => {
-    const mockPrisma = createMockPrisma();
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: 500000,
-        currency: 'CRC',
-        referenceNumber: 'SINPE-OLD-999',
-        recipientPhone: '+50688887777',
-        recipientName: 'Panadería La Esquina',
-        senderName: null,
-        transactionDate: '2026-10-10T12:00:00.000Z', // 7 days ago
-        bankName: 'BAC Credomatic',
-        confidence: 'HIGH',
-        rawSummary: 'Transferencia antigua',
-      }),
-    };
-
-    const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
-    );
-
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('receipt'),
-      'image/jpeg',
-    );
-
+  it('marks UNVERIFIED when the transaction is older than 48 hours', async () => {
+    const { verify } = setup({ transactionDate: '2026-10-10T12:00:00.000Z' });
+    const result = await verify();
     expect(result.status).toBe('UNVERIFIED');
-    expect(result.autoApproved).toBe(false);
     expect(result.rejectionReason).toContain('older than 48 hours');
-    expect(mockPrisma._tx.order.update).not.toHaveBeenCalled();
   });
 
-  it('marks UNVERIFIED when image is low confidence or blurry', async () => {
-    const mockPrisma = createMockPrisma();
-    const mockExtractor: Partial<ReceiptExtractorService> = {
-      extractReceipt: jest.fn().mockResolvedValue({
-        amountMinor: null,
-        currency: null,
-        referenceNumber: null,
-        recipientPhone: null,
-        recipientName: null,
-        senderName: null,
-        transactionDate: null,
-        bankName: null,
-        confidence: 'LOW',
-        rawSummary: 'Imagen no legible',
-      }),
-    };
+  it('marks UNVERIFIED when the image is unreadable or AI is not configured', async () => {
+    const blurry = setup({ amountMinor: null, referenceNumber: null, confidence: 'LOW' });
+    expect((await blurry.verify()).status).toBe('UNVERIFIED');
 
-    const service = new ReceiptVerificationService(
-      mockPrisma as unknown as PrismaService,
-      mockExtractor as ReceiptExtractorService,
-    );
-
-    const result = await service.verifyReceipt(
-      'order_1',
-      'receipt_1',
-      Buffer.from('blurry-pic'),
-      'image/jpeg',
-    );
-
-    expect(result.status).toBe('UNVERIFIED');
-    expect(result.autoApproved).toBe(false);
-    expect(mockPrisma._tx.order.update).not.toHaveBeenCalled();
+    const disabled = setup(null);
+    expect((await disabled.verify()).status).toBe('UNVERIFIED');
   });
 });
