@@ -1,0 +1,39 @@
+name: Demo Reset Job
+
+on:
+  schedule:
+    # Every night at 06:00 UTC (midnight in Costa Rica), the demo stores go back to their seed.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: demo-reset-job
+  cancel-in-progress: false
+
+jobs:
+  reset-demo:
+    name: Reset demo stores
+    runs-on: ubuntu-latest
+    # The free instance may need up to a minute to wake up.
+    timeout-minutes: 5
+
+    steps:
+      - name: Call internal reset-demo endpoint
+        env:
+          JOB_SECRET: ${{ secrets.JOB_SECRET }}
+          API_URL: ${{ secrets.API_URL || 'https://booth-api-ol1v.onrender.com' }}
+        run: |
+          if [ -z "$JOB_SECRET" ]; then
+            echo "JOB_SECRET secret is not configured yet. Skipping."
+            exit 0
+          fi
+
+          status=$(curl -s -o response.json -w "%{http_code}" --max-time 180 --retry 3 --retry-delay 20 \
+            -X POST "${API_URL}/api/internal/jobs/reset-demo" \
+            -H "X-Job-Secret: ${JOB_SECRET}")
+
+          echo "Response status: $status"
+          cat response.json
+          if [ "$status" != "200" ]; then
+            exit 1
+          fi
