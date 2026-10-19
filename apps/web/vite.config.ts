@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
         '/api': { target: env.VITE_DEV_API_TARGET ?? 'http://localhost:3000', changeOrigin: true },
       },
     },
+    // The production build served locally (performance audits): same /api rewrite.
+    preview: {
+      port: 4173,
+      proxy: {
+        '/api': { target: env.VITE_DEV_API_TARGET ?? 'http://localhost:3000', changeOrigin: true },
+      },
+    },
     build: {
       rollupOptions: {
         output: {
