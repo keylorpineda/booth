@@ -16,6 +16,28 @@ totals added up on a calculator, transfer screenshots checked one by one. **Boot
 store one link with its catalog, turns the cart into a clean WhatsApp message, and keeps the order,
 the payment and its status in one place.
 
+## Try it
+
+<p align="center">
+  <a href="https://booth-tawny.vercel.app/s/panaderia-demo">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/demo-store-dark.svg">
+      <img src="docs/assets/demo-store-light.svg" alt="Open the demo store" width="380">
+    </picture>
+  </a>
+  <a href="https://booth-tawny.vercel.app/login">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/assets/demo-dashboard-dark.svg">
+      <img src="docs/assets/demo-dashboard-light.svg" alt="Try the owner dashboard" width="380">
+    </picture>
+  </a>
+</p>
+
+<p align="center">
+  Dashboard: <code>panaderia@demo.booth.app</code> · <code>Demo1234!</code> (read-only)<br>
+  <sub>The free API sleeps when idle: the first visit can take up to a minute.</sub>
+</p>
+
 ## How it works
 
 <picture>
