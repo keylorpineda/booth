@@ -45,6 +45,19 @@ Outcome: owners can measure and promote their store, and the demo stays clean.
 | #29 | Portuguese (pt-BR)             | New lazy locale chunk + `APP_LOCALES` entry; storefront and dashboard.                 |
 | #31 | Nightly demo reset **[creds]** | Scheduled job (Render cron) that re-runs the idempotent seed for demo stores only.     |
 
+## v1.2.1 — Database row-level security
+
+Outcome: Postgres enforces tenant isolation too, so a query that forgets the store filter returns
+nothing instead of another store's data. Today isolation lives in the API (`@CurrentStore()` plus
+tests); this adds a second barrier.
+
+| #    | Issue                                                        |
+| ---- | ------------------------------------------------------------ |
+| #133 | RLS policies on tenant tables + `booth_app` role             |
+| #134 | Prisma transactions scoped to the current store              |
+| #135 | Explicit paths for cross-store work (storefront, jobs, seed) |
+| #136 | Test that the database blocks cross-store access             |
+
 ## v1.3.0 — Owner notifications (#36 becomes a tracker)
 
 Outcome: the owner hears about new orders and receipts with the dashboard closed.
