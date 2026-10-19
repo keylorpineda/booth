@@ -4,6 +4,21 @@
 @import './tokens.css';
 
 /*
+ * `dark:` follows the app theme, not only the OS: forced dark ([data-theme='dark']), or the
+ * system preference unless the visitor picked light. Same rule as tokens.css.
+ */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
+
+/*
  * Tailwind reads the design tokens at runtime (`inline`), so changing `--brand` on any element
  * re-themes everything inside it: that is how each store gets its own color.
  */
@@ -36,7 +51,6 @@
 
   --shadow-card: var(--shadow-card);
   --shadow-float: var(--shadow-float);
-  --shadow-glow: var(--glow);
 
   --ease-out-soft: var(--ease-out-soft);
   --ease-spring: var(--ease-spring);
@@ -100,34 +114,5 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
-  }
-}
-
-@layer components {
-  /* Soft brand glow over a faint dot grid that fades out: depth without noise. */
-  .hero-backdrop {
-    background:
-      radial-gradient(
-        60% 50% at 50% 0%,
-        color-mix(in oklab, var(--brand) 18%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(
-        40% 40% at 90% 30%,
-        color-mix(in oklab, var(--brand) 10%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(circle at 1px 1px, var(--line-strong) 1px, transparent 0) 0 0 / 22px 22px;
-    mask-image: linear-gradient(to bottom, black 55%, transparent);
-  }
-
-  .text-gradient-brand {
-    background: linear-gradient(
-      100deg,
-      var(--brand) 10%,
-      color-mix(in oklab, var(--brand) 55%, oklch(0.7 0.2 320)) 90%
-    );
-    background-clip: text;
-    color: transparent;
   }
 }
