@@ -11,7 +11,8 @@ export function ShareStoreCard({ slug, name }: { slug: string; name: string }) {
   const message = encodeURIComponent(t('dashboard.share.message', { name, url }));
 
   return (
-    <section className="rounded-card border border-line bg-surface-raised p-5 shadow-card sm:p-6">
+    // min-w-0: as a grid item it must not grow to fit the long URL (that widened the page).
+    <section className="min-w-0 rounded-card border border-line bg-surface-raised p-5 shadow-card sm:p-6">
       <h2 className="text-lg font-bold">{t('dashboard.share.title')}</h2>
       <p className="mt-1 text-sm text-ink-muted">{t('dashboard.share.text')}</p>
       <div className="mt-4 flex items-center gap-1 rounded-control border border-line bg-surface-sunken py-1 pr-1 pl-3">
