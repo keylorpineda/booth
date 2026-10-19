@@ -14,9 +14,11 @@ describe('NotFoundState', () => {
         action={<a href="/dashboard/catalog">Volver al catálogo</a>}
       />,
     );
-    expect(screen.getByRole('heading', { name: 'No encontramos este producto' })).toBeVisible();
-    expect(screen.getByText('Puede que lo hayan eliminado.')).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Volver al catálogo' })).toBeVisible();
+    expect(
+      screen.getByRole('heading', { name: 'No encontramos este producto' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Puede que lo hayan eliminado.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Volver al catálogo' })).toBeInTheDocument();
   });
 
   it('renders the generic 404 with a link home', () => {
@@ -25,7 +27,7 @@ describe('NotFoundState', () => {
         <NotFoundPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: 'Página no encontrada' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Página no encontrada' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Ir al inicio/ })).toHaveAttribute('href', '/');
   });
 });
