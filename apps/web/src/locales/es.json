@@ -39,7 +39,8 @@
         "confirmed": "Confirmado",
         "ready": "Listo para retirar"
       },
-      "pickup": "Retira en la tienda a las 11:00"
+      "pickup": "Retira en la tienda a las 11:00",
+      "viewOrder": "Ver pedido"
     }
   },
   "storefront": {

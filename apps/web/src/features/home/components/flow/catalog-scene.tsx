@@ -55,6 +55,16 @@ export function CatalogScene() {
           </m.span>
         </m.div>
       ))}
+      {/* The bag bar the storefront shows once something is added. */}
+      <m.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...spring.gentle, delay: 1.5 }}
+        className="mt-auto flex items-center justify-between rounded-full bg-brand px-4 py-3 text-sm font-semibold text-brand-foreground"
+      >
+        <span>{t('home.flow.viewOrder')}</span>
+        <span className="tabular-nums">{money(17)}</span>
+      </m.div>
     </div>
   );
 }

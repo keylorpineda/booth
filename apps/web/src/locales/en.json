@@ -39,7 +39,8 @@
         "confirmed": "Confirmed",
         "ready": "Ready for pickup"
       },
-      "pickup": "Pick it up at the store at 11:00"
+      "pickup": "Pick it up at the store at 11:00",
+      "viewOrder": "View order"
     }
   },
   "storefront": {
