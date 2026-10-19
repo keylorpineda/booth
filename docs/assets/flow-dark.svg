@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Booth order flow: catalog, WhatsApp, receipt, ready">
+<style>
+  text{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+  .node circle{fill:#161625;stroke:#2A2A3D;stroke-width:2}
+  .node path{stroke:#A3A3B8}
+  .n1 circle{animation:c1 8s linear infinite}.n1 path{animation:i1 8s linear infinite}
+      @keyframes c1{0%,14%{fill:#25244D;stroke:#6366F1}15%,99%{fill:#161625;stroke:#2A2A3D}100%{fill:#25244D;stroke:#6366F1}}
+      @keyframes i1{0%,14%{stroke:#6366F1}15%,99%{stroke:#A3A3B8}100%{stroke:#6366F1}}.n2 circle{animation:c2 8s linear infinite}.n2 path{animation:i2 8s linear infinite}
+      @keyframes c2{0%,25%{fill:#161625;stroke:#2A2A3D}26%,39%{fill:#25244D;stroke:#6366F1}40%,100%{fill:#161625;stroke:#2A2A3D}}
+      @keyframes i2{0%,25%{stroke:#A3A3B8}26%,39%{stroke:#6366F1}40%,100%{stroke:#A3A3B8}}.n3 circle{animation:c3 8s linear infinite}.n3 path{animation:i3 8s linear infinite}
+      @keyframes c3{0%,50%{fill:#161625;stroke:#2A2A3D}51%,64%{fill:#25244D;stroke:#6366F1}65%,100%{fill:#161625;stroke:#2A2A3D}}
+      @keyframes i3{0%,50%{stroke:#A3A3B8}51%,64%{stroke:#6366F1}65%,100%{stroke:#A3A3B8}}.n4 circle{animation:c4 8s linear infinite}.n4 path{animation:i4 8s linear infinite}
+      @keyframes c4{0%,75%{fill:#161625;stroke:#2A2A3D}76%,99%{fill:#25244D;stroke:#6366F1}100%,100%{fill:#161625;stroke:#2A2A3D}}
+      @keyframes i4{0%,75%{stroke:#A3A3B8}76%,99%{stroke:#6366F1}100%,100%{stroke:#A3A3B8}}
+  .flowline{stroke-dasharray:6 10;animation:dash 1s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-16}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}.traveler{display:none}}
+</style>
+<rect x=".5" y=".5" width="1199" height="299" rx="24" fill="#0E0E18" stroke="#2A2A3D"/>
+<path d="M180 130H1020" stroke="#2A2A3D" stroke-width="2"/>
+<path class="flowline" d="M180 130H1020" stroke="#6366F1" stroke-width="2" opacity=".6"/>
+<circle class="traveler" r="7" fill="#6366F1">
+  <animateMotion dur="8s" repeatCount="indefinite" path="M180 130H1020" keyPoints="0;0;0.3333;0.3333;0.6667;0.6667;1;1" keyTimes="0;0.15;0.25;0.4;0.5;0.65;0.75;1" calcMode="linear"/>
+</circle>
+<g class="node n1">
+      <text x="180" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#6366F1">01</text>
+      <circle cx="180" cy="130" r="44"/>
+      <g transform="translate(160.8 110.8) scale(1.6)"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="180" y="212" text-anchor="middle" font-size="18" font-weight="800" fill="#F3F3F8">Browse the catalog</text>
+      <text x="180" y="238" text-anchor="middle" font-size="14" fill="#A3A3B8">No app, no account</text>
+    </g><g class="node n2">
+      <text x="460" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#6366F1">02</text>
+      <circle cx="460" cy="130" r="44"/>
+      <g transform="translate(440.8 110.8) scale(1.6)"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="460" y="212" text-anchor="middle" font-size="18" font-weight="800" fill="#F3F3F8">Order in WhatsApp</text>
+      <text x="460" y="238" text-anchor="middle" font-size="14" fill="#A3A3B8">Saved before it opens</text>
+    </g><g class="node n3">
+      <text x="740" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#6366F1">03</text>
+      <circle cx="740" cy="130" r="44"/>
+      <g transform="translate(720.8 110.8) scale(1.6)"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="740" y="212" text-anchor="middle" font-size="18" font-weight="800" fill="#F3F3F8">Upload the receipt</text>
+      <text x="740" y="238" text-anchor="middle" font-size="14" fill="#A3A3B8">AI reads amount and phone</text>
+    </g><g class="node n4">
+      <text x="1020" y="64" text-anchor="middle" font-size="13" font-weight="800" fill="#6366F1">04</text>
+      <circle cx="1020" cy="130" r="44"/>
+      <g transform="translate(1000.8 110.8) scale(1.6)"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2M9.5 14l2 2 3.5-4" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="1020" y="212" text-anchor="middle" font-size="18" font-weight="800" fill="#F3F3F8">Track until ready</text>
+      <text x="1020" y="238" text-anchor="middle" font-size="14" fill="#A3A3B8">The owner updates status</text>
+    </g>
+</svg>
