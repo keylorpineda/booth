@@ -2,3 +2,8 @@ User-agent: *
 Allow: /
 # Order tracking pages are private (reached by an unguessable link).
 Disallow: /t/
+
+# Owner-only screens have nothing to index.
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /invite/
