@@ -12,8 +12,8 @@ export const CAFE_SEED: DemoStoreSeed = {
     description:
       'Single-origin Colombian specialty coffee, cold brews and fresh pastries delivered across Medellín.',
     whatsappPhone: '+573001112233',
-    // Calm cool neutral: readable on white and on the dark theme.
-    brandColor: '#475569',
+    // Calm deep cyan: pairs with the indigo look; white text at 5:1 contrast.
+    brandColor: '#0E7490',
     country: 'CO',
     locale: 'en',
     acceptOrdersWhenClosed: true,
