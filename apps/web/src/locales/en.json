@@ -125,7 +125,9 @@
     "uploadReceipt": "Upload receipt",
     "replaceReceipt": "Replace receipt",
     "items": "Your order",
-    "orderAgain": "Back to the store"
+    "orderAgain": "Back to the store",
+    "notFoundTitle": "Invalid tracking link",
+    "notFoundDescription": "Ask the store for your order link."
   },
   "status": {
     "PENDING": "Order received",
@@ -522,7 +524,10 @@
       "deleteTitle": "Delete this photo?",
       "deleteText": "It is removed from your store and cannot be recovered.",
       "deleteConfirm": "Yes, delete"
-    }
+    },
+    "notFoundTitle": "We could not find this product",
+    "notFoundDescription": "It may have been deleted.",
+    "backToCatalog": "Back to catalog"
   },
   "settings": {
     "tabs": {
