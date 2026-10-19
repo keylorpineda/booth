@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useParams } from 'react-router';
 
 import { ErrorState } from '../components/feedback/error-state';
-import { StoreSignIllustration } from '../components/illustrations/store-sign';
+import { NotFoundState } from '../components/feedback/not-found-state';
 import { buttonVariants } from '../components/ui/button';
-import { EmptyState } from '../components/ui/empty-state';
 import { Skeleton } from '../components/ui/skeleton';
 import { useOwnerMoney } from '../features/dashboard/use-owner-money';
 import { useOwnerOrder } from '../features/owner-orders/api';
@@ -41,10 +40,8 @@ export function OrderDetailPage() {
   if (order.error instanceof ApiError && order.error.status === 404) {
     return (
       <div>
-        <title>{`${t('orders.detail.notFound')} · Booth`}</title>
         {back}
-        <EmptyState
-          illustration={<StoreSignIllustration label="404" />}
+        <NotFoundState
           title={t('orders.detail.notFound')}
           description={t('orders.detail.notFoundHint')}
         />

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useParams } from 'react-router';
 
 import { ErrorState } from '../components/feedback/error-state';
+import { NotFoundState } from '../components/feedback/not-found-state';
 import { WakingNotice } from '../components/feedback/waking-notice';
 import { HeaderControls } from '../components/layout/header-controls';
 import { Skeleton } from '../components/ui/skeleton';
@@ -18,6 +19,7 @@ import { ReceiptUpload } from '../features/tracking/components/receipt-upload';
 import { StatusTimeline } from '../features/tracking/components/status-timeline';
 import { TrackingProvider } from '../features/tracking/tracking-context';
 import { useNow } from '../hooks/use-now';
+import { ApiError } from '../lib/api-client';
 import { applyStoreLocale } from '../lib/i18n';
 import { staggerChildren } from '../lib/motion';
 import { useStoreTheme } from '../lib/theme';
@@ -37,6 +39,15 @@ export function TrackingPage() {
     if (tracking.data) applyStoreLocale(tracking.data.store.locale);
   }, [tracking.data]);
 
+  if (tracking.error instanceof ApiError && tracking.error.status === 404) {
+    return (
+      <NotFoundState
+        fullPage
+        title={t('tracking.notFoundTitle')}
+        description={t('tracking.notFoundDescription')}
+      />
+    );
+  }
   if (tracking.error)
     return <ErrorState error={tracking.error} onRetry={() => void tracking.refetch()} />;
   if (!tracking.data) {

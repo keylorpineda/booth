@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { ErrorState } from '../components/feedback/error-state';
+import { NotFoundState } from '../components/feedback/not-found-state';
 import { WakingNotice } from '../components/feedback/waking-notice';
-import { StoreSignIllustration } from '../components/illustrations/store-sign';
-import { EmptyState } from '../components/ui/empty-state';
 import { useCatalogQuery, useStoreQuery } from '../features/storefront/api';
 import { StorefrontSkeleton } from '../features/storefront/components/storefront-skeleton';
 import { StorefrontView } from '../features/storefront/components/storefront-view';
@@ -32,8 +31,8 @@ export function StorefrontPage() {
 
   if (store.error instanceof ApiError && store.error.status === 404) {
     return (
-      <EmptyState
-        illustration={<StoreSignIllustration label="404" />}
+      <NotFoundState
+        fullPage
         title={t('storefront.notFoundTitle')}
         description={t('storefront.notFoundDescription')}
       />

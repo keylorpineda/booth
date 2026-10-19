@@ -125,7 +125,9 @@
     "uploadReceipt": "Subir comprobante",
     "replaceReceipt": "Reemplazar comprobante",
     "items": "Tu pedido",
-    "orderAgain": "Volver a la tienda"
+    "orderAgain": "Volver a la tienda",
+    "notFoundTitle": "Enlace de seguimiento no válido",
+    "notFoundDescription": "Pídele a la tienda el enlace de tu pedido."
   },
   "status": {
     "PENDING": "Pedido recibido",
@@ -522,7 +524,10 @@
       "deleteTitle": "¿Eliminar esta foto?",
       "deleteText": "Se borra de tu tienda y no se puede recuperar.",
       "deleteConfirm": "Sí, eliminar"
-    }
+    },
+    "notFoundTitle": "No encontramos este producto",
+    "notFoundDescription": "Puede que lo hayan eliminado.",
+    "backToCatalog": "Volver al catálogo"
   },
   "settings": {
     "tabs": {
