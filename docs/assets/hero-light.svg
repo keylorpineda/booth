@@ -2,6 +2,9 @@
 <style>
   text{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
   .scene{opacity:0;animation:12s linear infinite}
+  /* Static fallback (viewers that do not run SVG animations): the first step. */
+  .s1{opacity:1}.pill.p1 rect{fill:#4F46E5;stroke:#4F46E5}.pill.p1 text{fill:#FFFFFF}
+  .d2,.d3{fill:#D3D3E0}
   .s1{animation-name:s1}.s2{animation-name:s2}.s3{animation-name:s3}.s4{animation-name:s4}
   @keyframes s1{0%{opacity:0}2%,23%{opacity:1}25%,100%{opacity:0}}@keyframes s2{0%,25%{opacity:0}27%,48%{opacity:1}50%,100%{opacity:0}}@keyframes s3{0%,50%{opacity:0}52%,73%{opacity:1}75%,100%{opacity:0}}@keyframes s4{0%,75%{opacity:0}77%,98%{opacity:1}100%{opacity:0}}
   .pill rect{fill:#F6F6FA;stroke:#E6E6EF;animation:12s linear infinite}
