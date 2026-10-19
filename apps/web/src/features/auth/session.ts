@@ -17,7 +17,9 @@ export function refreshSession(): Promise<boolean> {
       return true;
     })
     .catch(() => {
-      useSessionStore.getState().signOut();
+      // Only an owner who was signed in lost something; a first visit without a cookie did not.
+      const { status, signOut } = useSessionStore.getState();
+      signOut({ expired: status === 'signedIn' });
       return false;
     })
     .finally(() => {

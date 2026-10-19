@@ -175,7 +175,8 @@
     "reference": "Referencia: {{id}}",
     "updateTitle": "Hay una versión nueva",
     "updateDescription": "Actualiza la página para seguir.",
-    "update": "Actualizar"
+    "update": "Actualizar",
+    "offline": "Sin conexión a internet"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -222,7 +223,8 @@
     "registerSubtitle": "Gratis y en dos minutos.",
     "noAccount": "¿No tienes cuenta? <link>Crea una</link>",
     "haveAccount": "¿Ya tienes cuenta? <link>Inicia sesión</link>",
-    "restoring": "Recuperando tu sesión…"
+    "restoring": "Recuperando tu sesión…",
+    "sessionExpired": "Tu sesión expiró. Vuelve a iniciar sesión para seguir."
   },
   "onboarding": {
     "heading": "Tu tienda",
@@ -292,7 +294,10 @@
     "soon": {
       "title": "Muy pronto",
       "text": "Esta sección se está construyendo y aparecerá aquí en la próxima versión."
-    }
+    },
+    "noPermissionTitle": "No tienes acceso a esta sección",
+    "noPermissionDescription": "Pídele al dueño de la tienda que cambie tu rol.",
+    "backHome": "Ir al inicio del panel"
   },
   "theme": {
     "label": "Tema",
