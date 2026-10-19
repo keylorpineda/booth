@@ -63,7 +63,7 @@ describe('OrderRow', () => {
 
   it('displays the AI verification badge when receipt verification status is present', () => {
     renderRow(order({ receiptVerificationStatus: 'MATCHED' }));
-    expect(screen.getByText('Verificado por IA')).toBeInTheDocument();
+    expect(screen.getByText('Parece correcto')).toBeInTheDocument();
   });
 
   it('displays warning badge when receipt verification status has amount mismatch', () => {

@@ -393,18 +393,18 @@
       "title": "Receipt verification",
       "aiBadge": "AI",
       "status": {
-        "MATCHED": "AI Verified",
+        "MATCHED": "Looks right",
         "AMOUNT_MISMATCH": "Amount mismatch",
         "DUPLICATE_REFERENCE": "Duplicate voucher",
         "RECIPIENT_MISMATCH": "Recipient mismatch",
         "UNVERIFIED": "Needs manual review"
       },
       "statusDescription": {
-        "MATCHED": "AI confirmed the amount, destination, and reference number match this order.",
+        "MATCHED": "Amount, account and reference match the order. Confirm the payment once you see it in your bank.",
         "AMOUNT_MISMATCH": "The transferred amount does not match the order total. Check the receipt details.",
         "DUPLICATE_REFERENCE": "This reference number was already used in another approved order.",
-        "RECIPIENT_MISMATCH": "The recipient phone or account does not match your store details.",
-        "UNVERIFIED": "AI could not verify the voucher details with certainty. Please review manually."
+        "RECIPIENT_MISMATCH": "The money did not go to the account the customer chose. Check the receipt.",
+        "UNVERIFIED": "The details could not be read with certainty. Please check it yourself."
       },
       "confidence": {
         "label": "AI Confidence",
