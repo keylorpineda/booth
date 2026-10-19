@@ -61,17 +61,20 @@ booth/
 
 ## Auth
 
-- Passwords hashed with argon2id.
-- Access token: JWT, 15 min, returned in the body and kept in memory by the web app (never in localStorage).
-- Refresh token: random 256-bit value in an httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored as a SHA-256 hash. Rotated on every refresh. Tokens share a `familyId`; reusing a rotated token revokes the whole family (theft detection).
+- Passwords hashed with argon2id (`@node-rs/argon2`, prebuilt binaries). Unknown emails are verified against a dummy hash so login timing does not reveal which emails exist.
+- **Secure by default**: `JwtAuthGuard` is global. Routes opt out with `@Public()`. The guard loads the user, `isDemo` and store id from the database on every request, so `req.auth` never trusts token claims beyond the user id.
+- Access token: HS256 JWT (`sub` only, issuer and audience checked), 15 min, returned in the body and kept in memory by the web app (never in localStorage).
+- Refresh token: random 256-bit value in an httpOnly cookie (`SameSite=Lax`, `Secure`, `Path=/api/auth`), stored as a SHA-256 hash. Rotated on every refresh with a conditional update, so two concurrent refreshes with the same token cannot both succeed. Tokens share a `familyId`; reusing a rotated token revokes the whole family (theft detection). The web app must therefore send one refresh at a time (a shared in-flight promise).
 - On page load the web app calls `POST /api/auth/refresh` to restore the session.
-- `DemoReadOnlyGuard` (global) rejects any non-safe method from an `isDemo` user with `403 DEMO_READ_ONLY`.
+- `DemoReadOnlyGuard` (global, after the auth guard) rejects any non-safe method from an `isDemo` user with `403 DEMO_READ_ONLY`; `@AllowDemo()` exempts a route. Public auth routes (refresh, logout) keep working for the demo.
+- `@CurrentUser()` gives the auth context; `@CurrentStore()` gives the owner's store id or answers `403 ONBOARDING_REQUIRED`.
+- The `Secure` cookie works on `http://localhost` in Chrome and Firefox (localhost is a secure context).
 
 ## Orders
 
 ### Checkout flow
 
-1. Client sends `{ items: [{ productId, quantity }], fulfillment, zoneId?, address?, paymentMethodId, customer, consent }`. No prices.
+1. Client sends `{ items: [{ productId, quantity }], fulfillment, deliveryZoneId?, deliveryAddress?, payment, customer, privacyConsent }`. No prices.
 2. API runs lazy expiry for the store, checks the store is open (or accepts orders while closed), loads products, computes subtotal, delivery fee and total.
 3. In **one transaction**: reserve stock, insert order + item snapshots + first status event, set `expiresAt`.
 4. Response: order code, tracking token, totals and a `wa.me` URL with the localized message.
@@ -87,7 +90,7 @@ SET stock = stock - $qty
 WHERE id = $id AND "storeId" = $storeId AND "trackStock" = true AND stock >= $qty
 ```
 
-If any update affects 0 rows, the transaction rolls back and the API returns `409 OUT_OF_STOCK` with the product ids. Products with `trackStock = false` are never reserved. Each order item records `stockReserved` so releases are exact.
+If any update affects 0 rows, the transaction rolls back and the API returns `409 OUT_OF_STOCK` with the product ids. Products with `trackStock = false` are never reserved. Each order item records `stockReserved`; a release adds the reserved quantities back and clears the flags in the same transaction, so stock is never released twice. Tested: two concurrent orders for the last unit (exactly one succeeds) and 12 parallel orders against 5 units (exactly 5 succeed).
 
 ### Lifecycle
 
@@ -113,17 +116,17 @@ Order items store `productName` and `unitPriceMinor`; orders store currency, zon
 - **Cash** on pickup/delivery (store toggle).
 - **Transfer with receipt**: generic method with `label`, `accountHolder`, `accountIdentifier` (account number, phone, email or handle), `instructions` and optional `paymentUrl`. Presets live in `packages/shared/payments/presets.ts` and only prefill these fields:
 
-| Country | Presets                          |
-| ------- | -------------------------------- |
+| Country | Presets                              |
+| ------- | ------------------------------------ |
 | CR      | SINPE Móvil (default), IBAN transfer |
-| MX      | SPEI                             |
-| CO      | Nequi, Daviplata                 |
-| PE      | Yape, Plin                       |
-| BR      | Pix                              |
-| US      | Zelle, Venmo, Cash App           |
-| ES      | Bizum                            |
-| PT      | MB WAY                           |
-| any     | Custom, PayPal link              |
+| MX      | SPEI                                 |
+| CO      | Nequi, Daviplata                     |
+| PE      | Yape, Plin                           |
+| BR      | Pix                                  |
+| US      | Zelle, Venmo, Cash App               |
+| ES      | Bizum                                |
+| PT      | MB WAY                               |
+| any     | Custom, PayPal link                  |
 
 - The optional `paymentUrl` lets a store accept cards through its own provider (Stripe Payment Link, Mercado Pago, PayPal) without Booth handling money or charging commission.
 - Receipts are uploaded from the tracking page, validated (JPEG, PNG, WebP, HEIC, PDF; max 5 MB; magic-byte check) and stored as **authenticated** Cloudinary assets. Owners get short-lived signed URLs (default 5 min).
@@ -178,11 +181,20 @@ apps/web/src/
 ### Design system and motion
 
 - **Tokens** as CSS variables (`--color-*`, `--radius-*`, `--shadow-*`, `--space-*`, `--ease-*`, `--duration-*`) mapped into the Tailwind theme. Dashboard supports light/dark.
-- **Store theming**: the brand color is converted to OKLCH and a 50–950 scale is derived with CSS relative colors / `color-mix()`. Foreground on brand surfaces is chosen automatically to keep WCAG AA contrast.
+- **Store theming**: the API sends `brandColor` and `brandForeground` (black or white, whichever passes WCAG AA). `useStoreTheme` sets them on `<html>` while a store page is mounted (so portals such as sheets and toasts follow), and `tokens.css` derives `--brand-soft`, `--brand-strong` and `--brand-ink` with OKLCH `color-mix()`.
 - **Micro-interactions** (Motion): press scale on buttons, add-to-cart item flying to the cart button and a count bump, quantity stepper number roll, sheet/drawer springs, list stagger on load, skeleton shimmer, toast enter/exit, route transitions (View Transitions API with fallback).
-- **Vector animations**: animated SVG icons and paths (`pathLength`) for the order-placed check, the tracking timeline and status changes; Lottie (`.lottie`, lazy loaded) for empty states and success illustrations.
+- **Vector animations**: animated SVG paths (`pathLength`) for the checkbox tick, the order-placed check and the tracking timeline; hand-made animated SVG illustrations (empty bag, store sign) instead of Lottie: they inherit the store color and add no runtime.
+- **Motion is lazy**: components use `m.*` inside `<LazyMotion strict>`; the animation engine (`domMax`) loads after first paint.
 - Every animation checks `useReducedMotion()`; under reduced motion only opacity changes remain.
 - Mobile-first: designed at 360px, bottom sheets instead of modals on small screens, sticky cart and checkout actions within thumb reach.
+
+### First-load performance
+
+- **Prefetch from HTML**: on `/s/:slug`, an inline script in `index.html` starts the store and catalog requests while the JS downloads; the first queries reuse those responses (`lib/prefetch.ts`).
+- **Static placeholder** in `index.html` paints before the app boots.
+- **Code splitting**: checkout and tracking are lazy routes; toasts and Motion features load lazily.
+- **No Zod on the first load**: storefront responses are typed but not validated at runtime; checkout and tracking validate with the shared schemas, and the API's e2e tests guard the public contract. `@booth/shared` is built one file per module and keeps schemas apart from pure helpers, so the bundler drops what the storefront does not use (e.g. libphonenumber only ships with checkout).
+- Main bundle: 180 KB gzipped (from 277 KB before these changes).
 
 ## API conventions
 
@@ -190,12 +202,23 @@ apps/web/src/
 - Error format and status codes: see [API.md](API.md).
 - IDs are cuid2 strings. Timestamps are UTC ISO 8601; display conversion uses the store timezone.
 - Pagination: cursor-based (`?cursor=&limit=`) for order lists.
+- Validation: `@ZodBody(schema)` / `@ZodQuery(schema)` run the shared Zod schemas through `ZodValidationPipe`; `@ApiZodBody(schema)` documents them in Swagger via `z.toJSONSchema` (OpenAPI 3.0). `nestjs-zod` was not used because it does not support Nest 12.
+- Errors: throw `AppException(code, message, status, details?)`; `AllExceptionsFilter` renders everything else (HTTP exceptions, throttling, unknown errors) in the same shape and never leaks internals on 5xx.
+- Config: `apps/api/src/config` validates `process.env` with Zod before Nest starts; `apps/api/.env` is loaded only for local development and never overrides real environment variables.
+- Logging: `nestjs-pino` (JSON in production, pretty in development), request id on every line, auth headers and cookies redacted, `/health` not logged.
 
 ## Security
 
 - Helmet with a strict CSP on the API; CORS allowlist from `CORS_ORIGINS`.
-- Rate limits: default bucket, stricter `auth` and `public-orders`/`receipt` buckets, keyed by the real client IP.
-- Uploads: MIME + magic-byte validation, size limits, server-generated public ids, receipts never public.
+- Rate limits (`@nestjs/throttler`): every route counts against the `default` bucket; `@RateLimit('auth')` and `@RateLimit('public-orders')` add a stricter bucket. Keyed by `req.ip` (real client IP via `trust proxy`). Storage is in memory because the API runs as one instance; a shared store (e.g. Redis) is needed before scaling out.
+- Uploads: the real type is detected from magic bytes (the client MIME type and file name are ignored), 5 MB limit, server-generated public ids, receipts never public. SVG is not accepted (it can carry scripts).
+
+## Media
+
+- `MediaStorage` interface (`apps/api/src/media`): `CloudinaryStorage` in production, `DisabledStorage` when the `CLOUDINARY_*` variables are unset (uploads answer `503 MEDIA_NOT_CONFIGURED`), and a fake in tests.
+- Signed server-side uploads, credentials passed per call (no global SDK state). Assets live in `booth/<storeId>/products` and `booth/<storeId>/branding`. Originals are capped at 2400 px and stripped of metadata (phone GPS data).
+- The API returns ready-to-use URLs (`thumb` 320 px, `medium` 800 px, `large` 1600 px) with automatic format and quality, so the web app never needs Cloudinary details.
+- Deleting a product or replacing a logo deletes the old asset; a failed deletion is logged and never fails the request.
 - Tracking tokens: 256-bit random, base64url. Order codes are short and only used as payment references.
 - Privacy: customer name and phone are stored only after explicit consent; consent timestamp and notice version are recorded.
 
@@ -204,4 +227,4 @@ apps/web/src/
 - **CI** (GitHub Actions, push + PR): install with pnpm cache → lint → typecheck → test (Postgres service container) → build. PR titles are checked against Conventional Commits.
 - **CD**: Vercel Git integration (preview per PR and for `develop`, production on `main`); Render deploy hook called by a workflow after CI passes on `main`, running `prisma migrate deploy` before start.
 - **Releases**: release-please maintains `CHANGELOG.md` and tags (`v1.0.0` = MVP).
-- **Branching**: `develop` is the default integration branch (work branches squash-merged); `main` only holds completed versions, updated by release PRs and tagged. Both protected. See [CONTRIBUTING](../.github/CONTRIBUTING.md).
+- **Branching**: `develop` is the default integration branch (work branches rebase-merged, keeping every commit); `main` only holds completed versions, updated by release PRs and tagged. Both protected. See [CONTRIBUTING](../.github/CONTRIBUTING.md).

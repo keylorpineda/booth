@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+# Order tracking pages are private (reached by an unguessable link).
+Disallow: /t/

@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: booth
+          POSTGRES_PASSWORD: booth
+          POSTGRES_DB: booth_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U booth -d booth_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL_TEST: postgresql://booth:booth@localhost:5433/booth_test?schema=public
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm build:shared
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level=high
+
+      - name: Test & coverage
+        run: pnpm test:cov
+
+      - name: Build
+        run: pnpm build
+
+      - name: Migrate & seed test database
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+        run: |
+          pnpm --filter @booth/api prisma:deploy
+          pnpm --filter @booth/api db:seed
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(pnpm --filter @booth/web exec playwright --version)" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @booth/web exec playwright install --with-deps chromium webkit
+
+      - name: Install Playwright OS dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @booth/web exec playwright install-deps chromium webkit
+
+      - name: Run Playwright E2E tests
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL_TEST }}
+          JWT_ACCESS_SECRET: Oko9AEnZMMjUkImGgbzFu6TK0H4Gjm70k58-qm8V-J6vDXrpN-sxsg5pRXfAAfIm
+          CORS_ORIGINS: http://localhost:5173
+          WEB_PUBLIC_URL: http://localhost:5173
+          PORT: 3000
+          NODE_ENV: test
+          CI: true
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Trigger Render Deploy Hook
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL secret is not configured yet. Skipping."
+            exit 0
+          fi
+          echo "Triggering Render deploy hook..."
+          curl -f -sS -X POST "$RENDER_DEPLOY_HOOK_URL"

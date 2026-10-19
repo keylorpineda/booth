@@ -18,7 +18,7 @@ pnpm typecheck          # tsc --noEmit (all workspaces)
 pnpm test               # Jest (api, uses test DB) + Vitest (web, shared)
 pnpm build              # build all workspaces
 pnpm --filter api prisma:migrate   # create/apply a migration
-pnpm --filter api db:seed          # idempotent demo seed
+pnpm --filter api db:seed          # idempotent demo seed (Phase 7)
 ```
 
 ## Non-negotiable rules
@@ -39,11 +39,12 @@ pnpm --filter api db:seed          # idempotent demo seed
 - Small components: one component per file, ~150 lines max; split by responsibility (`ui/` primitives → `features/*/components` → `pages/`).
 - Logic in hooks (`use*.ts`), API calls in `features/*/api.ts` with TanStack Query; no fetch inside components.
 - Mobile-first (design at 360px first). Store theme via CSS variables only.
-- Animations with Motion; every animation respects `prefers-reduced-motion`.
+- Animations with Motion using `m.*` (never `motion.*`: `<LazyMotion strict>` loads the engine lazily); every animation respects `prefers-reduced-motion`.
+- Storefront first-load code must not import Zod schemas (keep `@booth/shared` imports to helpers and types there).
 
 ## Testing rules
 
-- API: Jest + Supertest against the test DB (port 5433), reset between suites. Web: Vitest + Testing Library.
+- API: Jest + Supertest against the test DB (port 5433; `pnpm db:up`). Boot apps with `test/utils/create-test-app.ts` (same setup as production) and call `resetDatabase()` in `beforeEach`. Web: Vitest + Testing Library.
 - Fix failures at the root. Never disable lint rules, skip tests or use `--no-verify`.
 - Required tests: tenant isolation, concurrent last-unit order (exactly one succeeds), expiration/stock release, demo write guard.
 
@@ -53,5 +54,5 @@ pnpm --filter api db:seed          # idempotent demo seed
 2. Before coding a phase: list files to create/change, new dependencies and why, open questions. Wait for approval.
 3. After implementing: lint, typecheck, test, build.
 4. Verify "Done when", tick PLAN.md, add a DEVLOG.md entry, propose Conventional Commit messages.
-5. Do not commit or push unless asked. Branches: `<type>/<short-desc>` from `develop`, PR to `develop` (squash). `main` only receives completed versions via release PRs (`develop` -> `main`, merge commit, tag).
+5. Small progressive commits (one logical step each). Branches: `<type>/<short-desc>` from `develop`, PR to `develop` (rebase merge, never squash), merge after CI is green. `main` only receives completed versions via release PRs (`develop` -> `main`, merge commit, tag).
 6. Commits and PRs are authored by the owner only: no AI co-author trailers or "generated with" footers.

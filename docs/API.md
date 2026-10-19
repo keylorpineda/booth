@@ -27,98 +27,127 @@ Every error response has the same shape:
 }
 ```
 
-| Status | Typical codes                                                          |
-| ------ | ---------------------------------------------------------------------- |
-| 400    | `VALIDATION_ERROR` (with `details.fields`), `STORE_CLOSED`             |
-| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `REFRESH_TOKEN_REUSED`       |
-| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                |
-| 404    | `NOT_FOUND` (also returned for other stores' resources)                |
-| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `INVALID_STATUS_TRANSITION` |
-| 413    | `FILE_TOO_LARGE`                                                       |
-| 415    | `UNSUPPORTED_FILE_TYPE`                                                |
-| 429    | `RATE_LIMITED`                                                         |
-| 500    | `INTERNAL_ERROR` (no internals leaked)                                 |
+| Status | Typical codes                                                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 400    | `VALIDATION_ERROR` (with `details.fields: [{ path, message }]`), `BAD_REQUEST` (e.g. malformed JSON), `STORE_CLOSED`                       |
+| 401    | `UNAUTHENTICATED`, `INVALID_CREDENTIALS`, `INVALID_REFRESH_TOKEN`, `REFRESH_TOKEN_REUSED`                                                  |
+| 403    | `DEMO_READ_ONLY`, `ONBOARDING_REQUIRED`                                                                                                    |
+| 404    | `NOT_FOUND` (also returned for other stores' resources)                                                                                    |
+| 409    | `OUT_OF_STOCK`, `SLUG_TAKEN`, `EMAIL_TAKEN`, `STORE_ALREADY_EXISTS`, `CATEGORY_NAME_TAKEN`, `TOO_MANY_IMAGES`, `INVALID_STATUS_TRANSITION` |
+| 413    | `FILE_TOO_LARGE`, `PAYLOAD_TOO_LARGE`                                                                                                      |
+| 415    | `UNSUPPORTED_FILE_TYPE`, `UNSUPPORTED_MEDIA_TYPE`                                                                                          |
+| 429    | `RATE_LIMITED` (with a `Retry-After` header)                                                                                               |
+| 500    | `INTERNAL_ERROR` (no internals leaked)                                                                                                     |
 
-`message` is in English for developers; the web app maps `code` to a localized string.
+`message` is in English for developers; the web app maps `code` to a localized string. Codes live in `@booth/shared` (`ERROR_CODES`, `apiErrorSchema`); domain codes are added as each phase needs them.
+
+Every response carries an `X-Request-Id` header (a valid incoming one is reused); the same id is in `error.requestId` and in the API logs.
 
 ## Health
 
-| Method | Path      | Description                         |
-| ------ | --------- | ----------------------------------- |
-| GET    | `/health` | `200 { status: 'ok', db: 'up' }` or `503` |
+| Method | Path      | Description                                                                                   |
+| ------ | --------- | --------------------------------------------------------------------------------------------- |
+| GET    | `/health` | `200 { status: 'ok', db: 'up' }` or `503 { status: 'error', db: 'down' }`. Never rate limited |
 
 ## Auth — rate limit: `auth`
 
-| Method | Path                 | Description                                                  |
-| ------ | -------------------- | ------------------------------------------------------------ |
-| POST   | `/api/auth/register` | Create owner account → access token + refresh cookie         |
-| POST   | `/api/auth/login`    | Email + password → access token + refresh cookie             |
-| POST   | `/api/auth/refresh`  | Rotate refresh cookie → new access token                     |
-| POST   | `/api/auth/logout`   | Revoke refresh token family, clear cookie                    |
+Every route requires `Authorization: Bearer <accessToken>` unless it is public (auth endpoints below, `/health`, `/api/public/*`). Register, login and refresh return:
+
+```json
+{
+  "user": { "id": "ck...", "email": "ana@example.com", "name": "Ana", "isDemo": false },
+  "store": { "id": "ck...", "slug": "la-esquina", "name": "Panadería La Esquina" },
+  "accessToken": "eyJ...",
+  "accessTokenExpiresIn": 900
+}
+```
+
+and set the refresh cookie `booth_rt` (`HttpOnly; Secure; SameSite=Lax; Path=/api/auth`). `store` is `null` before onboarding. A failed refresh clears the cookie.
+
+| Method | Path                 | Description                                                       |
+| ------ | -------------------- | ----------------------------------------------------------------- |
+| POST   | `/api/auth/register` | Create owner account → access token + refresh cookie              |
+| POST   | `/api/auth/login`    | Email + password → access token + refresh cookie                  |
+| POST   | `/api/auth/refresh`  | Rotate refresh cookie → new access token                          |
+| POST   | `/api/auth/logout`   | Revoke refresh token family, clear cookie                         |
 | GET    | `/api/auth/me`       | Current user + store summary (or `store: null` before onboarding) |
 
 ## Owner — store
 
-| Method | Path                         | Description                                          |
-| ------ | ---------------------------- | ---------------------------------------------------- |
-| POST   | `/api/me/store`              | Onboarding: create the store (one per owner)         |
-| GET    | `/api/me/store`              | Full store settings                                  |
-| PATCH  | `/api/me/store`              | Update info, ordering options, localization, privacy |
-| POST   | `/api/me/store/logo`         | Upload logo (multipart)                              |
-| POST   | `/api/me/store/cover`        | Upload cover image (multipart)                       |
-| DELETE | `/api/me/store/logo`, `/cover` | Remove image                                       |
-| GET    | `/api/me/store/slug-availability?slug=` | Check slug                                |
+| Method | Path                                    | Description                                                                                                                                                                 |
+| ------ | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/me/store`                         | Onboarding: `{ name, slug, whatsappPhone, country?, currency?, timezone?, locale? }`. Missing localization comes from the country profile (default CR). One store per owner |
+| GET    | `/api/me/store`                         | Settings, including `brandForeground` (readable text color on the brand color), `logoUrl` and `coverUrl`                                                                    |
+| PATCH  | `/api/me/store`                         | `{ name?, description?, whatsappPhone?, brandColor?, pricesNote? }`. Slug and localization are not editable here                                                            |
+| POST   | `/api/me/store/logo`, `/cover`          | Upload (multipart `file`); replaces and deletes the previous image                                                                                                          |
+| DELETE | `/api/me/store/logo`, `/cover`          | Remove the image                                                                                                                                                            |
+| GET    | `/api/me/store/slug-availability?slug=` | `{ slug, available, reason? }` with reason `invalid`, `reserved` or `taken`                                                                                                 |
 
 ## Owner — catalog
 
-| Method | Path                                      | Description                     |
-| ------ | ----------------------------------------- | ------------------------------- |
-| GET    | `/api/me/categories`                      | List                            |
-| POST   | `/api/me/categories`                      | Create                          |
-| PATCH  | `/api/me/categories/:id`                  | Update                          |
-| DELETE | `/api/me/categories/:id`                  | Delete (products become uncategorized) |
-| PUT    | `/api/me/categories/order`                | Reorder `{ ids: [] }`           |
-| GET    | `/api/me/products?categoryId=&q=&cursor=` | List                            |
-| POST   | `/api/me/products`                        | Create                          |
-| GET    | `/api/me/products/:id`                    | Detail                          |
-| PATCH  | `/api/me/products/:id`                    | Update (price, stock, trackStock, ...) |
-| DELETE | `/api/me/products/:id`                    | Delete                          |
-| PUT    | `/api/me/products/order`                  | Reorder                         |
-| POST   | `/api/me/products/:id/images`             | Upload image (multipart)        |
-| DELETE | `/api/me/products/:id/images/:imageId`    | Delete image                    |
-| PUT    | `/api/me/products/:id/images/order`       | Reorder images                  |
+All ids in paths must belong to the caller's store; anything else answers `404 NOT_FOUND`.
+
+| Method | Path                                             | Description                                                                                    |
+| ------ | ------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| GET    | `/api/me/categories`                             | Categories in display order with `productCount`                                                |
+| POST   | `/api/me/categories`                             | `{ name, isActive? }`; `409 CATEGORY_NAME_TAKEN` for duplicates                                |
+| PATCH  | `/api/me/categories/:id`                         | `{ name?, isActive? }`                                                                         |
+| DELETE | `/api/me/categories/:id`                         | Products become uncategorized                                                                  |
+| PUT    | `/api/me/categories/order`                       | `{ ids: [] }` in the new order                                                                 |
+| GET    | `/api/me/products?categoryId=&q=&cursor=&limit=` | `{ data, nextCursor }`; `q` searches names (case-insensitive), `limit` 1 to 100 (default 50)   |
+| POST   | `/api/me/products`                               | `{ name, priceMinor, description?, categoryId?, trackStock?, stock?, isActive? }`              |
+| GET    | `/api/me/products/:id`                           | Product with images (`urls.thumb` 320 px, `medium` 800 px, `large` 1600 px)                    |
+| PATCH  | `/api/me/products/:id`                           | Any product field; `null` clears `description` or `categoryId`                                 |
+| DELETE | `/api/me/products/:id`                           | Also deletes its stored images; past orders keep their snapshots                               |
+| PUT    | `/api/me/products/order`                         | `{ ids: [] }`                                                                                  |
+| POST   | `/api/me/products/:id/images`                    | Multipart `file`: JPEG, PNG, WebP or AVIF, max 5 MB, max 8 per product (`409 TOO_MANY_IMAGES`) |
+| DELETE | `/api/me/products/:id/images/:imageId`           | Delete an image                                                                                |
+| PUT    | `/api/me/products/:id/images/order`              | `{ ids: [] }`                                                                                  |
+
+Uploads answer `503 MEDIA_NOT_CONFIGURED` when the API runs without Cloudinary credentials (development only).
 
 ## Owner — delivery, hours, payments
 
-| Method | Path                               | Description                                  |
-| ------ | ---------------------------------- | -------------------------------------------- |
-| GET/POST | `/api/me/delivery-zones`         | List / create                                |
-| PATCH/DELETE | `/api/me/delivery-zones/:id` | Update / delete                              |
-| GET    | `/api/me/business-hours`           | Weekly intervals                             |
-| PUT    | `/api/me/business-hours`           | Replace the whole week                       |
-| GET/POST | `/api/me/payment-methods`        | List / create (from preset or custom)        |
-| PATCH/DELETE | `/api/me/payment-methods/:id` | Update / delete                             |
-| PUT    | `/api/me/payment-methods/order`    | Reorder                                      |
+| Method       | Path                            | Description                                                                                                          |
+| ------------ | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| GET/POST     | `/api/me/delivery-zones`        | List / create `{ name, feeMinor, isActive? }`; `409 ZONE_NAME_TAKEN` for duplicates                                  |
+| PATCH/DELETE | `/api/me/delivery-zones/:id`    | Update / delete (orders keep the zone name and fee they were placed with)                                            |
+| PUT          | `/api/me/delivery-zones/order`  | Reorder `{ ids: [] }`                                                                                                |
+| GET          | `/api/me/business-hours`        | Weekly intervals `[{ weekday, opensAtMin, closesAtMin }]` in the store time zone; empty = always open                |
+| PUT          | `/api/me/business-hours`        | Replace the whole week `{ hours: [] }`; intervals of the same day may not overlap                                    |
+| GET/POST     | `/api/me/payment-methods`       | Transfer methods: list / create `{ label, preset?, accountHolder?, accountIdentifier?, instructions?, paymentUrl? }` |
+| PATCH/DELETE | `/api/me/payment-methods/:id`   | Update / delete (orders keep the label they were placed with)                                                        |
+| PUT          | `/api/me/payment-methods/order` | Reorder                                                                                                              |
+
+Cash is not a method row: it is the store's `cashEnabled` setting. Presets (SINPE Móvil, SPEI, Nequi, Daviplata, Yape, Plin, Pix, Zelle, Venmo, Cash App, Bizum, MB WAY, PayPal) live in `@booth/shared` (`PAYMENT_PRESETS`, `presetsForCountry`); they only pre-fill fields. `paymentUrl` must be `https://`.
+
+`PATCH /api/me/store` also accepts `acceptOrdersWhenClosed`, `orderExpirationMinutes` (5–1440), `pickupEnabled`, `pickupAddress`, `deliveryEnabled`, `cashEnabled`, `country`, `currency`, `timezone`, `locale` and `privacyNotice` (`null` = country default). Rules: pickup and delivery cannot both be off; the currency only changes while the store has no products or orders (`409 CURRENCY_LOCKED`, see `canChangeCurrency`); a new notice text increments `privacyNoticeVersion`.
 
 ## Owner — orders
 
-| Method | Path                                | Description                                                       |
-| ------ | ----------------------------------- | ----------------------------------------------------------------- |
-| GET    | `/api/me/orders`                    | Filters: `status`, `paymentStatus`, `from`, `to`, `q` (code/name/phone). Runs lazy expiry first |
-| GET    | `/api/me/orders/:id`                | Detail with items, events, receipt metadata                       |
-| PATCH  | `/api/me/orders/:id/status`         | `{ status, note? }`; validates allowed transitions; cancel releases stock |
-| PATCH  | `/api/me/orders/:id/payment`        | `{ paymentStatus: 'PAID' }`                                       |
-| POST   | `/api/me/orders/:id/reactivate`     | EXPIRED → PENDING, re-reserves stock or `409 OUT_OF_STOCK`        |
-| GET    | `/api/me/orders/:id/receipt-url`    | Short-lived signed URL for the receipt                            |
+| Method | Path                             | Description                                                                                                                                            |
+| ------ | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| GET    | `/api/me/orders`                 | Newest first. Filters: `status` (comma-separated), `paymentStatus`, `from`, `to`, `q` (code, name or phone), `cursor`, `limit`. Runs lazy expiry first |
+| GET    | `/api/me/orders/:id`             | Customer data, snapshot lines, totals, timeline (with actor and note), receipt metadata, tracking token                                                |
+| PATCH  | `/api/me/orders/:id/status`      | `{ status, note? }` following the flow below; `409 INVALID_STATUS_TRANSITION` otherwise. Cancelling releases stock                                     |
+| PATCH  | `/api/me/orders/:id/payment`     | `{ paymentStatus: 'PAID' \| 'UNPAID' }`; PAID stops the expiry. Not allowed on cancelled or expired orders                                             |
+| POST   | `/api/me/orders/:id/reactivate`  | EXPIRED → PENDING with a new window; re-reserves tracked stock or `409 OUT_OF_STOCK` with `details.productIds`                                         |
+| GET    | `/api/me/orders/:id/receipt-url` | `{ url, expiresAt }`: signed link to the private receipt, valid for `RECEIPT_URL_TTL_SECONDS` (default 300)                                            |
+
+Status flow (`ORDER_TRANSITIONS` in `@booth/shared`): PENDING → CONFIRMED or CANCELLED; CONFIRMED → PREPARING, READY or CANCELLED; PREPARING → READY or CANCELLED; READY → COMPLETED or CANCELLED. COMPLETED, CANCELLED and EXPIRED are final (an expired order only returns through reactivation). Before any status change, stale orders of the store expire, so an order whose window passed cannot be confirmed.
 
 ## Public — storefront
 
-| Method | Path                                 | Description                                                          |
-| ------ | ------------------------------------ | -------------------------------------------------------------------- |
-| GET    | `/api/public/stores/:slug`           | Branding, localization, open now + next opening, zones, payment methods (public fields), privacy notice |
-| GET    | `/api/public/stores/:slug/catalog`   | Active categories and products with availability                     |
-| POST   | `/api/public/stores/:slug/quote`     | Server-computed totals for a cart (no side effects)                  |
-| POST   | `/api/public/stores/:slug/orders`    | Create order — rate limit `public-orders`                            |
+No authentication. The store comes from the URL slug (`TenantGuard`); unknown or inactive stores answer `404`.
+
+| Method | Path                               | Description                                                                                                                   |
+| ------ | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/public/stores/:slug`         | Branding, localization, hours, `openNow`, `acceptingOrders`, `nextOpening`, pickup and zones, payment methods, privacy notice |
+| GET    | `/api/public/stores/:slug/catalog` | Active categories with products, plus `uncategorized`; each product has `available` and `stockLeft` (null when made to order) |
+| POST   | `/api/public/stores/:slug/quote`   | Server-computed totals for `{ items, fulfillment, deliveryZoneId? }`; nothing is reserved                                     |
+| POST   | `/api/public/stores/:slug/orders`  | Place the order (rate limit `public-orders`)                                                                                  |
+
+A store without business hours is always open. The client never sends prices: any price or total in the body is ignored.
 
 `POST /orders` request:
 
@@ -128,12 +157,14 @@ Every error response has the same shape:
   "fulfillment": "DELIVERY",
   "deliveryZoneId": "ck...",
   "deliveryAddress": "200 m norte de la iglesia, casa azul",
-  "paymentMethodId": "ck...",
+  "payment": { "type": "TRANSFER", "methodId": "ck..." },
   "customer": { "name": "Ana", "phone": "+50688887777", "note": "Sin azúcar" },
   "privacyConsent": true,
   "locale": "es"
 }
 ```
+
+`payment` is `{ "type": "CASH" }` or `{ "type": "TRANSFER", "methodId" }`. Delivery requires `deliveryZoneId` and `deliveryAddress`.
 
 Response `201`:
 
@@ -152,15 +183,19 @@ Response `201`:
 }
 ```
 
+Errors: `409 STORE_CLOSED` (with `details.nextOpening`), `409 PRODUCT_UNAVAILABLE` and `409 OUT_OF_STOCK` (with `details.productIds`), `400 VALIDATION_ERROR` for an invalid zone, payment method or fulfillment.
+
 ## Public — tracking
 
-| Method | Path                                   | Description                                                   |
-| ------ | -------------------------------------- | ------------------------------------------------------------- |
-| GET    | `/api/public/orders/:token`            | Status, timeline, items, totals, payment instructions         |
-| POST   | `/api/public/orders/:token/receipt`    | Upload receipt (multipart, `file`) — pauses expiration; rate limit `public-orders` |
+| Method | Path                                | Description                                                                                                                                                                   |
+| ------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/public/orders/:token`         | Status, timeline, snapshot lines and totals, payment instructions, `canUploadReceipt`. No customer phone                                                                      |
+| POST   | `/api/public/orders/:token/receipt` | Multipart `file`: JPEG, PNG, WebP, HEIC or PDF, max 5 MB. Sets `RECEIPT_SUBMITTED` and pauses expiration. `409 ORDER_NOT_PAYABLE` for cash, paid, expired or cancelled orders |
+
+The token has 256 random bits. The short order code is only a payment reference and never opens the tracking page.
 
 ## Internal
 
-| Method | Path                              | Description                                                         |
-| ------ | --------------------------------- | ------------------------------------------------------------------- |
-| POST   | `/api/internal/jobs/expire-orders` | Called by a scheduled GitHub Action; requires `X-Job-Secret` header |
+| Method | Path                               | Description                                                                                                                                                                           |
+| ------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/internal/jobs/expire-orders` | Called by a scheduled GitHub Action; requires the `X-Job-Secret` header to match `JOB_SECRET`. Answers `404` when `JOB_SECRET` is unset or the header is wrong. Returns `{ expired }` |

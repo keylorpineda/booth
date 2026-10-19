@@ -1,0 +1,44 @@
+name: Expire Orders Job
+
+on:
+  schedule:
+    # Runs every 10 minutes to process order expirations and keep Render warm
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: expire-orders-job
+  cancel-in-progress: false
+
+jobs:
+  expire-orders:
+    name: Expire Orders
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Call internal expire-orders endpoint
+        env:
+          JOB_SECRET: ${{ secrets.JOB_SECRET }}
+          API_URL: ${{ secrets.API_URL || 'https://booth-api-ol1v.onrender.com' }}
+        run: |
+          if [ -z "$JOB_SECRET" ]; then
+            echo "JOB_SECRET secret is not configured yet. Skipping."
+            exit 0
+          fi
+
+          echo "Triggering order expiration on ${API_URL}..."
+          response=$(curl -s -w "\nHTTP_STATUS:%{http_code}" -X POST "${API_URL}/api/internal/jobs/expire-orders" \
+            -H "X-Job-Secret: ${JOB_SECRET}" \
+            -H "Content-Type: application/json")
+
+          body=$(echo "$response" | sed -e '$d')
+          status=$(echo "$response" | tail -n 1 | cut -d':' -f2)
+
+          echo "Response status: $status"
+          echo "Response body: $body"
+
+          if [ "$status" -ne 200 ]; then
+            echo "::error::Job failed with status $status: $body"
+            exit 1
+          fi

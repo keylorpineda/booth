@@ -1,0 +1,416 @@
+// Booth data model. Documented in docs/DATA_MODEL.md — keep both in sync.
+// Money columns end in `Minor`: integers in ISO 4217 minor units of the store currency.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------- Identity ----------
+
+model User {
+  id           String   @id @default(cuid(2))
+  email        String   @unique
+  passwordHash String
+  name         String
+  isDemo       Boolean  @default(false)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  store         Store?
+  memberships   StoreMembership[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id           String    @id @default(cuid(2))
+  userId       String
+  familyId     String
+  tokenHash    String    @unique
+  expiresAt    DateTime  @db.Timestamptz(3)
+  revokedAt    DateTime? @db.Timestamptz(3)
+  replacedById String?
+  userAgent    String?
+  ip           String?
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+}
+
+// ---------- Store ----------
+
+model Store {
+  id            String  @id @default(cuid(2))
+  ownerId       String  @unique
+  slug          String  @unique
+  name          String
+  description   String?
+  whatsappPhone String // E.164
+
+  // Branding
+  logoPublicId  String?
+  coverPublicId String?
+  brandColor    String  @default("#4F46E5")
+
+  // Localization
+  country  String @default("CR") // ISO 3166-1 alpha-2
+  currency String @default("CRC") // ISO 4217
+  timezone String @default("America/Costa_Rica") // IANA
+  locale   String @default("es") // BCP 47
+
+  // Ordering
+  acceptOrdersWhenClosed Boolean @default(false)
+  orderExpirationMinutes Int     @default(30)
+  pickupEnabled          Boolean @default(true)
+  pickupAddress          String?
+  deliveryEnabled        Boolean @default(false)
+  cashEnabled            Boolean @default(true)
+  pricesNote             String?
+
+  // Privacy (null notice = country default from @booth/shared)
+  privacyNotice        String?
+  privacyNoticeVersion Int     @default(1)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  owner          User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  categories     Category[]
+  products       Product[]
+  deliveryZones  DeliveryZone[]
+  businessHours  BusinessHour[]
+  paymentMethods PaymentMethod[]
+  orders         Order[]
+  verifications  ReceiptVerification[]
+  customDomain   CustomDomain?
+  memberships    StoreMembership[]
+  invitations    StoreInvitation[]
+}
+
+// ---------- Catalog ----------
+
+model Category {
+  id        String   @id @default(cuid(2))
+  storeId   String
+  name      String
+  position  Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  store    Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@unique([storeId, name])
+  @@index([storeId, position])
+}
+
+model Product {
+  id          String   @id @default(cuid(2))
+  storeId     String
+  categoryId  String?
+  name        String
+  description String?
+  priceMinor  BigInt
+  trackStock  Boolean  @default(false)
+  stock       Int      @default(0)
+  isActive    Boolean  @default(true)
+  position    Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  store    Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category Category?      @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  images   ProductImage[]
+
+  @@index([storeId, categoryId, position])
+}
+
+model ProductImage {
+  id        String @id @default(cuid(2))
+  productId String
+  publicId  String
+  width     Int
+  height    Int
+  position  Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, position])
+}
+
+// ---------- Delivery, hours, payments ----------
+
+model DeliveryZone {
+  id       String  @id @default(cuid(2))
+  storeId  String
+  name     String
+  feeMinor BigInt
+  isActive Boolean @default(true)
+  position Int     @default(0)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, name])
+}
+
+model BusinessHour {
+  id          String @id @default(cuid(2))
+  storeId     String
+  weekday     Int // 0 = Sunday .. 6 = Saturday, store time zone
+  opensAtMin  Int // minutes from midnight
+  closesAtMin Int // > opensAtMin; overnight shifts = two intervals
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId, weekday])
+}
+
+enum PaymentMethodKind {
+  CASH
+  TRANSFER
+}
+
+model PaymentMethod {
+  id                String            @id @default(cuid(2))
+  storeId           String
+  kind              PaymentMethodKind @default(TRANSFER)
+  preset            String? // e.g. SINPE_MOVIL, ZELLE; null = custom
+  label             String
+  accountHolder     String?
+  accountIdentifier String? // account number, phone, email or handle
+  instructions      String?
+  paymentUrl        String? // optional link: PayPal.me, Stripe Payment Link, ...
+  isActive          Boolean           @default(true)
+  position          Int               @default(0)
+
+  store  Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@index([storeId, position])
+}
+
+// ---------- Orders ----------
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  UNPAID
+  RECEIPT_SUBMITTED
+  PAID
+}
+
+enum FulfillmentType {
+  PICKUP
+  DELIVERY
+}
+
+model Order {
+  id            String        @id @default(cuid(2))
+  storeId       String
+  code          String // short, unique per store (payment reference)
+  trackingToken String        @unique // 256-bit random, base64url
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  // Customer (stored only after consent)
+  customerName         String
+  customerPhone        String // E.164
+  customerNote         String?
+  privacyConsentAt     DateTime @db.Timestamptz(3)
+  privacyNoticeVersion Int
+
+  // Fulfillment snapshot
+  fulfillment      FulfillmentType
+  deliveryZoneId   String?
+  deliveryZoneName String?
+  deliveryAddress  String?
+  deliveryFeeMinor BigInt          @default(0)
+
+  // Payment snapshot
+  paymentMethodId    String?
+  paymentMethodKind  PaymentMethodKind
+  paymentMethodLabel String
+
+  // Totals snapshot
+  currency      String
+  subtotalMinor BigInt
+  totalMinor    BigInt
+
+  // Lifecycle (expiresAt null = not expiring: paused by a receipt or no longer pending)
+  expiresAt   DateTime? @db.Timestamptz(3)
+  confirmedAt DateTime? @db.Timestamptz(3)
+  completedAt DateTime? @db.Timestamptz(3)
+  cancelledAt DateTime? @db.Timestamptz(3)
+  expiredAt   DateTime? @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+
+  store         Store              @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod?     @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+  items         OrderItem[]
+  events        OrderStatusEvent[]
+  receipt       PaymentReceipt?
+
+  @@unique([storeId, code])
+  @@index([storeId, status, createdAt])
+  @@index([status, expiresAt])
+}
+
+model OrderItem {
+  id             String  @id @default(cuid(2))
+  orderId        String
+  productId      String? // product may be deleted later; snapshots keep the history
+  productName    String
+  unitPriceMinor BigInt
+  quantity       Int
+  lineTotalMinor BigInt
+  stockReserved  Boolean
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model OrderStatusEvent {
+  id        String      @id @default(cuid(2))
+  orderId   String
+  status    OrderStatus
+  actor     String // "customer" | "owner" | "system"
+  note      String?
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, createdAt])
+}
+
+model PaymentReceipt {
+  id         String   @id @default(cuid(2))
+  orderId    String   @unique
+  publicId   String
+  mimeType   String
+  bytes      Int
+  uploadedAt DateTime @default(now()) @db.Timestamptz(3)
+
+  order        Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  verification ReceiptVerification?
+}
+
+// ---------- Smart receipts & AI verification ----------
+
+enum ReceiptVerificationStatus {
+  MATCHED
+  AMOUNT_MISMATCH
+  RECIPIENT_MISMATCH
+  DUPLICATE_REFERENCE
+  UNVERIFIED
+}
+
+model ReceiptVerification {
+  id                   String                    @id @default(cuid(2))
+  receiptId            String                    @unique
+  storeId              String
+  status               ReceiptVerificationStatus @default(UNVERIFIED)
+  confidence           String                    @default("LOW")
+  extractedAmountMinor BigInt?
+  extractedCurrency    String?
+  referenceNumber      String?
+  recipientPhone       String?
+  recipientName        String?
+  senderName           String?
+  transactionDate      String?
+  bankName             String?
+  rawSummary           String?
+  rejectionReason      String?
+  verifiedAt           DateTime                  @default(now()) @db.Timestamptz(3)
+  createdAt            DateTime                  @default(now()) @db.Timestamptz(3)
+
+  receipt PaymentReceipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  store   Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId, referenceNumber])
+  @@index([storeId, status])
+}
+
+// ---------- Domains ----------
+
+enum CustomDomainStatus {
+  PENDING
+  ACTIVE
+  FAILED
+}
+
+model CustomDomain {
+  id                String             @id @default(cuid(2))
+  storeId           String             @unique
+  domain            String             @unique
+  status            CustomDomainStatus @default(PENDING)
+  verificationToken String             @unique
+  verifiedAt        DateTime?          @db.Timestamptz(3)
+  errorMessage      String?
+  createdAt         DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime           @updatedAt @db.Timestamptz(3)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([domain, status])
+}
+
+// ---------- Memberships & Roles ----------
+
+enum StoreRole {
+  OWNER
+  STAFF
+  CATALOG_MANAGER
+}
+
+model StoreMembership {
+  id        String    @id @default(cuid(2))
+  userId    String
+  storeId   String
+  role      StoreRole @default(STAFF)
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storeId])
+  @@index([userId])
+  @@index([storeId])
+}
+
+model StoreInvitation {
+  id         String    @id @default(cuid(2))
+  storeId    String
+  email      String
+  role       StoreRole @default(STAFF)
+  token      String    @unique
+  expiresAt  DateTime  @db.Timestamptz(3)
+  acceptedAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([email])
+}
+

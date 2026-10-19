@@ -1,0 +1,762 @@
+{
+  "actions": {
+    "close": "Cerrar",
+    "retry": "Reintentar",
+    "copied": "Copiado",
+    "copyNamed": "Copiar {{name}}",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "clearSearch": "Borrar búsqueda"
+  },
+  "language": {
+    "label": "Idioma"
+  },
+  "home": {
+    "tagline": "Catálogo y pedidos por WhatsApp",
+    "title": "Tu tienda en línea, tus pedidos por WhatsApp.",
+    "subtitle": "Sin comisiones. Lista en dos minutos.",
+    "ctaCreate": "Crear mi tienda",
+    "demoBakery": "Ver una tienda demo",
+    "flow": {
+      "label": "Animación: un cliente arma su pedido, llega por WhatsApp, se revisa el comprobante y el pedido queda listo.",
+      "steps": {
+        "catalog": "El cliente elige en tu catálogo",
+        "whatsapp": "El pedido te llega por WhatsApp",
+        "receipt": "Booth revisa el comprobante",
+        "ready": "Avisas cuando está listo"
+      },
+      "store": "Panadería La Esquina",
+      "product1": "Pan de masa madre",
+      "product2": "Queque de zanahoria",
+      "product3": "Croissant",
+      "order": "Pedido",
+      "total": "Total",
+      "reply": "¡Recibido! Te avisamos cuando esté listo.",
+      "transfer": "Transferencia SINPE",
+      "matched": "Monto y destinatario correctos",
+      "status": {
+        "received": "Recibido",
+        "confirmed": "Confirmado",
+        "ready": "Listo para retirar"
+      },
+      "pickup": "Retira en la tienda a las 11:00",
+      "viewOrder": "Ver pedido"
+    }
+  },
+  "storefront": {
+    "openNow": "Abierto ahora",
+    "closed": "Cerrado",
+    "opens": "abre el {{day}} a las {{time}}",
+    "closedNoOrders": "La tienda está cerrada",
+    "soldOut": "Agotado",
+    "onlyLeft_one": "¡Queda {{count}}!",
+    "onlyLeft_other": "¡Quedan {{count}}!",
+    "inStock_one": "{{count}} disponible",
+    "inStock_other": "{{count}} disponibles",
+    "viewProduct": "Ver {{name}}",
+    "more": "Más productos",
+    "emptyCatalog": "Esta tienda aún no tiene productos.",
+    "lastOrder": "Ver tu pedido #{{code}}",
+    "notFoundTitle": "No encontramos esta tienda",
+    "notFoundDescription": "Revisa el enlace o pídele a la tienda que te lo envíe de nuevo."
+  },
+  "cart": {
+    "title": "Tu pedido",
+    "view": "Ver pedido",
+    "subtotal": "Subtotal",
+    "checkout": "Continuar",
+    "emptyTitle": "Tu carrito está vacío",
+    "emptyDescription": "Agrega productos con el botón +.",
+    "addNamed": "Agregar {{name}}",
+    "addFor": "Agregar · {{price}}",
+    "increase": "Aumentar cantidad",
+    "decrease": "Disminuir cantidad",
+    "remove": "Quitar del carrito"
+  },
+  "checkout": {
+    "title": "Finalizar pedido",
+    "contact": "Tus datos",
+    "name": "Nombre",
+    "phone": "Teléfono (WhatsApp)",
+    "phoneHint": "Sin código de país se usa {{code}}",
+    "note": "Nota para la tienda (opcional)",
+    "notePlaceholder": "Ej.: sin cebolla, timbre dañado…",
+    "fulfillment": "Entrega",
+    "pickup": "Retiro en tienda",
+    "delivery": "Envío a domicilio",
+    "deliveryHint": "Elige tu zona",
+    "zone": "Zona de entrega",
+    "address": "Dirección",
+    "addressPlaceholder": "Señas exactas para encontrarte",
+    "payment": "Pago",
+    "paymentMethod": "Método de pago",
+    "cash": "Efectivo",
+    "cashHint": "Pagas al recibir o retirar",
+    "transferHint": "Te mostramos los datos al confirmar",
+    "summary": "Resumen",
+    "deliveryFee": "Envío",
+    "total": "Total",
+    "consent": "Acepto que {{store}} use mis datos para gestionar este pedido.",
+    "readNotice": "Leer aviso de privacidad",
+    "placeOrder": "Hacer pedido",
+    "placeOrderFor": "Hacer pedido · {{total}}",
+    "whatsappNote": "Luego enviarás el pedido a la tienda por WhatsApp."
+  },
+  "tracking": {
+    "title": "Pedido #{{code}}",
+    "placedTitle": "¡Pedido guardado!",
+    "placedDescription": "Tu pedido #{{code}} está listo. Envíalo a la tienda para que lo confirme.",
+    "sendWhatsapp": "Enviar pedido por WhatsApp",
+    "whatsappHint": "Se abrirá WhatsApp con el pedido escrito. Solo toca enviar.",
+    "expiresIn_one": "Si no se confirma ni se paga, el pedido se libera en {{count}} minuto.",
+    "expiresIn_other": "Si no se confirma ni se paga, el pedido se libera en {{count}} minutos.",
+    "payment": "Cómo pagar",
+    "cashInstructions": "Pagas {{total}} en efectivo al recibir o retirar tu pedido.",
+    "method": "Método",
+    "account": "Cuenta",
+    "holder": "A nombre de",
+    "amount": "Monto",
+    "reference": "Referencia",
+    "payOnline": "Pagar en línea",
+    "receipt": "Comprobante de pago",
+    "receiptHint": "Sube una foto o PDF de la transferencia. Así tu pedido no se libera mientras la tienda lo revisa.",
+    "receiptReceived": "Comprobante recibido el {{date}}",
+    "receiptSent": "Comprobante enviado",
+    "uploadReceipt": "Subir comprobante",
+    "replaceReceipt": "Reemplazar comprobante",
+    "items": "Tu pedido",
+    "orderAgain": "Volver a la tienda"
+  },
+  "status": {
+    "PENDING": "Pedido recibido",
+    "CONFIRMED": "Confirmado",
+    "PREPARING": "En preparación",
+    "READY": "Listo",
+    "COMPLETED": "Entregado",
+    "CANCELLED": "Pedido cancelado",
+    "EXPIRED": "Pedido vencido"
+  },
+  "statusHint": {
+    "PENDING": "Esperando que la tienda lo confirme.",
+    "CONFIRMED": "La tienda aceptó tu pedido.",
+    "PREPARING": "Están preparando tu pedido.",
+    "READY": "Listo para retirar o en camino.",
+    "COMPLETED": "¡Gracias por tu compra!",
+    "CANCELLED": "La tienda canceló este pedido. Si tienes dudas, escríbele por WhatsApp.",
+    "EXPIRED": "No se confirmó a tiempo y los productos se liberaron. Puedes hacer un pedido nuevo."
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "tooLong": "Es demasiado largo",
+    "phone": "Escribe un número válido",
+    "chooseZone": "Elige una zona de entrega",
+    "address": "Escribe la dirección de entrega",
+    "choosePayment": "Elige cómo pagar",
+    "consent": "Debes aceptar el aviso de privacidad",
+    "email": "Escribe un correo válido",
+    "tooShort": "Es demasiado corto",
+    "passwordLength": "Usa al menos 8 caracteres",
+    "amount": "Escribe un monto válido, por ejemplo 2500 o 2500,50",
+    "amountDecimals": "Esta moneda no admite tantos decimales",
+    "stock": "Escribe un número entero de unidades",
+    "hexColor": "Usa un color hexadecimal de 6 dígitos como #4F46E5",
+    "expirationMinutes": "Escribe entre 5 y 1440 minutos",
+    "fulfillmentRequired": "Activa retiro en tienda, envío a domicilio o ambos para recibir pedidos",
+    "httpsUrl": "Usa un enlace seguro que empiece con https://",
+    "invalid": "Elige una opción válida"
+  },
+  "feedback": {
+    "oops": "¡Uy!",
+    "errorTitle": "Algo salió mal",
+    "waking": "Estamos despertando la tienda. La primera carga puede tardar hasta un minuto.",
+    "crashDescription": "No pudimos mostrar esta página. Intenta de nuevo.",
+    "reference": "Referencia: {{id}}",
+    "updateTitle": "Hay una versión nueva",
+    "updateDescription": "Actualiza la página para seguir.",
+    "update": "Actualizar"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "El enlace no existe o cambió.",
+    "home": "Ir al inicio"
+  },
+  "errors": {
+    "GENERIC": "No pudimos completar la acción. Intenta de nuevo.",
+    "NETWORK_ERROR": "Sin conexión. Revisa tu internet e intenta de nuevo.",
+    "NOT_FOUND": "No encontramos lo que buscas.",
+    "VALIDATION_ERROR": "Revisa los datos del formulario.",
+    "RATE_LIMITED": "Demasiados intentos. Espera un momento.",
+    "STORE_CLOSED": "La tienda está cerrada en este momento.",
+    "PRODUCT_UNAVAILABLE": "Algunos productos ya no están disponibles. Actualizamos el catálogo.",
+    "OUT_OF_STOCK": "Algunos productos se agotaron. Ajusta las cantidades.",
+    "ORDER_NOT_PAYABLE": "Este pedido ya no acepta comprobantes.",
+    "FILE_TOO_LARGE": "El archivo pesa más de 5 MB.",
+    "UNSUPPORTED_FILE_TYPE": "Usa una foto (JPG, PNG, WebP, HEIC) o un PDF.",
+    "MEDIA_NOT_CONFIGURED": "La subida de archivos no está disponible en este momento.",
+    "INTERNAL_ERROR": "Ocurrió un error en el servidor. Intenta de nuevo.",
+    "EMAIL_TAKEN": "Ya existe una cuenta con ese correo.",
+    "INVALID_CREDENTIALS": "Correo o contraseña incorrectos.",
+    "SLUG_TAKEN": "Esa dirección ya está en uso.",
+    "STORE_ALREADY_EXISTS": "Tu cuenta ya tiene una tienda.",
+    "INVALID_STATUS_TRANSITION": "El pedido cambió mientras tanto. Recarga y vuelve a intentar.",
+    "CATEGORY_NAME_TAKEN": "Ya tienes una categoría con ese nombre.",
+    "TOO_MANY_IMAGES": "Cada producto admite hasta 8 fotos.",
+    "ZONE_NAME_TAKEN": "Ya tienes una zona de entrega con ese nombre."
+  },
+  "auth": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "name": "Tu nombre",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "passwordHint_one": "Al menos {{count}} carácter",
+    "passwordHint_other": "Al menos {{count}} caracteres",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "createAccount": "Crear cuenta",
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Gestiona tus pedidos y tu catálogo.",
+    "registerTitle": "Crea tu tienda",
+    "registerSubtitle": "Gratis y en dos minutos.",
+    "noAccount": "¿No tienes cuenta? <link>Crea una</link>",
+    "haveAccount": "¿Ya tienes cuenta? <link>Inicia sesión</link>",
+    "restoring": "Recuperando tu sesión…"
+  },
+  "onboarding": {
+    "heading": "Tu tienda",
+    "title": "¡Hola, {{name}}! Configura tu tienda",
+    "subtitle": "Podrás cambiarlo después.",
+    "name": "Nombre de la tienda",
+    "namePlaceholder": "Panadería La Esquina",
+    "slugLabel": "Dirección de tu tienda",
+    "slugHint": "Tus clientes la abrirán en {{url}}",
+    "slugInvalid": "Usa minúsculas, números y guiones simples",
+    "slugReserved": "Ese nombre está reservado",
+    "slug": {
+      "checking": "Verificando…",
+      "available": "¡Disponible!",
+      "taken": "Ya está en uso, prueba otra",
+      "unavailable": "No se puede usar esa dirección"
+    },
+    "country": "País",
+    "countryHint": "Define la moneda, el horario y el idioma de la tienda.",
+    "whatsapp": "WhatsApp de la tienda",
+    "whatsappHint": "Aquí llegan los pedidos. Código del país: {{code}}",
+    "submit": "Crear mi tienda"
+  },
+  "dashboard": {
+    "welcome": "Esto es lo que falta para que tu tienda esté lista para vender.",
+    "viewStore": "Ver mi tienda",
+    "greeting": "¡Hola, {{name}}!",
+    "navLabel": "Secciones del panel",
+    "account": "Tu cuenta",
+    "nav": {
+      "home": "Inicio",
+      "orders": "Pedidos",
+      "catalog": "Catálogo",
+      "settings": "Ajustes"
+    },
+    "demo": {
+      "text": "Estás viendo una cuenta demo de solo lectura: puedes explorar todo, pero no guardar cambios.",
+      "cta": "Crea tu tienda"
+    },
+    "setup": {
+      "title": "Prepara tu tienda",
+      "progress": "{{done}} de {{total}}",
+      "products": {
+        "title": "Agrega productos",
+        "hint": "Sube tu catálogo con precios y fotos."
+      },
+      "payments": {
+        "title": "Elige cómo te pagan",
+        "hint": "Activa efectivo o agrega una transferencia."
+      },
+      "hours": {
+        "title": "Define tu horario",
+        "hint": "Sin horario, la tienda aparece siempre abierta."
+      },
+      "delivery": {
+        "title": "Crea zonas de entrega",
+        "hint": "Tienes envío activo pero ninguna zona."
+      }
+    },
+    "share": {
+      "title": "Comparte tu tienda",
+      "text": "Pon este enlace en tu perfil de WhatsApp, Instagram o Facebook.",
+      "link": "enlace de la tienda",
+      "whatsapp": "Compartir por WhatsApp",
+      "message": "Haz tu pedido en {{name}}: {{url}}"
+    },
+    "soon": {
+      "title": "Muy pronto",
+      "text": "Esta sección se está construyendo y aparecerá aquí en la próxima versión."
+    }
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Según el sistema"
+  },
+  "orders": {
+    "tabs": {
+      "active": "Activos",
+      "completed": "Entregados",
+      "closed": "Cancelados y vencidos",
+      "all": "Todos"
+    },
+    "status": {
+      "PENDING": "Pendiente",
+      "CONFIRMED": "Confirmado",
+      "PREPARING": "En preparación",
+      "READY": "Listo",
+      "COMPLETED": "Entregado",
+      "CANCELLED": "Cancelado",
+      "EXPIRED": "Vencido"
+    },
+    "payment": {
+      "UNPAID": "Sin pagar",
+      "RECEIPT_SUBMITTED": "Comprobante por revisar",
+      "PAID": "Pagado",
+      "cash": "Efectivo al entregar"
+    },
+    "fulfillment": {
+      "PICKUP": "Retiro",
+      "DELIVERY": "Envío"
+    },
+    "items_one": "{{count}} producto",
+    "items_other": "{{count}} productos",
+    "minutesLeft_one": "Vence en {{count}} min",
+    "minutesLeft_other": "Vence en {{count}} min",
+    "search": "Buscar pedidos",
+    "searchPlaceholder": "Código, nombre o teléfono",
+    "paymentFilter": "Filtrar por pago",
+    "anyPayment": "Cualquier pago",
+    "loadMore": "Cargar más",
+    "empty": {
+      "active": "No hay pedidos activos",
+      "completed": "Aún no hay pedidos entregados",
+      "closed": "No hay pedidos cancelados ni vencidos",
+      "all": "Todavía no tienes pedidos"
+    },
+    "emptyHint": "Los pedidos nuevos aparecen aquí solos, sin recargar la página.",
+    "noMatches": "Ningún pedido coincide",
+    "noMatchesHint": "Prueba con otro código, nombre o teléfono, o quita el filtro de pago.",
+    "detail": {
+      "back": "Pedidos",
+      "customer": "Cliente",
+      "whatsapp": "Escribir por WhatsApp",
+      "whatsappGreeting": "¡Hola! Te escribimos por tu pedido {{code}}.",
+      "call": "Llamar",
+      "items": "Productos",
+      "subtotal": "Subtotal",
+      "deliveryFee": "Envío",
+      "total": "Total",
+      "delivery": "Entrega y pago",
+      "pickupHint": "El cliente retira el pedido en la tienda.",
+      "timeline": "Historial",
+      "notFound": "No encontramos este pedido",
+      "notFoundHint": "Puede que el enlace esté mal o que el pedido sea de otra tienda."
+    },
+    "timeline": {
+      "actor": {
+        "customer": "Cliente",
+        "owner": "Tú",
+        "system": "Automático"
+      },
+      "reactivatedNote": "Pedido reactivado"
+    },
+    "actions": {
+      "title": "Acciones",
+      "to": {
+        "CONFIRMED": "Confirmar pedido",
+        "PREPARING": "Empezar a preparar",
+        "READY": "Marcar como listo",
+        "COMPLETED": "Marcar como entregado"
+      },
+      "statusChanged": "Pedido actualizado: {{status}}",
+      "cancel": "Cancelar pedido",
+      "cancelTitle": "¿Cancelar el pedido #{{code}}?",
+      "cancelText": "El stock reservado vuelve al catálogo y el cliente verá el pedido como cancelado. No se puede deshacer.",
+      "cancelConfirm": "Sí, cancelar",
+      "viewReceipt": "Ver comprobante",
+      "markPaid": "Marcar como pagado",
+      "markUnpaid": "Marcar como no pagado",
+      "payment": {
+        "PAID": "Pago confirmado",
+        "UNPAID": "Pago marcado como pendiente"
+      },
+      "expiredHint": "Este pedido venció sin confirmarse. Reactívalo si el cliente aún lo quiere: se reserva el stock otra vez.",
+      "reactivate": "Reactivar pedido",
+      "reactivated": "Pedido reactivado",
+      "reactivateSoldOut": "No hay stock suficiente de: {{items}}. El pedido sigue vencido.",
+      "finished": {
+        "COMPLETED": "Pedido entregado. No hay más pasos.",
+        "CANCELLED": "Pedido cancelado. El stock ya volvió al catálogo."
+      }
+    },
+    "receiptVerification": {
+      "title": "Verificación de comprobante",
+      "aiBadge": "IA",
+      "status": {
+        "MATCHED": "Parece correcto",
+        "AMOUNT_MISMATCH": "Monto diferente",
+        "DUPLICATE_REFERENCE": "Comprobante duplicado",
+        "RECIPIENT_MISMATCH": "Destino diferente",
+        "UNVERIFIED": "Revisión manual requerida"
+      },
+      "statusDescription": {
+        "MATCHED": "El monto, la cuenta y el número coinciden con el pedido. Confirma el pago cuando lo veas en tu banco.",
+        "AMOUNT_MISMATCH": "El monto transferido no coincide con el total del pedido. Revisa el comprobante.",
+        "DUPLICATE_REFERENCE": "Este número de comprobante ya fue utilizado en otro pedido aprobado.",
+        "RECIPIENT_MISMATCH": "El dinero no fue a la cuenta que eligió el cliente. Revisa el comprobante.",
+        "UNVERIFIED": "No se pudieron leer los datos con certeza. Revísalo tú."
+      },
+      "confidence": {
+        "label": "Confianza de IA",
+        "HIGH": "Alta",
+        "MEDIUM": "Media",
+        "LOW": "Baja"
+      },
+      "fields": {
+        "detectedAmount": "Monto detectado",
+        "expectedAmount": "Total del pedido",
+        "reference": "N.º de comprobante",
+        "bank": "Banco / App",
+        "recipientPhone": "Teléfono destino",
+        "recipientName": "Nombre destino",
+        "sender": "Emisor",
+        "date": "Fecha de transacción",
+        "verifiedAt": "Procesado el"
+      },
+      "actions": {
+        "viewReceipt": "Ver comprobante",
+        "confirmPayment": "Confirmar pago",
+        "paymentConfirmed": "Pago confirmado"
+      },
+      "summary": "Resumen de IA",
+      "noVerification": "Comprobante enviado antes de activar la verificación automática."
+    }
+  },
+  "catalog": {
+    "tabs": {
+      "products": "Productos",
+      "categories": "Categorías"
+    },
+    "moveUp": "Subir {{name}}",
+    "moveDown": "Bajar {{name}}",
+    "categories": {
+      "hint": "Las categorías son las pestañas de tu tienda, en este orden. Oculta una para guardarla sin borrarla.",
+      "newLabel": "Nueva categoría",
+      "newPlaceholder": "Panes, Bebidas, Postres…",
+      "add": "Agregar",
+      "created": "Categoría «{{name}}» creada",
+      "empty": "Aún no tienes categorías. Los productos sin categoría se muestran al final de la tienda.",
+      "productCount_one": "{{count}} producto",
+      "productCount_other": "{{count}} productos",
+      "hidden": "Oculta",
+      "visible": "Mostrar {{name}} en la tienda",
+      "rename": "Nuevo nombre",
+      "renameNamed": "Renombrar {{name}}",
+      "delete": "Eliminar {{name}}",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText_one": "Su producto queda sin categoría; no se borra.",
+      "deleteText_other": "Sus {{count}} productos quedan sin categoría; no se borran.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Categoría «{{name}}» eliminada"
+    },
+    "products": {
+      "search": "Buscar productos",
+      "searchPlaceholder": "Nombre del producto",
+      "categoryFilter": "Filtrar por categoría",
+      "allCategories": "Todas las categorías",
+      "uncategorized": "Sin categoría",
+      "stock_one": "{{count}} disponible",
+      "stock_other": "{{count}} disponibles",
+      "badges": {
+        "inactive": "Oculto",
+        "soldOut": "Agotado",
+        "lowStock": "Quedan pocos"
+      },
+      "reorderHint": "Para cambiar el orden, quita la búsqueda y el filtro de categoría.",
+      "empty": "Tu catálogo está vacío",
+      "emptyHint": "Agrega tu primer producto con precio y foto para empezar a vender.",
+      "noMatches": "Ningún producto coincide",
+      "noMatchesHint": "Prueba con otro nombre o elige otra categoría.",
+      "add": "Agregar producto"
+    },
+    "form": {
+      "newTitle": "Nuevo producto",
+      "editTitle": "Editar producto",
+      "name": "Nombre",
+      "price": "Precio",
+      "priceHint": "Con impuestos incluidos, tal como lo paga el cliente.",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Ingredientes, tamaño, sabor… lo que ayude a decidir.",
+      "category": "Categoría",
+      "isActive": "Visible en la tienda",
+      "isActiveHint": "Apágalo para ocultarlo sin borrarlo.",
+      "trackStock": "Controlar stock",
+      "trackStockHint": "Apágalo si lo haces por encargo: nunca aparecerá agotado.",
+      "stock": "Unidades disponibles",
+      "create": "Crear producto",
+      "save": "Guardar cambios",
+      "created": "«{{name}}» creado. Ahora puedes agregarle fotos.",
+      "saved": "Cambios guardados",
+      "delete": "Eliminar producto",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Se borra con sus fotos. Los pedidos anteriores conservan su nombre y precio.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Producto eliminado"
+    },
+    "images": {
+      "title": "Fotos",
+      "hint": "La primera es la portada en tu tienda. JPG, PNG, WebP o AVIF de hasta 5 MB.",
+      "add": "Agregar fotos",
+      "uploading": "Subiendo {{current}} de {{total}} · {{percent}} %",
+      "cover": "Portada",
+      "alt": "Foto {{position}}",
+      "moveLeft": "Mover la foto {{position}} a la izquierda",
+      "moveRight": "Mover la foto {{position}} a la derecha",
+      "delete": "Eliminar la foto {{position}}",
+      "deleteTitle": "¿Eliminar esta foto?",
+      "deleteText": "Se borra de tu tienda y no se puede recuperar.",
+      "deleteConfirm": "Sí, eliminar"
+    }
+  },
+  "settings": {
+    "tabs": {
+      "profile": "Perfil",
+      "domain": "Dominio",
+      "delivery": "Entrega",
+      "payments": "Pagos",
+      "hours": "Horario",
+      "localization": "Región y privacidad",
+      "team": "Equipo"
+    },
+    "save": "Guardar cambios",
+    "saved": "Cambios guardados",
+    "domain": {
+      "subdomainTitle": "Subdominio de Booth",
+      "subdomainDescription": "Tu tienda está disponible automáticamente en este subdominio y en la ruta directa de Booth.",
+      "customDomainTitle": "Dominio personalizado",
+      "customDomainDescription": "Conecta tu propio dominio (ej. mitienda.com o pedidos.marca.cr) para fortalecer tu identidad.",
+      "domainInputLabel": "Nombre de dominio",
+      "domainInputHint": "Ingresa tu dominio o subdominio sin https:// ni barras (ej. mitienda.com)",
+      "connectButton": "Conectar dominio",
+      "connectedSuccess": "Dominio registrado. Ahora agrega el registro DNS para verificarlo.",
+      "statusActive": "Activo y verificado",
+      "statusPending": "Pendiente de verificación",
+      "statusFailed": "Verificación fallida",
+      "dnsInstructions": "Agrega este registro TXT en el panel DNS de tu proveedor de dominio:",
+      "verifyButton": "Verificar registro DNS",
+      "verifySuccess": "¡Dominio verificado y conectado con éxito!",
+      "verifyFailed": "No se pudo verificar el registro DNS aún. Verifica tu configuración e intenta de nuevo.",
+      "removeButton": "Eliminar dominio",
+      "disconnectButton": "Desconectar dominio",
+      "activeDescription": "Tu tienda ya está conectada y accesible directamente a través de este dominio.",
+      "visitDomain": "Visitar dominio",
+      "deleteConfirmTitle": "¿Desconectar dominio personalizado?",
+      "deleteConfirmDescription": "Tu tienda dejará de estar vinculada a este dominio. Tu subdominio de Booth seguirá funcionando.",
+      "deleteConfirmButton": "Sí, desconectar",
+      "removeSuccess": "Dominio desconectado correctamente"
+    },
+    "profile": {
+      "name": "Nombre de la tienda",
+      "description": "Descripción",
+      "descriptionHint": "Aparece debajo del nombre en la parte superior de tu tienda.",
+      "descriptionPlaceholder": "Pan de masa madre y repostería horneados cada mañana.",
+      "whatsapp": "WhatsApp de la tienda",
+      "pricesNote": "Nota sobre los precios",
+      "pricesNoteHint": "Texto opcional junto al estado de la tienda (por ejemplo, si incluyen impuestos).",
+      "pricesNotePlaceholder": "Impuestos incluidos",
+      "brandColor": "Color de marca",
+      "brandColorHint": "Los botones y acentos se ajustan solos para que el texto siempre se lea bien.",
+      "colorPicker": "Elegir color de marca",
+      "previewTitle": "Vista previa",
+      "previewProduct": "Especial de la casa"
+    },
+    "branding": {
+      "upload": "Subir foto",
+      "change": "Cambiar foto",
+      "remove": "Quitar",
+      "removeConfirm": "Sí, quitar",
+      "uploading": "Subiendo · {{percent}} %",
+      "logo": {
+        "title": "Logo",
+        "hint": "Imagen cuadrada en el encabezado de tu tienda. Hasta 5 MB.",
+        "saved": "Logo actualizado",
+        "removeTitle": "¿Quitar el logo?",
+        "removeText": "Tu tienda mostrará su inicial con tu color de marca.",
+        "removed": "Logo quitado"
+      },
+      "cover": {
+        "title": "Imagen de portada",
+        "hint": "Banner detrás del logo en la parte superior de la tienda. Hasta 5 MB.",
+        "saved": "Portada actualizada",
+        "removeTitle": "¿Quitar la imagen de portada?",
+        "removeText": "Tu tienda mostrará un degradado con tu color de marca.",
+        "removed": "Portada quitada"
+      }
+    },
+    "ordering": {
+      "title": "Opciones de pedido",
+      "subtitle": "Cómo reciben los clientes su pedido y cuánto tiempo se reserva el stock pendiente.",
+      "pickup": "Retiro en tienda",
+      "pickupHint": "El cliente recoge su pedido en tu dirección.",
+      "pickupAddress": "Dirección de retiro",
+      "pickupAddressHint": "Se muestra al finalizar la compra y en el seguimiento del pedido.",
+      "pickupAddressPlaceholder": "Calle principal, 100 m norte del parque",
+      "delivery": "Envío a domicilio",
+      "deliveryHint": "El cliente elige una de tus zonas de entrega.",
+      "cash": "Efectivo al entregar o retirar",
+      "cashHint": "El cliente puede pagar en efectivo cuando recibe su pedido.",
+      "acceptWhenClosed": "Aceptar pedidos fuera de horario",
+      "acceptWhenClosedHint": "Si está apagado, los clientes pueden ver el catálogo pero no pedir cuando la tienda está cerrada.",
+      "expiration": "Reserva de pedidos pendientes (minutos)",
+      "expirationHint": "Entre {{min}} y {{max}} minutos antes de que un pedido sin confirmar ni comprobante venza y libere su stock."
+    },
+    "zones": {
+      "title": "Zonas de entrega",
+      "hint": "El cliente elige su zona al pedir; la tarifa se suma al total.",
+      "name": "Nombre de la zona",
+      "namePlaceholder": "Centro, Sector norte…",
+      "fee": "Costo de envío",
+      "add": "Agregar zona",
+      "created": "Zona «{{name}}» creada",
+      "empty": "Aún no tienes zonas de entrega. Agrega al menos una para que puedan elegir envío.",
+      "free": "Gratis",
+      "visible": "Mostrar {{name}} al finalizar el pedido",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Los pedidos anteriores en esta zona conservan su nombre y costo.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "Zona «{{name}}» eliminada"
+    },
+    "payments": {
+      "title": "Transferencias y enlaces de pago",
+      "subtitle": "El cliente ve tus instrucciones y puede subir el comprobante después de pedir.",
+      "add": "Agregar método",
+      "create": "Agregar método",
+      "created": "«{{name}}» agregado",
+      "empty": "Aún no tienes métodos de transferencia. Agrega uno para recibir pagos por transferencia o enlace.",
+      "preset": "Tipo de método",
+      "custom": "Método personalizado",
+      "label": "Nombre visible",
+      "labelPlaceholder": "SINPE Móvil, Transferencia bancaria…",
+      "accountHolder": "Titular de la cuenta",
+      "accountHolderPlaceholder": "Nombre completo o comercio",
+      "accountIdentifier": "Cuenta o teléfono",
+      "accountIdentifierPlaceholder": "Teléfono, IBAN, CLABE, correo…",
+      "paymentUrl": "Enlace de pago (opcional)",
+      "paymentUrlHint": "PayPal.me, Venmo, Stripe Payment Link o similar (solo https://).",
+      "instructions": "Instrucciones para el cliente",
+      "noDetails": "Solo instrucciones",
+      "visible": "Mostrar {{name}} al finalizar el pedido",
+      "deleteTitle": "¿Eliminar «{{name}}»?",
+      "deleteText": "Los pedidos anteriores con este método conservan su nombre.",
+      "deleteConfirm": "Sí, eliminar",
+      "deleted": "«{{name}}» eliminado"
+    },
+    "hours": {
+      "title": "Horario semanal",
+      "subtitle": "Horas en la zona horaria de tu tienda ({{timezone}}).",
+      "alwaysOpenNotice": "Sin horario configurado: tu tienda aparece siempre abierta.",
+      "clearAll": "Vaciar todo (siempre abierta)",
+      "closedDay": "Cerrado",
+      "toggleDay": "Abierto el {{day}}",
+      "addShift": "Agregar turno",
+      "removeShift": "Quitar turno {{shift}} del {{day}}",
+      "opensAt": "Hora de apertura del turno {{shift}} el {{day}}",
+      "closesAt": "Hora de cierre del turno {{shift}} el {{day}}",
+      "copyWeekdays": "Copiar a lun–vie",
+      "copyAll": "Copiar a todos",
+      "copied": "Horario copiado",
+      "errors": {
+        "format": "Escribe una hora válida (HH:MM)",
+        "order": "La hora de cierre debe ser posterior a la de apertura",
+        "overlap": "Este turno se cruza con otro del mismo día"
+      }
+    },
+    "localization": {
+      "title": "País, moneda e idioma",
+      "subtitle": "Define cómo se muestran precios, fechas, teléfonos y mensajes al cliente.",
+      "country": "País",
+      "countryHint": "Define las sugerencias de métodos de pago, el prefijo telefónico y el aviso de privacidad por defecto.",
+      "currency": "Moneda",
+      "currencyHint": "Se usa en todos los precios de productos y costos de envío.",
+      "currencyLockedHint": "La moneda no se puede cambiar cuando la tienda ya tiene productos o pedidos, para no alterar los precios existentes.",
+      "currencySearch": "Buscar código o nombre de moneda…",
+      "timezone": "Zona horaria",
+      "timezoneHint": "Se usa para calcular si tu tienda está abierta o cerrada en este momento.",
+      "timezoneSearch": "Buscar ciudad o región…",
+      "locale": "Idioma de la tienda",
+      "localeHint": "Idioma por defecto del catálogo público y del resumen por WhatsApp.",
+      "noMatches": "Sin coincidencias",
+      "locales": {
+        "es": "Español",
+        "en": "English"
+      }
+    },
+    "privacy": {
+      "title": "Aviso de privacidad",
+      "subtitle": "Se muestra al cliente al finalizar el pedido antes de enviarlo.",
+      "defaultBadge": "Por defecto del país",
+      "customBadge": "Personalizado",
+      "version": "v{{version}}",
+      "notice": "Texto del aviso",
+      "versionHint": "Guardar un cambio crea una nueva versión y la registra en los próximos pedidos.",
+      "resetDefault": "Restablecer al aviso del país"
+    },
+    "team": {
+      "title": "Equipo de trabajo",
+      "description": "Gestiona los miembros de tu tienda y asigna permisos por rol.",
+      "inviteButton": "Invitar miembro",
+      "inviteTitle": "Invitar a un nuevo miembro",
+      "roleLabel": "Rol en la tienda",
+      "sendInvite": "Enviar invitación",
+      "inviteSent": "Invitación enviada con éxito.",
+      "pendingInvitations": "Invitaciones pendientes",
+      "activeMembers": "Miembros del equipo",
+      "expiresAt": "Vence el {{date}}",
+      "copyInviteLink": "Copiar enlace de invitación",
+      "roleUpdated": "Rol actualizado con éxito.",
+      "memberRemoved": "Miembro eliminado del equipo.",
+      "inviteCanceled": "Invitación cancelada.",
+      "removeMember": "Eliminar miembro",
+      "removeMemberTitle": "¿Eliminar miembro del equipo?",
+      "removeMemberDescription": "¿Estás seguro de que deseas eliminar a {{name}}? Perderá el acceso a la tienda de inmediato.",
+      "removeConfirm": "Sí, eliminar miembro",
+      "roles": {
+        "owner": "Propietario",
+        "staff": "Equipo de pedidos",
+        "catalog_manager": "Gestor de catálogo"
+      }
+    }
+  },
+  "invite": {
+    "joinTitle": "Únete al equipo",
+    "joinSubtitle": "Te han invitado a colaborar en {{store}}",
+    "acceptedSuccess": "¡Te has unido con éxito a {{store}}!",
+    "acceptButton": "Aceptar invitación y entrar",
+    "invalidTitle": "Invitación no válida",
+    "invalidSubtitle": "No pudimos procesar este enlace de invitación",
+    "expiredOrInvalidMessage": "Este enlace de invitación ha expirado o ya ha sido utilizado. Solicita una nueva invitación al dueño de la tienda."
+  },
+  "alerts": {
+    "newOrder": {
+      "title": "Nuevo pedido #{{code}}",
+      "body": "{{name}} · {{total}}"
+    },
+    "receipt": {
+      "title": "Comprobante recibido #{{code}}",
+      "body": "{{name}} · {{total}}. Revísalo en tu banco."
+    },
+    "open": "Ver",
+    "toggle": {
+      "on": "Avisos activados: toca para apagarlos",
+      "off": "Activar avisos de pedidos y comprobantes",
+      "blocked": "Avisos bloqueados en este navegador"
+    },
+    "blockedHelp": "El navegador bloqueó los avisos. Actívalos en los permisos del sitio (el candado junto a la dirección)."
+  }
+}

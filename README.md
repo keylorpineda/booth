@@ -53,7 +53,12 @@ pnpm dev
 
 ## Demo credentials
 
-_Published after the seed script exists (Phase 7)._ The demo owner account is read-only.
+Both demo owner accounts are read-only (`isDemo = true`): you can browse orders, products and settings, while write actions are rejected.
+
+| Store                     | Country / Currency | Storefront          | Owner email                | Password    |
+| ------------------------- | ------------------ | ------------------- | -------------------------- | ----------- |
+| **Panadería La Esquina**  | Costa Rica (`CRC`) | `/s/panaderia-demo` | `panaderia@demo.booth.app` | `Demo1234!` |
+| **Bruma Coffee Roasters** | Colombia (`COP`)   | `/s/cafe-demo`      | `cafe@demo.booth.app`      | `Demo1234!` |
 
 ## Live links
 
@@ -66,6 +71,8 @@ _Published after the first deployment (Phase 7)._ The free API instance sleeps w
 - [Data model](docs/DATA_MODEL.md)
 - [API](docs/API.md)
 - [Dev log](docs/DEVLOG.md)
+- [Deployment guide](docs/DEPLOYMENT.md)
+- [Credentials setup (Spanish)](docs/CREDENTIALS_SETUP.es.md)
 - [Contributing](.github/CONTRIBUTING.md)
 
 ## License

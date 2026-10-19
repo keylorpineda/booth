@@ -17,10 +17,660 @@ One entry per phase: what was built, key decisions, problems solved.
 - Name: **Booth** (working name).
 - Scope widened beyond Latin America: US/EU payment presets (Zelle, Venmo, Cash App, Bizum, MB WAY), an optional payment link on any transfer method so stores can take cards through their own provider, an optional prices/tax note, English in the MVP, privacy defaults per country.
 - Money stored as `BigInt` minor units to fit large-denomination currencies (COP, IDR) in order totals.
-- Branching: `develop` is the default integration branch (short-lived `<type>/<desc>` branches, squash merge, PR title = Conventional Commit); `main` only receives completed versions through release PRs and is tagged.
+- Branching: `develop` is the default integration branch (short-lived `<type>/<desc>` branches, rebase merge so every commit is kept); `main` only receives completed versions through release PRs and is tagged.
 - CI workflow, Husky and commitlint are created in Phase 0 together with `package.json`, so the first CI run has real scripts to execute.
 - Frontend: Radix primitives + Motion for micro-interactions, animated SVG + lazy Lottie for vector animations, OKLCH-derived store theme, strict small-component rules.
 
 **Problems solved**
 
 - None yet.
+
+---
+
+## Phase 0 — Setup & tooling — 2026-10-15
+
+**Built**
+
+- pnpm workspace with `apps/api`, `apps/web` and `packages/shared`; Node 24, pnpm 11.28.6 pinned in `packageManager`.
+- Strict TypeScript base, ESLint 10 flat config (type-checked typescript-eslint, import order, `@eslint-react`, react-hooks, jsx-a11y-x), Prettier with Tailwind class sorting.
+- Husky hooks: lint-staged on pre-commit, commitlint with the project's scopes on commit-msg.
+- `@booth/shared` (Zod, dual ESM/CJS build with tsup), `@booth/api` (NestJS 12 + SWC, `GET /health`, Jest + Supertest), `@booth/web` (Vite 8, React 19, Tailwind 4, Vitest + Testing Library).
+- GitHub: public repository, `develop` as default branch, rulesets for `develop` (rebase merge only) and `main` (merge commits from release PRs only), both requiring the `ci` and `pr-title` checks; labels, secret scanning with push protection, Dependabot alerts and updates targeting `develop`.
+- CI: format → lint → typecheck → test (Postgres 17 service) → build.
+
+**Key decisions**
+
+- **TypeScript 6.0.3, not 7.** TypeScript 7 is the latest release, but typescript-eslint (<6.1), ts-jest (<7) and the Nest CLI (bundles 6.0) do not support it yet. Dependabot ignores TypeScript major updates until they do.
+- **pnpm 11, not 12.** pnpm 12 is a native (Rust) rewrite; the automatic version switch from pnpm 11 failed on Windows because the native binary was not linked. pnpm 11.28.6 is the mature line.
+- **`@swc/jest` instead of ts-jest** for API tests: no TypeScript version coupling, same SWC config as the build.
+- **No Turborepo.** `pnpm -r` already builds in dependency order; root `lint`, `typecheck` and `test` build `@booth/shared` first so type-aware tools see its declarations.
+- **ESLint 10** with plugins that support it (`@eslint-react`, `eslint-plugin-jsx-a11y-x`) instead of downgrading to ESLint 9 for the older `eslint-plugin-react` / `jsx-a11y`.
+
+**Problems solved**
+
+- **Nest 12 is ESM-only, Jest runs CommonJS.** Jest failed with "Must use import to load ES Module". Node 24 supports `require(esm)`, and Jest uses it when run with `--experimental-vm-modules`, so the API test script runs Jest through Node with that flag. The API stays CommonJS (decorator metadata via SWC).
+- **`npm install` installed packages before `only-allow` rejected it**, leaving `node_modules` and a `package-lock.json`. Unsatisfiable `engines.npm`/`engines.yarn` with `engine-strict=true` make npm and yarn fail before writing anything; `package-lock.json` and `yarn.lock` are also gitignored.
+- **Squash merge hid the progressive history.** PR #1 was first squash-merged, collapsing its 8 commits into one on `develop`. Because the tree was identical, `develop` was reset to the original 8 commits (rule paused for the force-push, then re-enabled) and `develop` now allows only rebase merges.
+- **A heredoc dropped a backslash** in the Jest transform regex (`'^.+\.ts$'` became "any character before ts"). ESLint's `no-useless-escape` caught it; the pattern now uses `String.raw`.
+
+---
+
+## Phase 1 — API foundation — 2026-10-16
+
+**Built**
+
+- `@booth/shared`: money helpers (ISO 4217 exponents, exact string-based `toMinor`/`fromMinor`, `formatMoney` with `Intl.NumberFormat`), E.164 phone helpers (libphonenumber-js), country profiles (defaults for 22 countries, generic fallback), app locales, time zone validation, the API error contract and the health schema.
+- Config: Zod-validated environment, typed `AppConfig`, fails before Nest starts with a list of every invalid variable.
+- Prisma 7 with the PostgreSQL driver adapter; full MVP schema and the first migration, plus CHECK constraints Prisma cannot express (non-negative stock and amounts, valid business hours, positive quantities).
+- `/health` checks the database (200 / 503), sits outside the `/api` prefix and is never rate limited.
+- Global `/api` prefix, Swagger at `/api/docs`, Helmet, CORS allowlist with credentials, `trust proxy`.
+- One error format for everything (`AppException` + `AllExceptionsFilter`), request ids in headers, error bodies and logs.
+- Zod validation pipe and decorators shared with the web forms.
+- Rate limiting: default bucket plus opt-in `auth` and `public-orders` buckets, keyed by the real client IP.
+- Structured logging with pino (pretty in development, redacted auth headers).
+- Test harness: separate test database, migrations applied once per run, `createTestApp()` with the production HTTP setup, `resetDatabase()`.
+
+**Key decisions**
+
+- **Own Zod pipe instead of `nestjs-zod`**: it does not support Nest 12 yet. Zod 4's `z.toJSONSchema` covers Swagger, so the replacement is ~40 lines.
+- **Prisma 7.10.0, not 7.10.1**: 7.10.1 was published the same day, and pnpm 11's `minimumReleaseAge` policy (supply-chain protection) rejects packages younger than a day. The policy stays on; pnpm had auto-added exclusions, which were removed.
+- **Money**: `toMinor` parses the decimal string instead of multiplying floats (`0.1 + 0.2` → 30 cents). `formatMoney` hands Intl a decimal string so large amounts stay exact, and hides a zero fraction by default ("₡3 500").
+- **ISO 4217 over CLDR** for minor units, with an explicit table for the 0-, 3- and 4-decimal currencies.
+- **Rate-limit storage in memory**: correct for a single Render instance; documented as a prerequisite to change before scaling out.
+- **`@scarf/scarf` blocked** in `allowBuilds`: it is install-time telemetry pulled in by Swagger UI.
+
+**Problems solved**
+
+- A long shell heredoc broke on quoting; source files are now written with the editor tool, not shell heredocs.
+- A commit accidentally included files staged earlier and had a type error that the pre-commit hook (lint only) did not catch. It was undone before pushing and redone as two commits.
+- `exactOptionalPropertyTypes` rejected `datasource: { url: undefined }` in `prisma.config.ts`; the datasource is now only added when `DATABASE_URL` is set, so `prisma generate` still works without a database.
+- Swagger UI was checked in a real browser to confirm Helmet's default CSP does not break it.
+
+---
+
+## Phase 2 — Auth & store onboarding — 2026-10-16
+
+**Built**
+
+- Register, login, refresh, logout and `/me`. Argon2id password hashes, 15-minute HS256 access tokens, opaque refresh tokens in an `HttpOnly; Secure; SameSite=Lax; Path=/api/auth` cookie.
+- Refresh rotation with token families: replaying a rotated token revokes the family. Rotation uses a conditional update so concurrent refreshes cannot both succeed.
+- Global `JwtAuthGuard` (secure by default, `@Public()` to opt out), `@CurrentUser()`, `@CurrentStore()` (store id only from the authenticated user), global `DemoReadOnlyGuard`.
+- Onboarding: `POST /api/me/store` with country-profile defaults, slug rules (pattern, length, reserved words), slug availability check, one store per owner.
+- `TenantResolver` chain with `PathTenantResolver`, `TenantGuard` and `@CurrentTenant()` for public routes; a subdomain resolver plugs into the same list.
+- Shared Zod schemas for auth, sessions, store onboarding and `slugify` for the web forms.
+
+**Key decisions**
+
+- **Opaque refresh tokens instead of JWTs**: they are looked up in the database anyway (rotation, revocation), so a signature adds nothing; only a SHA-256 hash is stored. `JWT_REFRESH_SECRET` was dropped from the env.
+- **Load the user on every authenticated request** instead of trusting token claims: the store id appears after onboarding and `isDemo` can change, and it costs one indexed query.
+- **`@node-rs/argon2`** over `argon2`: prebuilt binaries, no install script to allow.
+- **Production refuses the example JWT secret** (`change-me…`), on top of the 32-character minimum.
+- Same error message for "wrong password" and "unknown email", plus a dummy-hash verification, so the login endpoint does not reveal registered emails.
+
+**Problems solved**
+
+- The `express-serve-static-core` module augmentation failed under pnpm's strict layout (the package is not a direct dependency); `req.auth` / `req.tenant` now augment `express`'s `Request` instead.
+- commitlint rejected the new `stores` scope, and the failed commit's staged files slipped into the next commit. The local commit was undone, `stores` was added to commitlint, the PR-title check and CONTRIBUTING, and the commits were redone.
+- GitHub's rebase merge rewrites SHAs, so the Phase 2 branch (cut from the unmerged Phase 1 branch) was rebased onto `develop`; git skipped the already-merged commits automatically.
+
+---
+
+## Phase 3 — Catalog management — 2026-10-16
+
+**Built**
+
+- Categories: create, update, delete (products become uncategorized), reorder, product counts.
+- Products: CRUD with cursor pagination, name search and category filter, `trackStock` / `stock`, reorder. Prices are integer minor units (`BigInt` in the database, JSON numbers in the API).
+- Product images (up to 8, reorder, delete) and store logo and cover, stored through a `MediaStorage` interface: Cloudinary in production, a disabled storage that answers `503 MEDIA_NOT_CONFIGURED` without credentials, a fake in tests.
+- Store settings: name, description, WhatsApp phone, brand color with an automatic readable foreground, prices note.
+- Upload validation by magic bytes (JPEG, PNG, WebP, AVIF), 5 MB limit, metadata stripped on Cloudinary.
+- A tenant isolation suite: store B tries every owner catalog endpoint against store A's ids and always gets `404`, and A's data stays untouched.
+- `docs/CREDENTIALS_SETUP.es.md`: a Spanish guide for the owner on finding and setting Cloudinary and deployment credentials (written in Spanish at the owner's request).
+
+**Key decisions**
+
+- **Readable foreground instead of rejecting brand colors**: any color is allowed and the API returns black or white text for it. The guarantee (WCAG AA, worst case about 4.58:1) holds only with pure black; a 4,096-color test enforces it.
+- **"Validated against the store currency"**: an integer amount of minor units is valid for every currency (the exponent only affects display), so validation is "non-negative safe integer". Changing a store's currency is deliberately not possible from settings, because it would change the meaning of existing prices; that is handled in Phase 6.
+- **The API returns finished image URLs** (320/800/1600 px, automatic format and quality), so the web app does not depend on Cloudinary.
+- **404 for other stores' ids** (never 403) so ids cannot be probed; a foreign `categoryId` in a product body is a `400` field error.
+- **SVG uploads are rejected**: they can carry scripts.
+- **`definedOnly()` helper**: Zod partial schemas produce `field?: T | undefined`, which Prisma rejects under `exactOptionalPropertyTypes`; the helper drops undefined keys and keeps `null` (which means "clear the field").
+
+**Problems solved**
+
+- The first contrast test only sampled grays (stepping by `0x0f0f0f` keeps R, G and B equal) and the first foreground (`#111111`) fell to 4.42:1 on some mid-tones. Both were fixed: the test walks the RGB cube and the dark foreground is `#000000`.
+- Prettier un-escaped `\|` inside a Markdown table cell in `API.md`, breaking the table; the cell was reworded without pipes.
+- A commit command used a lockfile path relative to the wrong directory, so nothing was committed; it was rerun from the repository root.
+
+---
+
+## Phase 4 — Public API, orders & stock reservations — 2026-10-16
+
+**Built**
+
+- Public storefront API (no auth, store resolved from the slug): store info with open/closed status in the store time zone, pickup and delivery zones, payment methods, default privacy notice per country; catalog with availability; server-side quote.
+- Checkout: the order is saved as `PENDING` with item snapshots and reserved stock before WhatsApp opens. Totals, delivery fee and payment label are computed and snapshotted on the server.
+- Stock reservation in one transaction with conditional updates in product-id order; release adds reserved quantities back and clears the `stockReserved` flags in the same transaction.
+- Expiration: lazy (before checkout and when the tracking page is opened), every 5 minutes in-process (`@nestjs/schedule`), and `POST /api/internal/jobs/expire-orders` protected by `JOB_SECRET` for an external cron. A status-guarded `UPDATE … RETURNING` makes it exactly-once under concurrency.
+- Localized WhatsApp message (store language and currency) and `wa.me` link; short Crockford base32 order codes; 256-bit tracking tokens.
+- Tracking page API and receipt upload (JPEG, PNG, WebP, HEIC, PDF) to private Cloudinary storage; a receipt sets `RECEIPT_SUBMITTED` and pauses expiration.
+- Shared contracts: business hours (time-zone aware), privacy notices (es/en, citing each country's law), order, quote, tracking and public store schemas.
+
+**Key decisions**
+
+- **A store without business hours is always open**, so a new store can sell immediately.
+- **Payment choice is `{ type: 'CASH' }` or `{ type: 'TRANSFER', methodId }`** instead of a bare `paymentMethodId`: cash is a store toggle, not a payment method row.
+- **Concurrency is tested for real**: two parallel orders for the last unit (exactly one succeeds) and 12 parallel orders against 5 units (exactly 5 succeed), repeated runs stable.
+- **Tracking never exposes the customer phone**; the token is the only key, the order code is just a payment reference.
+- **Receipts are stored as private ("authenticated") assets**; PDFs use the image resource type so one signed-URL path serves every format. The Spanish guide explains enabling PDF delivery in Cloudinary.
+- **Hidden categories do not hide their products**: they move to `uncategorized`, so an owner hiding a category does not silently stop sales.
+- The unused `ORDER_EXPIRATION_MINUTES` env variable was removed: the window is a per-store setting.
+
+**Deferred to Phase 6 (by design)**
+
+- Cancelling orders and the owner order list. Both reuse `StockService.release` and `OrderExpirationService.expireStale`, which are already tested here.
+
+**Problems solved**
+
+- A closed-store test only asserted inside `if (!openNow)`, so it could pass without checking anything. It now sets hours on a weekday that is never "today" in the store time zone, so the assertions always run.
+- Two long shell heredocs failed on quoting again; scripted edits are now written as files in the scratchpad and run with Node.
+
+---
+
+## Phase 5 — Storefront UI & checkout — 2026-10-16
+
+**Built**
+
+- Design system: warm neutral tokens, light and dark themes, Tailwind 4 theme mapped to CSS variables, per-store brand color with OKLCH-derived shades and an automatic readable foreground.
+- Small UI primitives (one per file): Button with press feedback, Field with accessible wiring, Sheet (draggable bottom sheet on phones, side panel on desktop), animated Checkbox, OptionCards with a gliding selection ring, QuantityStepper with rolling numbers, Badge, Skeleton, EmptyState, CopyButton.
+- Vector animations: drawn checkmarks, cart bag bump, timeline fill, pulsing "open now" dot, hand-made animated SVG illustrations.
+- Storefront (`/s/:slug`): cover and logo, open/closed badge with next opening, sticky scroll-spy category tabs, product cards and detail sheet, per-store persisted cart, floating cart bar.
+- Checkout (`/s/:slug/checkout`): contact (local phone normalized to E.164 with the store's country), pickup or delivery with zone fees, cash or transfer, privacy consent with the store's notice, live server quote.
+- Tracking (`/t/:token`): "order saved" screen with the WhatsApp button, expiry countdown, animated status timeline, transfer details with copy buttons and the order code as reference, receipt upload with a progress bar.
+- i18n (es default, en), API wake-up notice, error and empty states, per-store SEO and Open Graph tags, `robots.txt`.
+
+**Key decisions**
+
+- **WhatsApp as a link the customer taps**, not an automatic popup: browsers block `window.open` after an async request, and the order is already saved, so the tracking page leads with "Send order on WhatsApp" and the store page links back to the latest order.
+- **Animated SVG instead of Lottie**: no Lottie assets existed, and SVG illustrations inherit the store color and add no runtime.
+- **First-load performance work** (measured with Lighthouse): prefetch store data from `index.html`, lazy routes, lazy Motion features (`LazyMotion` + `m.*`), lazy toasts, and no Zod on the storefront's first load. `@booth/shared` now builds one file per module and keeps schemas apart from helpers. Main bundle 277 KB → 180 KB gzipped.
+- **Storefront responses are typed, not validated at runtime**; checkout and tracking still validate. The API's e2e tests guard the public contract.
+- Contrast tokens were darkened (success, danger, subtle text) after Lighthouse flagged 3.08:1 and 3.49:1.
+
+**Lighthouse (mobile, local production build)**: Accessibility 100, Best Practices 100, SEO 100, Performance 72–80. The largest paint (~3.5 s) is bound by JS execution under 4× CPU throttling; the target of 90 is re-checked on the deployed build in Phase 7, with HTML pre-rendering of the store page as the next step if needed.
+
+**Problems solved (found by testing in the browser)**
+
+- **Buttons inside sheets never received clicks**: the whole sheet was draggable, and Motion captures the pointer on press, so `click` landed on the sheet. Only the handle and header start a drag now (`useDragControls`).
+- **Sheets and toasts ignored the store color**: they render in portals outside the themed wrapper. The theme is applied to `<html>` while a store page is mounted.
+- **The cover overlapped the logo**: the header content needed its own stacking context.
+- **Derived brand shades did not update** when `--brand` was overridden on a child: custom properties resolve where declared, so the shades are re-declared on every `[data-brand]` element.
+- The strict React lint rules caught `Date.now()` during render, setState in an effect, `forwardRef`, `cloneElement` and `form.watch` (incompatible with the React Compiler); replaced with `useNow`, cleanup-based state, ref-as-prop, a render-prop `Field` and `useWatch`.
+
+---
+
+## Phase 6 (part 1) — Owner API — 2026-10-16
+
+**Built**
+
+- Store settings: ordering options (accept orders while closed, expiration window, pickup with address, delivery, cash), localization (country, currency, time zone, language) and the privacy notice.
+- Transfer payment methods with presets for 13 methods across CR, MX, CO, PE, BR, US, ES, PT and anywhere (PayPal), fully custom methods and an optional https payment link.
+- Delivery zones and weekly business hours (split shifts, overlap check, empty week = always open).
+- Owner orders: list with status, payment, date and text filters (cursor pagination), detail with timeline, status flow, mark paid / unpaid, reactivation, signed receipt URLs.
+
+**Key decisions**
+
+- **Currency lock**: prices are minor units of the store currency, so the currency only changes while the store has no products or orders (`canChangeCurrency` tells the dashboard).
+- **Privacy notice versioning**: a new text bumps `privacyNoticeVersion`; each order stores the version the customer accepted.
+- **Status flow in `@booth/shared`** (`ORDER_TRANSITIONS`), so the dashboard only offers valid actions and the API enforces the same table.
+- **Expire before acting**: status changes run lazy expiry first, so an order whose window passed cannot be confirmed; updates are conditional on the status that was read, so concurrent changes cannot both apply.
+- **Paid orders never expire**; cancelling releases stock through the same exactly-once release used by expiry.
+- Cash stays a store toggle, not a payment method row.
+
+**Problems solved**
+
+- A test built all Supertest requests up front; Supertest closes the ephemeral server after the first request, so the rest failed with "Cannot read properties of null (reading 'address')". Requests are now built lazily.
+- The Docker containers had stopped mid-session; `pnpm db:up` restored them and the in-memory test database was re-migrated by the test setup.
+- The unused `RECEIPT_MAX_BYTES` env variable was removed (the 5 MB limit is a constant).
+
+---
+
+## Phase 6 (part 2) — Dashboard sign in and onboarding — 2026-10-16
+
+**Built**
+
+- Sign up and sign in pages, a session restored from the refresh cookie on load, and an owner API client that refreshes an expired access token and retries once.
+- Route guards: signed-out owners go to `/login?redirect=…` and come back; owners without a store go to onboarding; signed-in owners skip the auth pages.
+- Onboarding: store name, public URL suggested from the name with a live availability check, country (guessed from the browser, names in the interface language) and the WhatsApp number normalized to E.164 for that country.
+- Every owner page is a lazy chunk, so shoppers never download the dashboard.
+
+**Key decisions**
+
+- **Access token in memory only** (Zustand, not persisted); a reload calls `/auth/refresh` with the httpOnly cookie.
+- **Single-flight refresh**: refresh tokens rotate and a replayed one revokes the family, so parallel 401s share one refresh request (covered by tests).
+- **Same-origin redirects only** after sign in (`//evil.com` and absolute URLs fall back to `/dashboard`).
+- Form schemas mirror the shared API rules with i18n keys as messages; the server stays the source of truth (`SLUG_TAKEN` is mapped back onto the URL field).
+
+**Problems solved**
+
+- `jsx-a11y` rejects `autoFocus`; the forms rely on the natural focus order instead.
+- A country field typed as the ISO code union needed separate form input and output types (`useForm<Input, unknown, Output>`).
+- Docker Desktop was not running, so the API could not reach Postgres until it was started.
+
+---
+
+## Visual identity: indigo and dark mode — 2026-10-16
+
+**Built**
+
+- New default brand color (indigo `#4F46E5`) on a white base with cool slate neutrals; Plus Jakarta Sans for headings.
+- Dark mode that follows the system, with a light / system / dark switch saved per device and applied before first paint.
+- Redesigned landing (hero with an animated WhatsApp order preview, how-it-works cards) and a split auth layout with a brand panel on large screens.
+- Data migration: stores still on the old default orange move to indigo; stores with a custom color keep it.
+
+**Key decisions**
+
+- Brand shades mix in **OKLab**, not OKLCH: white has hue 0 in OKLCH, so mixing indigo with it drifted toward pink.
+- The theme lives on `<html data-theme>`; without it the CSS follows `prefers-color-scheme`, so "system" reacts live.
+- Store pages still override `--brand`, so every storefront keeps its own color in both themes.
+
+**Problems solved**
+
+- Prisma 7 does not run `generate` after `migrate dev`, so the client kept the old column default until it was regenerated.
+
+---
+
+## Phase 6 (part 3) — Dashboard shell — 2026-10-16
+
+**Built**
+
+- Dashboard shell: sidebar from `md` up, a bottom navigation within thumb reach on phones, a sticky header with the store name, a "view store" link and an account menu.
+- Dashboard home: a setup checklist computed from the owner endpoints (products, cash or a transfer method, hours, delivery zones when delivery is on) and a card to copy or share the store link on WhatsApp.
+- Primitives: Switch, Tabs and ConfirmDialog on Radix, animated with Motion.
+- Demo mode: a banner on the read-only account and `useCanWrite()` for disabling save actions.
+- Orders, catalog and settings routes exist with a placeholder until their issues land.
+
+**Key decisions**
+
+- The shell lives in `features/dashboard` (not `components/layout`) because it reads the session; `components/` stays free of feature imports.
+- The checklist logic is a pure function (`setupChecklist`) with its own tests; the hook only gathers data.
+- Owner queries share the `['owner', ...]` key prefix, so signing out drops all of them.
+- Release milestones replaced the single MVP milestone: v0.5 Storefront, v0.6 Owner dashboard, v0.7 Demo & hardening, v1.0.0 Launch.
+
+**Problems solved**
+
+- Bash heredocs with long JSX failed to parse in this Windows shell; files are written directly instead.
+- The shell test needed a `QueryClientProvider` because the account menu uses the logout mutation.
+
+---
+
+## Owner orders list (#44) — 2026-10-16
+
+**Built**
+
+- Orders screen with tabs (active, completed, cancelled and expired, all), a payment filter and search by code, name or phone.
+- Order rows: code, time since placed, customer, total in the order currency, status and payment badges, pickup or delivery, item count and minutes left for pending orders.
+- "Load more" with the API cursor, a refresh every 30 seconds and on window focus, so new orders appear on their own.
+
+**Key decisions**
+
+- Filters live in the URL (`?tab=closed&payment=PAID&q=...`), so refresh, the back button and shared links keep them; typing replaces the history entry instead of adding one per search.
+- Unpaid cash orders read "cash on delivery", not "unpaid": nothing is owed until delivery.
+- A `--warning-ink` token gives amber text that keeps AA contrast in both themes.
+
+**Problems solved**
+
+- CI on the previous PR exposed a search bug: the digits of a code (`SW12CJ` -> `12`) matched customer phones. Phones are now searched only for phone-like queries (#42).
+
+---
+
+## Owner order detail (#45) — 2026-10-16
+
+**Built**
+
+- Order detail page (`/dashboard/orders/:id`): code, status and date; snapshot lines with subtotal, delivery fee and total; customer with note, WhatsApp (pre-filled with the order code) and call buttons; delivery zone and address or pickup; payment method and status; timeline with who made each change.
+- Order rows link to the detail; "back" returns to the list with the same filters.
+- A clear not-found state for unknown ids and other stores' orders (the API answers 404 for both).
+
+**Key decisions**
+
+- A page instead of a sheet: it can be shared and reloaded, and it works the same on phones and desktop.
+- Notes written by the API itself (for example "Reactivated") are translated; notes typed by people are shown as written.
+
+---
+
+## Owner order actions (#46) — 2026-10-16
+
+**Built**
+
+- Actions card on the order detail: next statuses from `ORDER_TRANSITIONS` (the first one highlighted), cancel behind a confirmation dialog, mark paid / unpaid, view receipt and reactivate expired orders.
+- Reactivation names the products that sold out when it fails with `OUT_OF_STOCK`.
+- Every action updates the detail from the API response and refreshes the lists; the demo account sees them disabled.
+- Toasts follow the light/dark choice.
+
+**Key decisions**
+
+- The receipt tab opens before the signed URL arrives, then navigates: opening it after an `await` would be blocked as a popup.
+- Signed receipt URLs are never cached: they expire in minutes.
+- On phones the actions card comes first, so the usual flow (view receipt, mark paid, confirm) takes three taps from the top of the page.
+
+**Not verified live**
+
+- "View receipt" needs an uploaded receipt, which needs Cloudinary; it is not configured locally.
+
+---
+
+## Catalog categories (#47) — 2026-10-16
+
+**Built**
+
+- Catalog page with Products and Categories tabs (tab kept in the URL); the products tab arrives with #48.
+- Categories: create, rename inline (Enter saves, Escape cancels), show/hide with a switch, delete behind a confirmation that says the products stay, reorder with up/down buttons.
+
+**Key decisions**
+
+- Reordering is optimistic: the list moves at once and rolls back if the API refuses.
+- Up/down buttons instead of drag and drop: they work with a keyboard, a screen reader and one thumb.
+- Icon-only buttons always carry an `aria-label` (also fixed for the header's "view store" link on phones).
+
+---
+
+## Catalog products list (#48) — 2026-10-16
+
+**Built**
+
+- Products tab: photo or monogram, name, price in the store currency, category, stock for tracked products, and badges for hidden, sold out and low stock (5 or fewer).
+- Search by name and category filter, both in the URL; "load more" with the cursor.
+- Reorder with up/down buttons, optimistic with rollback.
+- `SearchInput` shared by orders and products.
+
+**Key decisions**
+
+- Reordering is offered only on the unfiltered list: the API assigns positions in the order it receives, so reordering a filtered subset would scramble the products that are not shown. The screen says why.
+- Made-to-order products never show stock or a sold-out badge.
+
+**Process**
+
+- Milestones were standardized: issues only (no PRs), 4–6 issues per release, outcome descriptions, a due date on the active one. The owner dashboard became v0.7.0 Dashboard foundations, v0.8.0 Order management, v0.9.0 Catalog management and v0.10.0 Store settings.
+
+---
+
+## Product form and MoneyInput (#49) — 2026-10-16
+
+**Built**
+
+- `MoneyInput`: currency sign from `Intl`, decimal keyboard on phones, tidies the amount on blur ("2500" -> "2 500").
+- `parseMoneyInput`: reads "2500", "2 500", "2.500,50" or "2,500.50"; the last separator is the decimal mark unless it closes a group of three digits; rejects more decimals than the currency has (JPY "10.5"); converts with `toMinor`, never floats.
+- Product page for new and existing products: name, price, description, category, visible switch, "track stock" switch with the stock field only when on; delete behind a confirmation; creating a product opens its edit page (photos come next).
+- `SwitchField` (labelled switch with a hint) for settings screens too; rows in the products list link to the edit page; "Add product" in the header and the empty state.
+
+**Key decisions**
+
+- The form keeps the price as typed text and converts it once on submit, so what the owner typed is never rounded behind their back.
+- Thousands groups must have exactly three digits ("1,5,0" is rejected instead of guessed).
+
+**Problems solved**
+
+- `no-irregular-whitespace` flagged literal no-break spaces in a regex; `\s` already matches them in JavaScript.
+- A session loss during testing came from a sign-out in the pane, not from refresh-token reuse: the API log showed the logout and a later refresh without a cookie.
+
+---
+
+## Product images (#50) — 2026-10-16
+
+**Built**
+
+- Shared `IMAGE_MAX_BYTES` (5 MB) and `IMAGE_ACCEPT` between API and web so the file picker checks format, size and the 8-photo limit before uploading, using the same error codes (`UNSUPPORTED_FILE_TYPE`, `FILE_TOO_LARGE`, `TOO_MANY_IMAGES`).
+- `uploadFile()` XHR helper with upload progress (reused by tracking receipts) and `ownerUpload()` with Bearer token and single refresh retry.
+- `ProductImages` and `ImageTile` on the product edit page: multi-file sequential upload with live progress (`current of total · %`), cover badge on the first image, optimistic reorder with left/right arrows and rollback on failure, and delete behind a `ConfirmDialog`.
+
+**Key decisions**
+
+- Multi-file uploads run one request after another rather than in parallel so each finished photo appears in the gallery right away and progress stays predictable on slow mobile connections.
+- Reordering updates the cached product immediately and invalidates the product lists so the new cover shows up everywhere without a reload.
+
+---
+
+## Settings profile and branding (#51) — 2026-10-16
+
+**Built**
+
+- `/dashboard/settings` page (`SettingsPage`) with URL-synced `Tabs` (`profile`, `delivery`, `payments`, `hours`, `localization`, matching `setupChecklist` links); removed the `dashboard-section-page.tsx` placeholder.
+- `ProfilePanel`: logo and cover image upload/remove cards (`StoreImageCard`) with 5 MB and format checks, upload progress, and a `ConfirmDialog` for removal.
+- Store profile form (`profileFormSchema`): name, description, E.164 WhatsApp phone validated against the store country, prices note, and brand color picker (`BrandColorField`) with hex input and a live product card + button preview using `brandProps` and `readableForeground`.
+
+**Key decisions**
+
+- The live brand color preview scopes `--brand` and `--brand-foreground` to the preview box with `brandProps(validColor, foreground)` so light colors like yellow immediately flip the button label to black without re-theming the dashboard shell.
+
+---
+
+## Ordering options and delivery zones (#52) — 2026-10-16
+
+**Built**
+
+- `OrderingOptionsCard` (`orderingFormSchema`): pickup toggle + address, delivery toggle, cash on delivery/pickup toggle, accept orders while closed toggle, and pending order hold window (`MIN_ORDER_EXPIRATION_MINUTES`–`MAX_ORDER_EXPIRATION_MINUTES`); explains that at least one of pickup or delivery is required.
+- `DeliveryZonesCard` (`zoneFormSchema`): create zones with `MoneyInput` in the store currency, inline edit of name and fee (`ZoneEditor`), show/hide switch, optimistic up/down reorder with rollback, and delete behind a `ConfirmDialog`.
+
+**Key decisions**
+
+- Turning off both pickup and delivery blocks saving in the client with a clear `FormAlert` (mirroring the API's rule on `pickupEnabled`) and clears the alert immediately when either switch is turned back on.
+
+---
+
+## Payment methods with country presets (#53) — 2026-10-16
+
+**Built**
+
+- `PaymentMethodsPanel`: cash toggle plus transfer payment methods (`usePaymentMethodMutations`) with add, inline edit, active switch, optimistic up/down reorder and delete behind a `ConfirmDialog`.
+- `PaymentMethodFormView` (`paymentMethodFormSchema`): preset selector powered by `presetsForCountry(store.country)` (or custom) that pre-fills the label, localized identifier hint and default instructions, plus optional `https://` payment link validation.
+
+**Key decisions**
+
+- Selecting a preset pre-fills the display name and customer instructions while leaving every field editable so owners can tailor the instructions or switch to a custom method at any time.
+
+---
+
+## Business hours editor (#54) — 2026-10-16
+
+**Built**
+
+- `HoursPanel` and `WeekdayRow`: one row per weekday (Monday first) with open/closed switch, split shifts (up to 4 intervals per day), "Copy to Mon–Fri" and "Copy to all" helpers, "Clear all (always open)" button, and an "accept orders while closed" toggle.
+- `validateWeekSchedule` (`hours-form.ts`): validates time ordering and highlights overlapping intervals on the offending shift (`aria-invalid` + per-interval error message).
+
+**Key decisions**
+
+- An empty week displays a prominent notice explaining that the store is treated as always open, matching `isOpenAt([]) === true` in `@booth/shared`.
+
+---
+
+## Localization and privacy notice (#55) — 2026-10-16
+
+**Built**
+
+- `Combobox` (`components/ui/combobox.tsx`): keyboard-accessible searchable combobox primitive for long option lists (currencies and IANA time zones).
+- `LocalizationCard` (`features/settings/localization/`): country (`Intl.DisplayNames`), currency (`Intl.supportedValuesOf('currency')`, locked with an explanation when `canChangeCurrency` is false), time zone (`Intl.supportedValuesOf('timeZone')`), and store language (`es` / `en`).
+- `PrivacyCard` (`features/settings/privacy/`): displays the effective privacy notice and version badge (`vN`), lets owners write a custom notice or reset to the country default (`privacyNotice: null`), and explains that saving increments the version recorded on future orders.
+
+**Key decisions**
+
+- When the combobox opens on focus, the search input clears its query while keeping the selected label as the placeholder, so owners can type immediately to filter 160+ currencies or 400+ time zones without backspacing first.
+
+---
+
+## Idempotent demo seed (#22) — 2026-10-16
+
+**Built**
+
+- `seedDemoData` (`apps/api/src/seed/` + `apps/api/prisma/seed.ts`): idempotent seed script wired to `pnpm --filter api db:seed` and `pnpm db:seed`.
+- Two demo stores with read-only demo owners (`isDemo = true`): **Panadería La Esquina** (`panaderia-demo`, Costa Rica, `CRC`, SINPE Móvil + cash, pickup + 3 delivery zones, Monday–Saturday hours, 15 products in 4 categories) and **Bruma Coffee Roasters** (`cafe-demo`, Colombia, `COP`, Nequi + Daviplata, delivery only, split shifts, 12 products in 4 categories, English locale).
+- Sample orders across every status (`PENDING` unpaid, `PENDING` with `RECEIPT_SUBMITTED`, `CONFIRMED`, `PREPARING`, `READY`, `COMPLETED`, `CANCELLED`, `EXPIRED`) with realistic status timelines and consistent reserved stock.
+
+**Key decisions**
+
+- Every entity is upserted by a stable key (owner email, store slug, `(storeId, name)` for categories, deterministic ids for zones, payment methods, products and orders), and tracked product stock is computed as `initialStock - sum(active/completed order quantities)` so re-running the seed never drifts stock or duplicates rows.
+
+---
+
+## Security review and hardening (#23) — 2026-10-16
+
+**Built**
+
+- Hardened HTTP headers on the API (`app.setup.ts`: `frameguard: deny`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `frame-ancestors 'none'`) and added `apps/web/vercel.json` with `Content-Security-Policy` (including SHA-256 hashes for both inline scripts in `index.html`), HSTS, `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`.
+- Added `apps/web/src/security-headers.test.ts` to verify that every inline `<script>` in `index.html` matches its CSP hash in `vercel.json`.
+- Expanded API security e2e tests (`security.e2e-spec.ts`, `rate-limit.e2e-spec.ts` with `TRUST_PROXY=2` spoofed-header resistance, `tenant-isolation.e2e-spec.ts` store branding isolation, `owner-orders.e2e-spec.ts` receipt privacy on public tracking).
+- Enabled Jest coverage reporting and thresholds (`85%` statements/lines/functions) and `pnpm audit --prod --audit-level=high` + `pnpm test:cov` in `.github/workflows/ci.yml`.
+
+---
+
+## Storefront bundle and vendor chunk optimization (#26) — 2026-10-16
+
+**Built**
+
+- Configured Vite `build.rollupOptions.output.manualChunks` in `apps/web/vite.config.ts` to split vendor dependencies into long-term cacheable chunks: `vendor-react` (`react`, `react-dom`, `scheduler`), `vendor-router` (`react-router`), `vendor-query` (`@tanstack/react-query`), and `vendor-i18n` (`i18next`, `react-i18next`).
+- Reduced initial entry JS chunk (`index-*.js`) from 361.00 kB (118.10 kB gzipped) to 161.60 kB (55.91 kB gzipped) — a 55% reduction in initial entry script size before compression.
+
+**Key decisions**
+
+- Splitting heavy vendor dependencies preserves immutable cache hits across deployments: storefront shoppers only download changed application code rather than re-downloading React, React Router, Query, and i18n runtimes on every release.
+- Kept `libphonenumber-js` (`phone-*.js`), `zod`, and `motion-features` lazily loaded or dynamic so the first paint on `/s/:slug` remains lightweight.
+
+---
+
+## Deployment: Neon, Render, Vercel and CD (#24) — 2026-10-16
+
+**Built**
+
+- Created comprehensive `docs/DEPLOYMENT.md` covering architecture, free-tier limits (Neon, Render, Vercel, Cloudinary), environment variables per service, step-by-step deployment guide, database migrations, rollbacks, and cold-start handling.
+- Configured production API rewrite in `apps/web/vercel.json` (`/api/:path*` -> Render backend URL) keeping authentication refresh cookies first-party on the Vercel domain.
+- Created `.github/workflows/expire-orders.yml` scheduled workflow running every 10 minutes to execute `POST /api/internal/jobs/expire-orders` with `X-Job-Secret`, automating order expiration and keeping the Render free instance active during working hours.
+- Added Render Continuous Deployment hook trigger in `.github/workflows/ci.yml` after CI passes on `main`.
+- Updated documentation links in `README.md` and checked off deployment setup items in `docs/PLAN.md`.
+
+**Key decisions**
+
+- The scheduled order expiration job checks if `JOB_SECRET` is populated before calling the API, ensuring automated runs skip cleanly without spurious failures when secrets are not yet configured.
+- The Render Deploy Hook in `ci.yml` triggers only on pushes to `main` when `RENDER_DEPLOY_HOOK_URL` is set, preserving decoupled build triggers while automating production releases.
+
+---
+
+## AI receipts: Gemini vision extractor and structured schemas (#76) — 2026-10-17
+
+**Built**
+
+- `@booth/shared`: added receipt extraction and verification schemas in `packages/shared/src/receipts/schema.ts` (`receiptExtractionSchema`, `receiptVerificationStatusSchema`, `receiptConfidenceSchema`, `receiptVerificationResultSchema`), exported from `@booth/shared`.
+- Added unit tests in `packages/shared/src/receipts/receipts.test.ts` covering valid payloads, nullable missing fields, minor unit amounts, and status enums.
+- Added optional `GEMINI_API_KEY` to `apps/api/src/config/env.schema.ts` and `AppConfig`, documented in `apps/api/.env.example`.
+- Implemented `ReceiptExtractorService` (`apps/api/src/receipts/receipt-extractor.service.ts`) using Gemini 2.0 Flash REST endpoint with structured JSON output schema, graceful offline fallback when no API key is provided, network timeouts, and image URL fetching.
+- Added comprehensive unit tests in `apps/api/src/receipts/receipt-extractor.service.spec.ts` covering unconfigured key handling, SINPE Móvil minor unit extraction, USD receipts, blurry/unreadable images, API error handling, and request timeouts.
+- Updated `apps/api/test/setup/global-setup.ts` to handle offline Postgres connections gracefully during fast unit test execution.
+
+**Key decisions**
+
+- Direct REST call to Gemini 2.0 Flash (`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`) with `responseMimeType: "application/json"` using Node 24 native `fetch`, eliminating additional heavy SDK dependencies.
+- Extracted amounts are normalized into integer minor units using `@booth/shared` (`toMinor`) with ISO 4217 standard currency exponents (e.g. CRC exponent 2 céntimos).
+- Safe fallback: if `GEMINI_API_KEY` is omitted or unreadable/blurry receipt is encountered, extractor returns `null` or `confidence: 'LOW'`, allowing downstream verification to mark the receipt as `UNVERIFIED` for owner review without failing the request or blocking the customer.
+
+---
+
+## AI receipts: verification rules, duplicate check and auto-approval (#77) — 2026-10-17
+
+**Built**
+
+- Prisma schema & migration (`20261018014500_add_receipt_verification`): created `ReceiptVerification` model with `extractedAmountMinor`, `extractedCurrency`, `referenceNumber`, `recipientPhone`, `recipientName`, `senderName`, `transactionDate`, `bankName`, `status` (`MATCHED`, `AMOUNT_MISMATCH`, `RECIPIENT_MISMATCH`, `DUPLICATE_REFERENCE`, `UNVERIFIED`), `confidence`, `rejectionReason`, `verifiedAt`, and partial unique index on `(storeId, referenceNumber)` for `status = 'MATCHED'`.
+- `ReceiptVerificationService` (`apps/api/src/receipts/receipt-verification.service.ts`):
+  - Validates `extractedAmountMinor === order.totalMinor` and matching currencies.
+  - Checks recipient phone number against store WhatsApp phone when detectable.
+  - Queries existing matched verifications within the same store to guard against recycled voucher fraud (`DUPLICATE_REFERENCE`).
+  - Verifies date recency (marks `UNVERIFIED` if transaction date is older than 48 hours).
+  - Automatically transitions `order.paymentStatus` to `PAID`, clears `expiresAt`, and creates an `OrderStatusEvent` with actor `system` upon matching.
+- Hooked `ReceiptVerificationService` into `TrackingService.uploadReceipt`, ensuring private storage and order status transitions are synchronized.
+- Added comprehensive unit tests in `receipt-verification.service.spec.ts` covering valid auto-approval, amount mismatch, duplicate reference rejection, recipient phone mismatch, and old transaction dates.
+
+**Key decisions**
+
+- Partial unique index on PostgreSQL (`WHERE "status" = 'MATCHED' AND "referenceNumber" IS NOT NULL`): ensures database-level uniqueness across approved receipts while still allowing duplicate attempts to be recorded in the database as `DUPLICATE_REFERENCE` for owner review without causing unique constraint insert errors.
+- Graceful error isolation in `TrackingService.uploadReceipt`: verification errors or unconfigured AI credentials never fail the customer's upload request, leaving the order in `RECEIPT_SUBMITTED` for standard manual review.
+
+---
+
+## AI receipts: dashboard verification card, mismatch alerts and review (#78) — 2026-10-17
+
+**Built**
+
+- `@booth/shared`: extended `ownerOrderSummarySchema` with `receiptVerificationStatus` and `ownerOrderSchema` with `receipt.verification` details (`receiptVerificationResultSchema`).
+- `apps/api`:
+  - Updated `OwnerOrdersService` to query `receipt.verification` for order lists and order details.
+  - Updated `owner-order.mapper` to map `receiptVerificationStatus` to order summaries and full verification payload (`extracted`, `confidence`, `mismatchReason`, `verifiedAt`) to detailed orders.
+  - Added unit tests in `owner-order.mapper.spec.ts` for mapped orders and receipt verification data.
+- `apps/web`:
+  - Created `ReceiptVerificationBadge` component displaying status indicators (`MATCHED`, `AMOUNT_MISMATCH`, `DUPLICATE_REFERENCE`, `RECIPIENT_MISMATCH`, `UNVERIFIED`) with dedicated tones and Lucide icons.
+  - Created `ReceiptVerificationCard` component featuring status alert banners, data comparison table (detected amount vs order total, reference number, bank/app name, destination phone/name, sender, transaction date, AI confidence badge, raw extraction summary), view original receipt button, and one-click payment confirmation.
+  - Integrated `ReceiptVerificationCard` into `OrderDetailPage` whenever an order includes a receipt, placing AI feedback at the top of the action column.
+  - Displayed `ReceiptVerificationBadge` alongside `PaymentBadge` in `OrderRow` for instant at-a-glance status in the dashboard orders list.
+  - Added comprehensive Spanish and English translations in `es.json` and `en.json` with 100% key parity.
+  - Added unit test suite in `receipt-verification-card.test.tsx` and updated `order-row.test.tsx` covering all verification outcomes, actions, and read-only demo account protection.
+
+**Key decisions**
+
+- Direct one-click confirm payment in `ReceiptVerificationCard`: Allows store owners to inspect discrepancies (e.g. slight overpayment or tip) and immediately approve the payment without having to navigate to secondary action menus.
+- Connected component pattern with test injection: `ReceiptVerificationCard` seamlessly connects to `useOrderActions` in production while accepting optional injected actions for lightweight, fast unit testing without requiring global query providers.
+- Status badges in order list: Surfacing the AI verification status directly in `OrderRow` allows merchants to identify orders needing attention (such as `Monto diferente` or `Comprobante duplicado`) immediately from the list view without opening each order.
+
+---
+
+## Playwright E2E tests in CI (#30) — 2026-10-17
+
+**Built**
+
+- Installed `@playwright/test` in `@booth/web` and configured cross-browser test runner in `apps/web/playwright.config.ts`:
+  - Desktop Chromium (1280×720), Mobile Chromium / Pixel 5 (360×800, touch).
+  - Desktop WebKit (1280×720), Mobile WebKit / iPhone 12 (360×800, touch).
+  - Retains traces and videos on failure, captures screenshots only on failure.
+  - Spawns both backend API and Vite dev web servers automatically with health-check readiness (`/health` on port 3000 and port 5173).
+- Implemented 5 complete browser E2E test scenarios in `apps/web/e2e/`:
+  1. `checkout-pickup.spec.ts`: Customer storefront navigation, item selection, floating cart bar bump, slide-over sheet checkout, pickup fulfillment, cash payment, privacy consent checkbox, order placement, and verification of WhatsApp order tracking link.
+  2. `checkout-delivery-receipt.spec.ts`: Storefront navigation, delivery fulfillment selection, zone fee calculation, exact address entry, SINPE transfer payment selection, privacy consent, order submission, transfer details verification, and payment receipt file upload.
+  3. `owner-order-flow.spec.ts`: Store owner authentication (`panaderia@demo.booth.app`), navigation to orders dashboard, opening pending order `#PAN101`, and sequentially advancing through full order lifecycle (`PENDING` -> `CONFIRMED` -> `PREPARING` -> `READY` -> `COMPLETED`).
+  4. `owner-reactivate-expired.spec.ts`: Owner login, navigating to closed/expired orders tab, inspecting expired order `#PAN108` with expired explanation banner, and reactivating order back to active `PENDING` state.
+  5. `demo-mode.spec.ts`: Logging in with read-only demo credentials (`cafe@demo.booth.app`), asserting visible `DemoBanner`, verifying that settings save button is disabled, and verifying that product edit save button in catalog is disabled.
+- Updated `apps/api` seed runner (`seed-types.ts`, `seed-runner.ts`, `panaderia-seed.ts`, `cafe-seed.ts`):
+  - Added optional `isDemo` parameter on `DemoStoreSeed.owner` (defaults to `true`).
+  - Configured `panaderia-demo` owner with `isDemo: false` to allow full order management and reactivation in E2E tests, while keeping `cafe-demo` owner with `isDemo: true` as the canonical read-only demo showcase.
+- Integrated automated Playwright E2E pipeline into `.github/workflows/ci.yml`:
+  - Migrates and seeds PostgreSQL test container service with `DATABASE_URL_TEST`.
+  - Installs Chromium and WebKit system binaries with dependencies via `playwright install --with-deps chromium webkit`.
+  - Runs full E2E test suite in CI with failure report artifact upload (`actions/upload-artifact@v4`).
+- Refined `apps/web/vite.config.ts` to explicitly isolate unit tests (`src/**/*.{test,spec}.{ts,tsx}`) from E2E specs (`e2e/**`), preventing Vitest runner conflicts.
+
+**Key decisions**
+
+- Playwright network route interception for Cloudinary upload in `checkout-delivery-receipt.spec.ts`: Intercepts `**/public/orders/*/receipt` to fetch the real placed order via `page.request.get` and respond with verified receipt metadata, ensuring tests run reliably in CI without third-party external cloud storage dependencies.
+- Distinct demo vs active accounts: Having `cafe@demo.booth.app` as `isDemo: true` and `panaderia@demo.booth.app` as `isDemo: false` allows exercising both the restrictive read-only security guards and the full order state machine without artificial test bypasses.
+
+---
+
+## Performance audit on the production build (#91) — 2026-10-19
+
+**Method**
+
+- Local production build served with Brotli and immutable caching (as on Vercel), `/api` proxied to the local API. Lighthouse 12, mobile emulation (4x CPU, slow 4G), median of 5 runs. Before = `develop` at the same moment, same conditions.
+
+| Page       | Before | After | TBT after |
+| ---------- | ------ | ----- | --------- |
+| Landing    | 59     | 70    | 727 ms    |
+| Storefront | 61     | 61    | 877 ms    |
+| Sign in    | 68     | 67    | 610 ms    |
+
+Accessibility 96–100 (the 96 comes from contrast measured while text fades in), Best practices 96–100, SEO 100, CLS 0.
+
+**Fixed**
+
+- Zod (86 KB) was back in the first load: `lib/domain.ts` imported `RESERVED_SLUGS` from the module that also builds the slug schema. The slug rules now live in a Zod-free module.
+- The vendor chunk rule matched loosely (`includes('react-dom/')` caught `@floating-ui/react-dom`, `'react/'` caught `lucide-react`), forcing Floating UI and every icon into the first load; then, matching the first `node_modules` of pnpm paths, vendor chunks stopped splitting. It now matches the exact package folder.
+- Landing and storefront are separate chunks (each page no longer downloads the other); the page for the current URL starts downloading before the router mounts.
+- English translations load on demand; Spanish (default) stays in the bundle.
+
+**Not fixed yet**
+
+- The remaining cost is React DOM, i18next and TanStack Query evaluation plus style/layout work on the storefront. Reaching 90+ on a simulated mid-range phone needs pre-rendered store HTML (see #26) and has to be measured on the deployed site.

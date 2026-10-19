@@ -2,6 +2,8 @@
 
 This is a portfolio project, but it follows a team workflow so the history stays readable.
 
+By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Security problems go through the [Security Policy](SECURITY.md), never public issues.
+
 ## Requirements
 
 - Node 24 LTS (`nvm use`)
@@ -19,11 +21,11 @@ This is a portfolio project, but it follows a team workflow so the history stays
 | `<type>/<short-desc>` | Short-lived work branches cut from `develop`, e.g. `feat/catalog-products`.                                                              |
 
 ```
-feat/catalog-products --squash--> develop --release PR (merge commit)--> main --> tag vX.Y.Z
+feat/catalog-products --rebase--> develop --release PR (merge commit)--> main --> tag vX.Y.Z
 ```
 
 - Allowed `<type>` values are the same as commit types (below). One phase may span several branches; keep each PR focused.
-- Work PRs target `develop` and are **squash-merged**, so the PR title becomes the commit and must be a Conventional Commit.
+- Work PRs target `develop` and are **rebase-merged**: every commit lands on `develop` as is, so history shows the work step by step. Make small, focused commits; each one must be a Conventional Commit (enforced by the `commit-msg` hook).
 - Release PRs go from `develop` to `main` with a **merge commit**, titled `chore(release): vX.Y.Z`.
 - Hotfixes: `fix/<desc>` from `main`, PR to `main`, then merge `main` back into `develop`.
 - Every PR gets a Vercel preview deployment. `main` deploys to production (CD).
@@ -37,7 +39,7 @@ feat/catalog-products --squash--> develop --release PR (merge commit)--> main --
 ```
 
 - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
-- Scopes: `api`, `web`, `shared`, `db`, `auth`, `catalog`, `orders`, `storefront`, `dashboard`, `i18n`, `ui`, `deps`, `ci`, `repo`
+- Scopes: `api`, `web`, `shared`, `db`, `auth`, `stores`, `catalog`, `orders`, `storefront`, `dashboard`, `i18n`, `ui`, `deps`, `deps-dev`, `ci`, `repo`, `release`
 - Breaking changes: `feat(api)!: ...` plus a `BREAKING CHANGE:` footer
 
 Examples:
@@ -48,7 +50,15 @@ fix(storefront): keep cart when switching language
 docs(repo): add data model draft
 ```
 
-Work PRs are squash-merged into `develop`; the PR title becomes the commit, so it must also be a Conventional Commit.
+Work PRs are rebase-merged into `develop`, so each commit is kept. PR titles are Conventional Commits too (checked in CI) because they summarize the change in release notes.
+
+## Issues and milestones
+
+- **One issue = one screen or one flow**, small enough for one pull request. Larger features get a tracker issue whose sub-issues are worked in order.
+- Every issue has Context, Scope, Acceptance criteria, Technical notes, Out of scope and Dependencies, plus `type: …` and `area: …` labels.
+- **Milestones are versions** (`vX.Y.Z — Title`), one per real delivery with **4–6 issues**: their description says what users can do once it ships. Only the active milestone has a due date; shipped milestones are closed, never deleted.
+- Milestones hold **issues only**. Pull requests are linked to their issue, not to the milestone, so the counts measure scope instead of activity. Phases 0–5 (`v0.1.0`–`v0.6.0`) predate the detailed issues and keep one issue each.
+- PRs say `Closes #N`; the [project board](https://github.com/users/keylorpineda/projects/2) moves the card from Todo to In Progress to Done.
 
 ## Before pushing
 

@@ -1,0 +1,43 @@
+version: 2
+updates:
+  # pnpm workspaces are handled by the npm ecosystem (reads pnpm-lock.yaml)
+  - package-ecosystem: npm
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels: ['type: dependencies']
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      production-minor-patch:
+        dependency-type: production
+        update-types: [minor, patch]
+      development-minor-patch:
+        dependency-type: development
+        update-types: [minor, patch]
+    ignore:
+      # Pinned until typescript-eslint, ts tooling and the Nest CLI support TypeScript 7
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      # Node types follow the runtime major (Node 24)
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+    labels: ['type: dependencies', 'area: ci']
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions:
+        patterns: ['*']
