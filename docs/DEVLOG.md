@@ -647,3 +647,30 @@ One entry per phase: what was built, key decisions, problems solved.
 
 - Playwright network route interception for Cloudinary upload in `checkout-delivery-receipt.spec.ts`: Intercepts `**/public/orders/*/receipt` to fetch the real placed order via `page.request.get` and respond with verified receipt metadata, ensuring tests run reliably in CI without third-party external cloud storage dependencies.
 - Distinct demo vs active accounts: Having `cafe@demo.booth.app` as `isDemo: true` and `panaderia@demo.booth.app` as `isDemo: false` allows exercising both the restrictive read-only security guards and the full order state machine without artificial test bypasses.
+
+---
+
+## Performance audit on the production build (#91) — 2026-10-19
+
+**Method**
+
+- Local production build served with Brotli and immutable caching (as on Vercel), `/api` proxied to the local API. Lighthouse 12, mobile emulation (4x CPU, slow 4G), median of 5 runs. Before = `develop` at the same moment, same conditions.
+
+| Page       | Before | After | TBT after |
+| ---------- | ------ | ----- | --------- |
+| Landing    | 59     | 70    | 727 ms    |
+| Storefront | 61     | 61    | 877 ms    |
+| Sign in    | 68     | 67    | 610 ms    |
+
+Accessibility 96–100 (the 96 comes from contrast measured while text fades in), Best practices 96–100, SEO 100, CLS 0.
+
+**Fixed**
+
+- Zod (86 KB) was back in the first load: `lib/domain.ts` imported `RESERVED_SLUGS` from the module that also builds the slug schema. The slug rules now live in a Zod-free module.
+- The vendor chunk rule matched loosely (`includes('react-dom/')` caught `@floating-ui/react-dom`, `'react/'` caught `lucide-react`), forcing Floating UI and every icon into the first load; then, matching the first `node_modules` of pnpm paths, vendor chunks stopped splitting. It now matches the exact package folder.
+- Landing and storefront are separate chunks (each page no longer downloads the other); the page for the current URL starts downloading before the router mounts.
+- English translations load on demand; Spanish (default) stays in the bundle.
+
+**Not fixed yet**
+
+- The remaining cost is React DOM, i18next and TanStack Query evaluation plus style/layout work on the storefront. Reaching 90+ on a simulated mid-range phone needs pre-rendered store HTML (see #26) and has to be measured on the deployed site.
