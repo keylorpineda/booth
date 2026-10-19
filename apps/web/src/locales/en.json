@@ -170,7 +170,10 @@
     "errorTitle": "Something went wrong",
     "waking": "Waking up the store. The first load can take up to a minute.",
     "crashDescription": "We could not show this page. Please try again.",
-    "reference": "Reference: {{id}}"
+    "reference": "Reference: {{id}}",
+    "updateTitle": "A new version is available",
+    "updateDescription": "Refresh the page to continue.",
+    "update": "Refresh"
   },
   "notFound": {
     "title": "Page not found",

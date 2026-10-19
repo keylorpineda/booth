@@ -37,4 +37,11 @@ describe('RouteError', () => {
     renderThrowing(new ApiError(500, 'INTERNAL_ERROR', 'x', undefined, 'req-123'));
     expect(screen.getByText('Referencia: req-123')).toBeInTheDocument();
   });
+
+  it('offers the new version when a page chunk is gone after a deploy', () => {
+    sessionStorage.setItem('booth.staleReloadAt', String(Date.now()));
+    renderThrowing(new TypeError('Failed to fetch dynamically imported module: /assets/x.js'));
+    expect(screen.getByRole('alert')).toHaveTextContent('Hay una versión nueva');
+    expect(screen.getByRole('button', { name: /Actualizar/ })).toBeInTheDocument();
+  });
 });
