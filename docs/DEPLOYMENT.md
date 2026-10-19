@@ -53,7 +53,7 @@ This guide covers deploying Booth on the free tiers of **Neon** (PostgreSQL), **
 | `TRUST_PROXY`             | Proxy hop count for rate limiting    | `2` (Vercel edge + Render reverse proxy)                                                      |
 | `CORS_ORIGINS`            | Permitted browser origins            | `https://your-booth.vercel.app`                                                               |
 | `WEB_PUBLIC_URL`          | Public web domain for WhatsApp links | `https://your-booth.vercel.app`                                                               |
-| `DATABASE_URL`            | Neon pooled connection string        | `postgresql://user:pass@ep-xyz-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require`         |
+| `DATABASE_URL`            | Neon direct connection string        | `postgresql://user:pass@ep-xyz.us-east-2.aws.neon.tech/neondb?sslmode=require`                |
 | `JWT_ACCESS_SECRET`       | 32+ character random secret          | Generate via `node -e "console.log(require('crypto').randomBytes(48).toString('base64url'))"` |
 | `JWT_ACCESS_TTL_MINUTES`  | Access token lifespan                | `15`                                                                                          |
 | `REFRESH_TOKEN_TTL_DAYS`  | Refresh token lifespan               | `30`                                                                                          |
@@ -62,6 +62,7 @@ This guide covers deploying Booth on the free tiers of **Neon** (PostgreSQL), **
 | `CLOUDINARY_API_KEY`      | Cloudinary API Key                   | Copied from Cloudinary console                                                                |
 | `CLOUDINARY_API_SECRET`   | Cloudinary API Secret                | Copied from Cloudinary console                                                                |
 | `RECEIPT_URL_TTL_SECONDS` | Signed receipt URL lifetime          | `300`                                                                                         |
+| `GEMINI_API_KEY`          | Optional: AI receipt verification    | From Google AI Studio; without it receipts are reviewed manually                              |
 
 ### Vercel (`apps/web`)
 
@@ -88,9 +89,9 @@ Configured in repository **Settings → Secrets and variables → Actions**:
 
 1. Sign up at [neon.tech](https://neon.tech) and create a project in a region close to Render (e.g., `US East (Ohio)` or `US East (N. Virginia)`).
 2. On the Neon dashboard, click **Connect**.
-3. Choose **Connection pooling** (port `6543`) and copy the connection string:
+3. Turn **Connection pooling off** and copy the direct connection string (`prisma migrate deploy` takes an advisory lock, which the pooler does not support):
    ```
-   postgresql://[user]:[password]@[endpoint]-pooler.[region].aws.neon.tech/neondb?sslmode=require
+   postgresql://[user]:[password]@[endpoint].[region].aws.neon.tech/neondb?sslmode=require
    ```
 4. Keep this connection string for the Render setup.
 
@@ -127,10 +128,10 @@ Configured in repository **Settings → Secrets and variables → Actions**:
 
 ### Step 4: Seed Demo Stores (Optional but Recommended)
 
-Once the API service is live, open the **Shell** tab in the Render dashboard and run:
+Free Render instances have no Shell, so run the seed once from your machine against Neon (the value stays in your terminal, never in a file):
 
 ```bash
-pnpm db:seed
+DATABASE_URL="<neon connection string>" pnpm --filter @booth/api db:seed
 ```
 
 This seeds the idempotent sample stores (`panaderia-demo` and `cafe-demo`) with categories, products, delivery zones, business hours, and sample orders.
