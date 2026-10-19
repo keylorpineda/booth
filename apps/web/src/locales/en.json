@@ -13,29 +13,33 @@
   },
   "home": {
     "tagline": "Online catalog with WhatsApp ordering",
-    "title": "Your online catalog, your orders <accent>on WhatsApp</accent>",
-    "subtitle": "Customers build their order in your catalog and it reaches your WhatsApp complete and tidy, with the total computed and the payment ready to confirm.",
-    "demoBakery": "See the demo bakery",
-    "step1": "Customers pick products from your catalog on their phone.",
-    "step2": "The full order, with total and code, straight to your chat.",
-    "step3": "Transfer or cash, with receipts and order tracking.",
-    "badge": "No commissions, no monthly fees",
-    "ctaCreate": "Create my store for free",
-    "noFees": "Ready in 2 minutes · No card needed",
-    "howTitle": "As simple as this",
-    "step1Title": "They build the order",
-    "step2Title": "It lands on WhatsApp",
-    "step3Title": "Get paid and deliver",
-    "footer": "Made for small businesses in Latin America and beyond.",
-    "preview": {
+    "title": "Your online store, your orders on WhatsApp.",
+    "subtitle": "No commissions. Ready in two minutes.",
+    "ctaCreate": "Create my store",
+    "demoBakery": "See a demo store",
+    "flow": {
+      "label": "Animation: a customer builds an order, it arrives on WhatsApp, the receipt is checked and the order is ready.",
+      "steps": {
+        "catalog": "Customers pick from your catalog",
+        "whatsapp": "The order arrives on WhatsApp",
+        "receipt": "Booth checks the receipt",
+        "ready": "You tell them when it is ready"
+      },
       "store": "Corner Bakery",
-      "online": "online",
+      "product1": "Sourdough loaf",
+      "product2": "Carrot cake",
+      "product3": "Croissant",
       "order": "Order",
-      "item1": "Sourdough loaf",
-      "item2": "Carrot cake",
-      "item3": "Croissant",
       "total": "Total",
-      "reply": "Got it! Ready at 11:00"
+      "reply": "Got it! We will let you know when it is ready.",
+      "transfer": "Bank transfer",
+      "matched": "Amount and recipient match",
+      "status": {
+        "received": "Received",
+        "confirmed": "Confirmed",
+        "ready": "Ready for pickup"
+      },
+      "pickup": "Pick it up at the store at 11:00"
     }
   },
   "storefront": {

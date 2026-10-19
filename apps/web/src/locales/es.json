@@ -13,29 +13,33 @@
   },
   "home": {
     "tagline": "Catálogo y pedidos por WhatsApp",
-    "title": "Tu catálogo en línea, tus pedidos <accent>por WhatsApp</accent>",
-    "subtitle": "Tus clientes arman el pedido en tu catálogo y te llega completo y ordenado a WhatsApp, con el total calculado y el pago listo para confirmar.",
-    "demoBakery": "Ver panadería demo",
-    "step1": "Tus clientes eligen productos en tu catálogo, desde el celular.",
-    "step2": "El pedido completo, con total y código, directo a tu chat.",
-    "step3": "Transferencia o efectivo, con comprobante y seguimiento del pedido.",
-    "badge": "Sin comisiones ni mensualidades",
-    "ctaCreate": "Crear mi tienda gratis",
-    "noFees": "Listo en 2 minutos · Sin tarjeta",
-    "howTitle": "Así de simple",
-    "step1Title": "Arman su pedido",
-    "step2Title": "Te llega a WhatsApp",
-    "step3Title": "Cobras y entregas",
-    "footer": "Hecho para pequeños negocios de Latinoamérica y el mundo.",
-    "preview": {
+    "title": "Tu tienda en línea, tus pedidos por WhatsApp.",
+    "subtitle": "Sin comisiones. Lista en dos minutos.",
+    "ctaCreate": "Crear mi tienda",
+    "demoBakery": "Ver una tienda demo",
+    "flow": {
+      "label": "Animación: un cliente arma su pedido, llega por WhatsApp, se revisa el comprobante y el pedido queda listo.",
+      "steps": {
+        "catalog": "El cliente elige en tu catálogo",
+        "whatsapp": "El pedido te llega por WhatsApp",
+        "receipt": "Booth revisa el comprobante",
+        "ready": "Avisas cuando está listo"
+      },
       "store": "Panadería La Esquina",
-      "online": "en línea",
+      "product1": "Pan de masa madre",
+      "product2": "Queque de zanahoria",
+      "product3": "Croissant",
       "order": "Pedido",
-      "item1": "Pan de masa madre",
-      "item2": "Queque de zanahoria",
-      "item3": "Croissant",
       "total": "Total",
-      "reply": "¡Recibido! Listo a las 11:00"
+      "reply": "¡Recibido! Te avisamos cuando esté listo.",
+      "transfer": "Transferencia SINPE",
+      "matched": "Monto y destinatario correctos",
+      "status": {
+        "received": "Recibido",
+        "confirmed": "Confirmado",
+        "ready": "Listo para retirar"
+      },
+      "pickup": "Retira en la tienda a las 11:00"
     }
   },
   "storefront": {
