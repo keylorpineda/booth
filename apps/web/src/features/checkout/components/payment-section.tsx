@@ -6,6 +6,7 @@ import { Field } from '../../../components/ui/field';
 import { OptionCards } from '../../../components/ui/option-cards';
 import { useStoreContext } from '../../storefront/store-context';
 import { CASH, type CheckoutForm } from '../checkout-form';
+import { paymentChoices } from '../payment-choices';
 import { useFieldError } from '../use-field-error';
 import { CheckoutSection } from './checkout-section';
 
@@ -16,7 +17,7 @@ export function PaymentSection({ form }: { form: UseFormReturn<CheckoutForm> }) 
   const error = useFieldError(form);
 
   const options = [
-    ...store.payment.transfer.map((method) => ({
+    ...paymentChoices(store.payment.transfer).map((method) => ({
       value: method.id,
       title: method.label,
       description: t('checkout.transferHint'),
