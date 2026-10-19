@@ -25,7 +25,7 @@ export function AccountMenu() {
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
         aria-label={t('dashboard.account')}
-        className="grid size-10 place-items-center rounded-full bg-brand text-sm font-bold text-brand-foreground shadow-glow"
+        className="grid size-10 place-items-center rounded-full bg-brand text-sm font-bold text-brand-foreground"
       >
         {initials}
       </DropdownMenu.Trigger>
