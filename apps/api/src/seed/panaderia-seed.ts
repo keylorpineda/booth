@@ -12,8 +12,8 @@ export const PANADERIA_SEED: DemoStoreSeed = {
     description:
       'Pan de masa madre horneado cada mañana en San Pedro, repostería artesanal y café chorreado de Tarrazú.',
     whatsappPhone: '+50688881111',
-    // Calm warm neutral: readable on white and on the dark theme.
-    brandColor: '#57534E',
+    // Booth indigo: matches the app and keeps white text at 6:1 contrast.
+    brandColor: '#4F46E5',
     country: 'CR',
     locale: 'es',
     acceptOrdersWhenClosed: true,
