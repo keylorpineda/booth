@@ -61,7 +61,7 @@ export function StoreImageCard({ store, kind }: { store: Store; kind: StoreImage
             <span aria-hidden="true">{initial}</span>
           </div>
         ) : (
-          <div className="size-full bg-[radial-gradient(120%_120%_at_0%_0%,var(--brand-soft),transparent_60%),linear-gradient(135deg,var(--brand),var(--brand-strong))]" />
+          <div className="size-full bg-brand" />
         )}
       </div>
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">

@@ -23,7 +23,7 @@ export function StoreHeader() {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           />
         ) : (
-          <div className="size-full bg-[radial-gradient(120%_120%_at_0%_0%,var(--brand-soft),transparent_60%),linear-gradient(135deg,var(--brand),var(--brand-strong))]" />
+          <div className="size-full bg-brand" />
         )}
         <div className="absolute top-4 right-4">
           <HeaderControls />
