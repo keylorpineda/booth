@@ -142,9 +142,10 @@ This seeds the idempotent sample stores (`panaderia-demo` and `cafe-demo`) with 
 2. Configure the project:
    - **Framework Preset**: `Vite`
    - **Root Directory**: `apps/web`
-   - **Build Command**: `pnpm --filter @booth/web build`
+   - **Build Command**: `pnpm --filter @booth/web... build` (builds `@booth/shared` first; also set in `vercel.json`)
    - **Output Directory**: `dist`
-   - **Install Command**: `pnpm install`
+   - **Install Command**: `pnpm install --frozen-lockfile`
+   - **Node.js Version** (Settings → Build and Deployment): `24.x`
 3. In `apps/web/vercel.json`, ensure the `/api/*` rewrite destination matches your Render URL:
    ```json
    {
