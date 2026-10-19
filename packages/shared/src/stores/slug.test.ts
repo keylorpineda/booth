@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { slugify, slugSchema } from './slug';
+import { slugSchema } from './slug';
+import { slugify } from './slug-rules';
 
 describe('slugSchema', () => {
   it.each(['panaderia-la-esquina', 'cafe24', 'abc'])('accepts %s', (slug) => {
