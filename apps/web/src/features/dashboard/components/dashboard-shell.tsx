@@ -1,6 +1,7 @@
 import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, Outlet } from 'react-router';
+import { toast } from 'sonner';
 
 import { AccountMenu } from './account-menu';
 import { BottomNav } from './bottom-nav';
@@ -9,11 +10,16 @@ import { Sidebar } from './sidebar';
 import { Logo } from '../../../components/brand/logo';
 import { buttonVariants } from '../../../components/ui/button';
 import { useSessionStore } from '../../auth/session-store';
+import { AlertsToggle } from '../../notifications/components/alerts-toggle';
+import { useAlertsSetting } from '../../notifications/use-alerts-setting';
+import { useOrderAlerts } from '../../notifications/use-order-alerts';
 
 /** Frame of every dashboard screen: sidebar from md up, bottom navigation on phones. */
 export function DashboardShell() {
   const { t } = useTranslation();
   const store = useSessionStore((state) => state.session?.store);
+  const [alerts, toggleAlerts] = useAlertsSetting();
+  useOrderAlerts(alerts);
 
   return (
     <div className="flex min-h-dvh bg-surface-sunken/50">
@@ -37,6 +43,13 @@ export function DashboardShell() {
                 <span className="hidden sm:inline">{t('dashboard.viewStore')}</span>
               </a>
             ) : null}
+            <AlertsToggle
+              setting={alerts}
+              onToggle={() => {
+                if (alerts === 'blocked') toast(t('alerts.blockedHelp'));
+                else void toggleAlerts();
+              }}
+            />
             <AccountMenu />
           </div>
           <DemoBanner />
