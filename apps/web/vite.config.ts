@@ -1,13 +1,31 @@
 /// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
+
+/**
+ * Absolute site URL for the social tags in index.html. A missing or placeholder VITE_PUBLIC_URL falls
+ * back to the production domain Vercel exposes at build time, so previews never ship broken links.
+ */
+function publicUrl(value: string | undefined): string {
+  if (value && /^https?:\/\/[^<>\s]+$/.test(value)) return value.replace(/\/$/, '');
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  return vercel ? `https://${vercel}` : 'http://localhost:5173';
+}
+
+const publicUrlPlugin = (url: string): Plugin => ({
+  name: 'booth-public-url',
+  transformIndexHtml: {
+    order: 'pre',
+    handler: (html) => html.replaceAll('%VITE_PUBLIC_URL%', url),
+  },
+});
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), publicUrlPlugin(publicUrl(env.VITE_PUBLIC_URL))],
     server: {
       port: 5173,
       // Mirrors the Vercel rewrite in production: /api/* goes to the API on the same origin.
