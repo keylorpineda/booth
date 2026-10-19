@@ -96,10 +96,10 @@ describe('ReceiptVerificationCard', () => {
     const actions = createMockActions();
     render(<ReceiptVerificationCard order={baseOrder} formatMoney={money} actions={actions} />);
 
-    expect(screen.getAllByText('Verificado por IA')).toHaveLength(2);
+    expect(screen.getAllByText('Parece correcto')).toHaveLength(2);
     expect(
       screen.getByText(
-        'La IA confirmó que el monto, destino y número de comprobante coinciden con el pedido.',
+        'El monto, la cuenta y el número coinciden con el pedido. Confirma el pago cuando lo veas en tu banco.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('REF-998877')).toBeInTheDocument();
