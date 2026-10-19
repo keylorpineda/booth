@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b0b17" media="(prefers-color-scheme: dark)" />
@@ -10,7 +12,32 @@
       name="description"
       content="Booth: catálogo en línea y pedidos por WhatsApp para pequeños negocios."
     />
-    <title>Booth</title>
+    <title>Booth · Catálogo en línea y pedidos por WhatsApp</title>
+    <link rel="canonical" href="%VITE_PUBLIC_URL%/" />
+    <!-- Social previews (WhatsApp, Facebook, X, LinkedIn). Store pages get their own with #107. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Booth" />
+    <meta property="og:locale" content="es_CR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:url" content="%VITE_PUBLIC_URL%/" />
+    <meta property="og:title" content="Booth · Catálogo en línea y pedidos por WhatsApp" />
+    <meta
+      property="og:description"
+      content="Crea el catálogo de tu negocio y recibe pedidos por WhatsApp, con seguimiento y comprobantes de pago."
+    />
+    <meta property="og:image" content="%VITE_PUBLIC_URL%/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Booth: tu catálogo en línea, pedidos por WhatsApp." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Booth · Catálogo en línea y pedidos por WhatsApp" />
+    <meta
+      name="twitter:description"
+      content="Crea el catálogo de tu negocio y recibe pedidos por WhatsApp, con seguimiento y comprobantes de pago."
+    />
+    <meta name="twitter:image" content="%VITE_PUBLIC_URL%/og-image.png" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="format-detection" content="telephone=no" />
     <script>
       // Applies the saved light/dark choice before first paint (no flash). See lib/color-scheme.ts.
       try {
@@ -81,8 +108,36 @@
         };
       })();
     </script>
+    <noscript>
+      <style>
+        #root {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
+    <noscript>
+      <!-- i18next needs JavaScript, so this one message is bilingual. -->
+      <div
+        style="
+          display: grid;
+          min-height: 100dvh;
+          place-items: center;
+          padding: 24px;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+        "
+      >
+        <div style="max-width: 22rem">
+          <p style="font-size: 1.5rem; font-weight: 800; margin: 0">Booth</p>
+          <p style="margin: 12px 0 0">Activa JavaScript en tu navegador para ver esta página.</p>
+          <p lang="en" style="margin: 8px 0 0; opacity: 0.7">
+            Turn on JavaScript in your browser to view this page.
+          </p>
+        </div>
+      </div>
+    </noscript>
     <div id="root">
       <!-- Static placeholder painted before the app loads; React replaces it on mount. -->
       <div class="min-h-dvh">

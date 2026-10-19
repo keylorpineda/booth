@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router';
 
 import { AuthLayout } from '../features/auth/components/auth-layout';
 import { LoginForm } from '../features/auth/components/login-form';
+import { SessionExpiredNotice } from '../features/auth/components/session-expired-notice';
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export function LoginPage() {
       }
     >
       <title>{`${t('auth.signIn')} · Booth`}</title>
+      <SessionExpiredNotice />
       <LoginForm />
     </AuthLayout>
   );

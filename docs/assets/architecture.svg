@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="100%" height="auto">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="archBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080C14"/>
+      <stop offset="50%" stop-color="#0E1726"/>
+      <stop offset="100%" stop-color="#080C14"/>
+    </linearGradient>
+
+    <!-- Node Gradient 1: Client -->
+    <linearGradient id="clientNodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+
+    <!-- Node Gradient 2: API -->
+    <linearGradient id="apiNodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#281B4E"/>
+      <stop offset="100%" stop-color="#130E29"/>
+    </linearGradient>
+
+    <!-- Node Gradient 3: AI Engine -->
+    <linearGradient id="aiNodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4C1D95"/>
+      <stop offset="100%" stop-color="#2E1065"/>
+    </linearGradient>
+
+    <!-- Node Gradient 4: DB -->
+    <linearGradient id="dbNodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F324D"/>
+      <stop offset="100%" stop-color="#081A29"/>
+    </linearGradient>
+
+    <!-- Animated Data Stream -->
+    <linearGradient id="wireGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#C084FC"/>
+    </linearGradient>
+
+    <filter id="boxShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <style>
+      @keyframes flowStroke {
+        from { stroke-dashoffset: 40; }
+        to { stroke-dashoffset: 0; }
+      }
+      .circuit-line {
+        stroke-dasharray: 6 6;
+        animation: flowStroke 1.5s linear infinite;
+      }
+      .node-header {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+      }
+      .node-title {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        fill: #FFFFFF;
+      }
+      .node-body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 11.5px;
+        line-height: 18px;
+        fill: #94A3B8;
+      }
+      .badge-text {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 10px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+
+  <!-- Container -->
+  <rect width="1200" height="480" rx="16" fill="url(#archBg)" stroke="#1E293B" stroke-width="1.5"/>
+
+  <!-- Top Title -->
+  <g transform="translate(60, 42)">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13px" font-weight="700" letter-spacing="1px" fill="#818CF8" text-transform="uppercase">
+      BOOTH MULTI-TENANT SYSTEM ARCHITECTURE
+    </text>
+  </g>
+
+  <!-- Circuit Connections -->
+  <g stroke="#334155" stroke-width="2.5" fill="none">
+    <!-- Clients to Gateway -->
+    <path d="M 280 140 L 340 140"/>
+    <path d="M 280 340 L 340 340"/>
+    
+    <!-- Gateway to Shared & API -->
+    <path d="M 520 240 L 590 240"/>
+    <path d="M 520 140 L 590 140"/>
+    
+    <!-- API to Cloudinary / Gemini -->
+    <path d="M 830 180 L 910 140"/>
+    <path d="M 830 260 L 910 260"/>
+    
+    <!-- API to Postgres -->
+    <path d="M 830 340 L 910 380"/>
+  </g>
+
+  <!-- Animated Stream Lines -->
+  <g stroke="url(#wireGrad)" stroke-width="2.5" fill="none" class="circuit-line">
+    <path d="M 280 140 L 340 140"/>
+    <path d="M 280 340 L 340 340"/>
+    <path d="M 520 240 L 590 240"/>
+    <path d="M 520 140 L 590 140"/>
+    <path d="M 830 180 L 910 140"/>
+    <path d="M 830 260 L 910 260"/>
+    <path d="M 830 340 L 910 380"/>
+  </g>
+
+  <!-- ==================== COLUMN 1: CLIENTS ==================== -->
+  <!-- Box 1A: Customer Storefront -->
+  <g transform="translate(60, 75)">
+    <rect width="220" height="150" rx="10" fill="url(#clientNodeGrad)" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" filter="url(#boxShadow)"/>
+    <rect x="12" y="12" width="70" height="18" rx="9" fill="#0369A1" fill-opacity="0.4"/>
+    <text x="47" y="24" text-anchor="middle" fill="#38BDF8" class="badge-text">CLIENT SPA</text>
+    <text x="12" y="52" class="node-title">Public Storefront</text>
+    <g transform="translate(12, 75)" class="node-body">
+      <text y="0">• Mobile-first catalog &amp; cart</text>
+      <text y="18">• Checkout without account</text>
+      <text y="36">• 1-click WhatsApp order</text>
+      <text y="54">• Live timeline tracking</text>
+    </g>
+  </g>
+
+  <!-- Box 1B: Owner Dashboard -->
+  <g transform="translate(60, 265)">
+    <rect width="220" height="150" rx="10" fill="url(#clientNodeGrad)" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" filter="url(#boxShadow)"/>
+    <rect x="12" y="12" width="85" height="18" rx="9" fill="#4338CA" fill-opacity="0.4"/>
+    <text x="54" y="24" text-anchor="middle" fill="#818CF8" class="badge-text">MANAGEMENT</text>
+    <text x="12" y="52" class="node-title">Owner &amp; Staff App</text>
+    <g transform="translate(12, 75)" class="node-body">
+      <text y="0">• Order board &amp; real-time</text>
+      <text y="18">• Staff roles (Cashier/Cook)</text>
+      <text y="36">• Product &amp; stock editor</text>
+      <text y="54">• Settings &amp; payment presets</text>
+    </g>
+  </g>
+
+  <!-- ==================== COLUMN 2: INGRESS GATEWAY ==================== -->
+  <g transform="translate(340, 100)">
+    <rect width="180" height="280" rx="10" fill="url(#clientNodeGrad)" stroke="#38BDF8" stroke-width="1.2" filter="url(#boxShadow)"/>
+    <rect x="12" y="12" width="90" height="18" rx="9" fill="#0C4A6E" fill-opacity="0.6"/>
+    <text x="57" y="24" text-anchor="middle" fill="#7DD3FC" class="badge-text">EDGE GATEWAY</text>
+    <text x="12" y="52" class="node-title">Tenant Routing</text>
+    <g transform="translate(12, 80)" class="node-body">
+      <text y="0" fill="#38BDF8" font-weight="700">Subdomains</text>
+      <text y="18">• :slug.booth.app</text>
+      <text y="42" fill="#38BDF8" font-weight="700">Custom Domains</text>
+      <text y="60">• CNAME tenant resolver</text>
+      <text y="84" fill="#38BDF8" font-weight="700">Host Extraction</text>
+      <text y="102">• In-memory caching</text>
+      <text y="120">• Subdomain validation</text>
+      <text y="144">• SSL Termination</text>
+      <text y="162">• Rate limiting &amp; CORS</text>
+    </g>
+  </g>
+
+  <!-- ==================== COLUMN 3: CORE BACKEND ==================== -->
+  <g transform="translate(590, 75)">
+    <rect width="240" height="340" rx="12" fill="url(#apiNodeGrad)" stroke="#6366F1" stroke-width="1.6" filter="url(#boxShadow)"/>
+    <rect x="14" y="14" width="95" height="20" rx="10" fill="#312E81" fill-opacity="0.8"/>
+    <text x="61" y="28" text-anchor="middle" fill="#A5B4FC" class="badge-text">APPS / API (NESTJS)</text>
+    <text x="14" y="56" class="node-title">Core Commerce API</text>
+    <g transform="translate(14, 85)" class="node-body">
+      <text y="0" fill="#A5B4FC" font-weight="700">Auth &amp; RBAC Module</text>
+      <text y="16">• JWT + rotating refresh cookie</text>
+      <text y="32">• Roles: Owner, Manager, Staff</text>
+      <text y="58" fill="#A5B4FC" font-weight="700">Catalog &amp; Variants Engine</text>
+      <text y="74">• Variant groups &amp; price deltas</text>
+      <text y="90">• Atomic stock reservations</text>
+      <text y="116" fill="#A5B4FC" font-weight="700">Orders &amp; Checkout State</text>
+      <text y="132">• State transitions &amp; event audit</text>
+      <text y="148">• WhatsApp payload generator</text>
+      <text y="174" fill="#A5B4FC" font-weight="700">Payment Presets</text>
+      <text y="190">• SINPE, SPEI, Pix, Zelle, Bizum</text>
+      <text y="206">• Cash &amp; custom instructions</text>
+    </g>
+  </g>
+
+  <!-- ==================== COLUMN 4: EXTERNAL & PERSISTENCE ==================== -->
+  <!-- Box 4A: Cloudinary CDN -->
+  <g transform="translate(910, 75)">
+    <rect width="230" height="100" rx="10" fill="url(#clientNodeGrad)" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" filter="url(#boxShadow)"/>
+    <rect x="12" y="10" width="85" height="18" rx="9" fill="#0284C7" fill-opacity="0.3"/>
+    <text x="54" y="22" text-anchor="middle" fill="#38BDF8" class="badge-text">MEDIA STORAGE</text>
+    <text x="12" y="46" class="node-title">Cloudinary CDN</text>
+    <g transform="translate(12, 66)" class="node-body">
+      <text y="0">• Public product photos (WebP)</text>
+      <text y="18">• Encrypted transfer receipts</text>
+    </g>
+  </g>
+
+  <!-- Box 4B: Gemini AI Engine -->
+  <g transform="translate(910, 195)">
+    <rect width="230" height="120" rx="10" fill="url(#aiNodeGrad)" stroke="#A855F7" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect x="12" y="10" width="95" height="18" rx="9" fill="#581C87" fill-opacity="0.6"/>
+    <text x="59" y="22" text-anchor="middle" fill="#D8B4FE" class="badge-text">VISION AI ENGINE</text>
+    <text x="12" y="46" class="node-title">Google Gemini Vision</text>
+    <g transform="translate(12, 66)" class="node-body">
+      <text y="0" fill="#E2E8F0">• Multimodal OCR structured schema</text>
+      <text y="18" fill="#E2E8F0">• Amount, phone &amp; reference check</text>
+      <text y="36" fill="#38BDF8" font-weight="600">• Auto-approval &amp; audit logging</text>
+    </g>
+  </g>
+
+  <!-- Box 4C: PostgreSQL Database -->
+  <g transform="translate(910, 335)">
+    <rect width="230" height="100" rx="10" fill="url(#dbNodeGrad)" stroke="#0284C7" stroke-width="1.2" filter="url(#boxShadow)"/>
+    <rect x="12" y="10" width="75" height="18" rx="9" fill="#0369A1" fill-opacity="0.4"/>
+    <text x="49" y="22" text-anchor="middle" fill="#38BDF8" class="badge-text">PERSISTENCE</text>
+    <text x="12" y="46" class="node-title">PostgreSQL + Prisma</text>
+    <g transform="translate(12, 66)" class="node-body">
+      <text y="0">• Tenant-isolated schema &amp; indexes</text>
+      <text y="18">• Audit event log &amp; transaction locks</text>
+    </g>
+  </g>
+</svg>

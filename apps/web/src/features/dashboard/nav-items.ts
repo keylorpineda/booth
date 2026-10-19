@@ -28,3 +28,11 @@ export function getNavItemsForRole(role?: StoreRole | null): readonly NavItem[] 
   const currentRole = role ?? 'OWNER';
   return NAV_ITEMS.filter((item) => !item.roles || item.roles.includes(currentRole));
 }
+
+/** Whether the role may open a dashboard path: the most specific section it belongs to decides. */
+export function canOpenPath(pathname: string, role?: StoreRole | null): boolean {
+  const section = NAV_ITEMS.filter(
+    (item) => !item.end && (pathname === item.to || pathname.startsWith(`${item.to}/`)),
+  ).sort((a, b) => b.to.length - a.to.length)[0];
+  return !section?.roles || section.roles.includes(role ?? 'OWNER');
+}

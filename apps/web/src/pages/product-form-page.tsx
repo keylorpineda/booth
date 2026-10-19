@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 
 import { ErrorState } from '../components/feedback/error-state';
+import { NotFoundState } from '../components/feedback/not-found-state';
 import { Button, buttonVariants } from '../components/ui/button';
 import { ConfirmDialog } from '../components/ui/confirm-dialog';
 import { Skeleton } from '../components/ui/skeleton';
@@ -21,6 +22,7 @@ import { ProductImages } from '../features/catalog-admin/products/product-images
 import { useOwnerStore } from '../features/dashboard/api';
 import { useOwnerLocale } from '../features/dashboard/use-owner-money';
 import { useErrorMessage } from '../hooks/use-error-message';
+import { ApiError } from '../lib/api-client';
 
 /** New product (`/new`) or edit an existing one (`/:id`). */
 export function ProductFormPage() {
@@ -37,6 +39,20 @@ export function ProductFormPage() {
   const editing = id !== undefined;
   const currency = store.data?.currency;
 
+  if (product.error instanceof ApiError && product.error.status === 404) {
+    return (
+      <NotFoundState
+        title={t('catalog.notFoundTitle')}
+        description={t('catalog.notFoundDescription')}
+        action={
+          <Link to="/dashboard/catalog" className={buttonVariants({ variant: 'outline' })}>
+            <ArrowLeft className="size-4" />
+            {t('catalog.backToCatalog')}
+          </Link>
+        }
+      />
+    );
+  }
   const error = store.error ?? product.error;
   if (error) return <ErrorState error={error} onRetry={() => void product.refetch()} />;
   if (!currency || (editing && !product.data)) {

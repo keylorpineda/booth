@@ -91,6 +91,10 @@ export const router = createBrowserRouter([
                   {
                     // Crashes inside a section keep the dashboard navigation around them.
                     errorElement: <RouteError />,
+                    lazy: async () => ({
+                      Component: (await import('../features/auth/components/require-role'))
+                        .RequireRole,
+                    }),
                     children: [
                       {
                         index: true,
