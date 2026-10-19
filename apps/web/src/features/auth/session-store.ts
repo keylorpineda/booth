@@ -9,9 +9,11 @@ interface SessionState {
   accessToken: string | null;
   session: Session | null;
   status: SessionStatus;
+  /** The last sign-out happened because the session could not be renewed (shown on sign in). */
+  expired: boolean;
   signIn: (auth: AuthResponse) => void;
   setSession: (session: Session) => void;
-  signOut: () => void;
+  signOut: (options?: { expired?: boolean }) => void;
 }
 
 /**
@@ -22,13 +24,19 @@ export const useSessionStore = create<SessionState>()((set) => ({
   accessToken: null,
   session: null,
   status: 'unknown',
+  expired: false,
   signIn: ({ accessToken, user, store, role }) => {
-    set({ accessToken, session: { user, store, role: role ?? 'OWNER' }, status: 'signedIn' });
+    set({
+      accessToken,
+      session: { user, store, role: role ?? 'OWNER' },
+      status: 'signedIn',
+      expired: false,
+    });
   },
   setSession: (session) => {
     set({ session });
   },
-  signOut: () => {
-    set({ accessToken: null, session: null, status: 'signedOut' });
+  signOut: ({ expired = false } = {}) => {
+    set({ accessToken: null, session: null, status: 'signedOut', expired });
   },
 }));

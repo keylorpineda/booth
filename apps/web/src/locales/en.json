@@ -175,7 +175,8 @@
     "reference": "Reference: {{id}}",
     "updateTitle": "A new version is available",
     "updateDescription": "Refresh the page to continue.",
-    "update": "Refresh"
+    "update": "Refresh",
+    "offline": "No internet connection"
   },
   "notFound": {
     "title": "Page not found",
@@ -222,7 +223,8 @@
     "registerSubtitle": "Free, in two minutes.",
     "noAccount": "No account yet? <link>Create one</link>",
     "haveAccount": "Already have an account? <link>Sign in</link>",
-    "restoring": "Restoring your session…"
+    "restoring": "Restoring your session…",
+    "sessionExpired": "Your session expired. Sign in again to continue."
   },
   "onboarding": {
     "heading": "Your store",
@@ -292,7 +294,10 @@
     "soon": {
       "title": "Coming soon",
       "text": "This section is being built and will show up here in the next version."
-    }
+    },
+    "noPermissionTitle": "You do not have access to this section",
+    "noPermissionDescription": "Ask the store owner to change your role.",
+    "backHome": "Go to the dashboard home"
   },
   "theme": {
     "label": "Theme",

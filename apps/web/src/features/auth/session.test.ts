@@ -54,7 +54,19 @@ describe('session', () => {
     );
 
     expect(await refreshSession()).toBe(false);
-    expect(useSessionStore.getState().status).toBe('signedOut');
+    expect(useSessionStore.getState()).toMatchObject({ status: 'signedOut', expired: false });
+  });
+
+  it('marks the session as expired when a signed-in owner cannot renew it', async () => {
+    useSessionStore.getState().signIn(authResponse('old-token'));
+    fetchMock.mockResolvedValue(
+      json(401, {
+        error: { code: 'INVALID_REFRESH_TOKEN', message: 'No session', requestId: 'r' },
+      }),
+    );
+
+    await refreshSession();
+    expect(useSessionStore.getState()).toMatchObject({ status: 'signedOut', expired: true });
   });
 
   it('retries an owner request once after refreshing an expired token', async () => {

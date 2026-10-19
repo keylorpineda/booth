@@ -2,6 +2,8 @@ import { AnimatePresence, m } from 'motion/react';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigation } from 'react-router';
 
+import { OfflineBanner } from '../components/feedback/offline-banner';
+
 /** Page fade between routes, scroll reset and a thin progress bar while a lazy page loads. */
 export function RootLayout() {
   const location = useLocation();
@@ -13,6 +15,7 @@ export function RootLayout() {
 
   return (
     <>
+      <OfflineBanner />
       <AnimatePresence>
         {navigation.state === 'loading' ? (
           <m.div
