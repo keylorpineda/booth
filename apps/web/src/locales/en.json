@@ -176,7 +176,9 @@
     "updateTitle": "A new version is available",
     "updateDescription": "Refresh the page to continue.",
     "update": "Refresh",
-    "offline": "No internet connection"
+    "offline": "No internet connection",
+    "code404": "Error 404",
+    "codeError": "Error"
   },
   "notFound": {
     "title": "Page not found",

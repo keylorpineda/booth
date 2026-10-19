@@ -45,7 +45,10 @@ export function ProductFormPage() {
         title={t('catalog.notFoundTitle')}
         description={t('catalog.notFoundDescription')}
         action={
-          <Link to="/dashboard/catalog" className={buttonVariants({ variant: 'outline' })}>
+          <Link
+            to="/dashboard/catalog"
+            className={buttonVariants({ variant: 'outline', size: 'lg' })}
+          >
             <ArrowLeft className="size-4" />
             {t('catalog.backToCatalog')}
           </Link>
