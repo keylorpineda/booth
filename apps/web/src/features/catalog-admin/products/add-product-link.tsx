@@ -11,10 +11,7 @@ export function AddProductLink() {
   if (!useCanWrite()) return null;
 
   return (
-    <Link
-      to="/dashboard/catalog/products/new"
-      className={buttonVariants({ className: 'shadow-glow' })}
-    >
+    <Link to="/dashboard/catalog/products/new" className={buttonVariants()}>
       <Plus className="size-4" />
       {t('catalog.products.add')}
     </Link>
