@@ -731,5 +731,22 @@
     "invalidTitle": "Invalid invitation",
     "invalidSubtitle": "We couldn't process this invitation link",
     "expiredOrInvalidMessage": "This invitation link has expired or has already been used. Ask the store owner for a new invitation."
+  },
+  "alerts": {
+    "newOrder": {
+      "title": "New order #{{code}}",
+      "body": "{{name}} · {{total}}"
+    },
+    "receipt": {
+      "title": "Receipt received #{{code}}",
+      "body": "{{name}} · {{total}}. Check it in your bank."
+    },
+    "open": "Open",
+    "toggle": {
+      "on": "Notifications on: tap to turn them off",
+      "off": "Turn on order and receipt notifications",
+      "blocked": "Notifications are blocked in this browser"
+    },
+    "blockedHelp": "The browser blocked notifications. Allow them in the site permissions (the lock next to the address)."
   }
 }

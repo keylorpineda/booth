@@ -731,5 +731,22 @@
     "invalidTitle": "Invitación no válida",
     "invalidSubtitle": "No pudimos procesar este enlace de invitación",
     "expiredOrInvalidMessage": "Este enlace de invitación ha expirado o ya ha sido utilizado. Solicita una nueva invitación al dueño de la tienda."
+  },
+  "alerts": {
+    "newOrder": {
+      "title": "Nuevo pedido #{{code}}",
+      "body": "{{name}} · {{total}}"
+    },
+    "receipt": {
+      "title": "Comprobante recibido #{{code}}",
+      "body": "{{name}} · {{total}}. Revísalo en tu banco."
+    },
+    "open": "Ver",
+    "toggle": {
+      "on": "Avisos activados: toca para apagarlos",
+      "off": "Activar avisos de pedidos y comprobantes",
+      "blocked": "Avisos bloqueados en este navegador"
+    },
+    "blockedHelp": "El navegador bloqueó los avisos. Actívalos en los permisos del sitio (el candado junto a la dirección)."
   }
 }
