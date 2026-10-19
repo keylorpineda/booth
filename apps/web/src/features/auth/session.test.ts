@@ -58,7 +58,7 @@ describe('session', () => {
   });
 
   it('marks the session as expired when a signed-in owner cannot renew it', async () => {
-    useSessionStore.getState().signIn(authResponse('old-token'));
+    useSessionStore.getState().signIn({ ...authResponse('old-token'), role: 'OWNER' });
     fetchMock.mockResolvedValue(
       json(401, {
         error: { code: 'INVALID_REFRESH_TOKEN', message: 'No session', requestId: 'r' },
