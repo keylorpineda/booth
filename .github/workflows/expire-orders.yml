@@ -20,7 +20,7 @@ jobs:
       - name: Call internal expire-orders endpoint
         env:
           JOB_SECRET: ${{ secrets.JOB_SECRET }}
-          API_URL: ${{ secrets.API_URL || 'https://booth-api.onrender.com' }}
+          API_URL: ${{ secrets.API_URL || 'https://booth-api-ol1v.onrender.com' }}
         run: |
           if [ -z "$JOB_SECRET" ]; then
             echo "JOB_SECRET secret is not configured yet. Skipping."
