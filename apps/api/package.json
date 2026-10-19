@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "prisma generate",
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
