@@ -81,8 +81,36 @@
         };
       })();
     </script>
+    <noscript>
+      <style>
+        #root {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
+    <noscript>
+      <!-- i18next needs JavaScript, so this one message is bilingual. -->
+      <div
+        style="
+          display: grid;
+          min-height: 100dvh;
+          place-items: center;
+          padding: 24px;
+          font-family: system-ui, sans-serif;
+          text-align: center;
+        "
+      >
+        <div style="max-width: 22rem">
+          <p style="font-size: 1.5rem; font-weight: 800; margin: 0">Booth</p>
+          <p style="margin: 12px 0 0">Activa JavaScript en tu navegador para ver esta página.</p>
+          <p lang="en" style="margin: 8px 0 0; opacity: 0.7">
+            Turn on JavaScript in your browser to view this page.
+          </p>
+        </div>
+      </div>
+    </noscript>
     <div id="root">
       <!-- Static placeholder painted before the app loads; React replaces it on mount. -->
       <div class="min-h-dvh">
