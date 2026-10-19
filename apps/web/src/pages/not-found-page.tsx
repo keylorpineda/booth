@@ -11,10 +11,11 @@ export function NotFoundPage() {
   return (
     <NotFoundState
       fullPage
+      code={t('feedback.code404')}
       title={t('notFound.title')}
       description={t('notFound.description')}
       action={
-        <Link to="/" className={buttonVariants()}>
+        <Link to="/" className={buttonVariants({ size: 'lg' })}>
           <House className="size-4" />
           {t('notFound.home')}
         </Link>
