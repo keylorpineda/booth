@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="1200" height="480" role="img" aria-label="Booth: your online catalog, orders through WhatsApp">
+<style>
+  text{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+  .scene{opacity:0;animation:12s linear infinite}
+  .s1{animation-name:s1}.s2{animation-name:s2}.s3{animation-name:s3}.s4{animation-name:s4}
+  @keyframes s1{0%{opacity:0}2%,23%{opacity:1}25%,100%{opacity:0}}@keyframes s2{0%,25%{opacity:0}27%,48%{opacity:1}50%,100%{opacity:0}}@keyframes s3{0%,50%{opacity:0}52%,73%{opacity:1}75%,100%{opacity:0}}@keyframes s4{0%,75%{opacity:0}77%,98%{opacity:1}100%{opacity:0}}
+  .pill rect{fill:#F6F6FA;stroke:#E6E6EF;animation:12s linear infinite}
+  .pill text{fill:#5B5B73;animation:12s linear infinite}
+  .p1 rect{animation-name:r1}.p2 rect{animation-name:r2}.p3 rect{animation-name:r3}.p4 rect{animation-name:r4}
+  .p1 text{animation-name:t1}.p2 text{animation-name:t2}.p3 text{animation-name:t3}.p4 text{animation-name:t4}
+  @keyframes r1{0%,24%{fill:#4F46E5;stroke:#4F46E5}25%,99%{fill:#F6F6FA;stroke:#E6E6EF}100%{fill:#4F46E5;stroke:#4F46E5}}@keyframes t1{0%,24%{fill:#FFFFFF}25%,99%{fill:#5B5B73}100%{fill:#FFFFFF}}@keyframes r2{0%,25%{fill:#F6F6FA;stroke:#E6E6EF}26%,49%{fill:#4F46E5;stroke:#4F46E5}50%,100%{fill:#F6F6FA;stroke:#E6E6EF}}@keyframes t2{0%,25%{fill:#5B5B73}26%,49%{fill:#FFFFFF}50%,100%{fill:#5B5B73}}@keyframes r3{0%,50%{fill:#F6F6FA;stroke:#E6E6EF}51%,74%{fill:#4F46E5;stroke:#4F46E5}75%,100%{fill:#F6F6FA;stroke:#E6E6EF}}@keyframes t3{0%,50%{fill:#5B5B73}51%,74%{fill:#FFFFFF}75%,100%{fill:#5B5B73}}@keyframes r4{0%,75%{fill:#F6F6FA;stroke:#E6E6EF}76%,99%{fill:#4F46E5;stroke:#4F46E5}100%,100%{fill:#F6F6FA;stroke:#E6E6EF}}@keyframes t4{0%,75%{fill:#5B5B73}76%,99%{fill:#FFFFFF}100%,100%{fill:#5B5B73}}
+  .tap{transform-box:fill-box;transform-origin:center;animation:tap 12s ease-out infinite}
+  @keyframes tap{0%,8%{transform:scale(1)}10%{transform:scale(.8)}13%,100%{transform:scale(1)}}
+  .cart{animation:cart 12s ease-out infinite}
+  @keyframes cart{0%,10%{transform:translateY(70px)}14%,100%{transform:translateY(0)}}
+  .bubble{transform-box:fill-box;transform-origin:right bottom;animation:bubble 12s ease-out infinite}
+  @keyframes bubble{0%,26%{transform:scale(.7);opacity:0}30%,100%{transform:scale(1);opacity:1}}
+  .ticks{animation:ticks 12s linear infinite}
+  @keyframes ticks{0%,35%{opacity:0}37%,100%{opacity:1}}
+  .check{stroke-dasharray:48;animation:check 12s ease-out infinite}
+  @keyframes check{0%,57%{stroke-dashoffset:48}62%,100%{stroke-dashoffset:0}}
+  .verdict{animation:verdict 12s linear infinite}
+  @keyframes verdict{0%,61%{opacity:0}64%,100%{opacity:1}}
+  .progress{transform-box:fill-box;transform-origin:top;animation:progress 12s ease-in-out infinite}
+  @keyframes progress{0%,79%{transform:scaleY(0)}90%,100%{transform:scaleY(1)}}
+  .d2{animation:d2 12s linear infinite}@keyframes d2{0%,83%{fill:#D3D3E0}84%,100%{fill:#4F46E5}}
+  .d3{animation:d3 12s linear infinite}@keyframes d3{0%,89%{fill:#D3D3E0}90%,100%{fill:#16865A}}
+  .ready{transform-box:fill-box;transform-origin:center;animation:ready 12s ease-out infinite}
+  @keyframes ready{0%,89%{transform:scale(.6);opacity:0}93%,100%{transform:scale(1);opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .s1{opacity:1}.p1 rect{fill:#4F46E5;stroke:#4F46E5}.p1 text{fill:#FFFFFF}
+  }
+</style>
+<defs><clipPath id="screen"><rect x="870" y="46" width="240" height="388" rx="28"/></clipPath></defs>
+<rect x=".5" y=".5" width="1199" height="479" rx="24" fill="#FFFFFF" stroke="#E6E6EF"/>
+
+<g transform="translate(72 64) scale(1.75)">
+  <rect width="32" height="32" rx="9" fill="#4F46E5"/>
+  <path d="M7 12.5 9.2 8h13.6L25 12.5c0 1.66-1.34 3-3 3s-3-1.34-3-3c0 1.66-1.34 3-3 3s-3-1.34-3-3c0 1.66-1.34 3-3 3s-3-1.34-3-3Z" fill="#fff"/>
+  <path d="M9 17.5V24h14v-6.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+<text x="142" y="111" font-size="44" font-weight="800" fill="#1B1B2E" letter-spacing="-1">Booth</text>
+<text x="72" y="206" font-size="46" font-weight="800" fill="#1B1B2E" letter-spacing="-1.2">Your online catalog.</text>
+<text x="72" y="262" font-size="46" font-weight="800" fill="#4F46E5" letter-spacing="-1.2">Orders through WhatsApp.</text>
+<text x="72" y="312" font-size="20" fill="#5B5B73">One link to sell, orders in WhatsApp, payments checked for you.</text>
+<g class="pill p1">
+        <rect x="72" y="352" width="118" height="40" rx="20"/>
+        <text x="131" y="377" text-anchor="middle" font-size="15" font-weight="700">1  Catalog</text>
+      </g><g class="pill p2">
+        <rect x="202" y="352" width="136" height="40" rx="20"/>
+        <text x="270" y="377" text-anchor="middle" font-size="15" font-weight="700">2  WhatsApp</text>
+      </g><g class="pill p3">
+        <rect x="350" y="352" width="120" height="40" rx="20"/>
+        <text x="410" y="377" text-anchor="middle" font-size="15" font-weight="700">3  Receipt</text>
+      </g><g class="pill p4">
+        <rect x="482" y="352" width="104" height="40" rx="20"/>
+        <text x="534" y="377" text-anchor="middle" font-size="15" font-weight="700">4  Ready</text>
+      </g>
+<text x="72" y="440" font-size="14" fill="#5B5B73">Open source · MIT · Built for small businesses in Latin America</text>
+
+<rect x="860" y="36" width="260" height="408" rx="38" fill="#1B1B2E"/>
+<rect x="870" y="46" width="240" height="388" rx="28" fill="#F6F6FA"/>
+<g clip-path="url(#screen)">
+  <g class="scene s1">
+    <rect x="870" y="46" width="240" height="64" fill="#4F46E5"/>
+    <text x="886" y="86" font-size="17" font-weight="800" fill="#fff">La Esquina</text>
+    
+    <rect x="882" y="126" width="104" height="128" rx="14" fill="#FFFFFF" stroke="#E6E6EF"/>
+    <rect x="890" y="134" width="88" height="60" rx="10" fill="#EEEDFD"/>
+    <rect x="890" y="204" width="62" height="8" rx="4" fill="#D3D3E0"/>
+    <rect x="890" y="222" width="38" height="8" rx="4" fill="#1B1B2E" opacity=".8"/>
+    <g class="tap"><circle cx="968" cy="232" r="12" fill="#4F46E5"/>
+    <path d="M968 226v12M962 232h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>
+    <rect x="994" y="126" width="104" height="128" rx="14" fill="#FFFFFF" stroke="#E6E6EF"/>
+    <rect x="1002" y="134" width="88" height="60" rx="10" fill="#EEEDFD"/>
+    <rect x="1002" y="204" width="62" height="8" rx="4" fill="#D3D3E0"/>
+    <rect x="1002" y="222" width="38" height="8" rx="4" fill="#1B1B2E" opacity=".8"/>
+    <g class=""><circle cx="1080" cy="232" r="12" fill="#4F46E5"/>
+    <path d="M1080 226v12M1074 232h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>
+    <rect x="882" y="266" width="104" height="128" rx="14" fill="#FFFFFF" stroke="#E6E6EF"/>
+    <rect x="890" y="274" width="88" height="60" rx="10" fill="#EEEDFD"/>
+    <rect x="890" y="344" width="62" height="8" rx="4" fill="#D3D3E0"/>
+    <rect x="890" y="362" width="38" height="8" rx="4" fill="#1B1B2E" opacity=".8"/>
+    <g class=""><circle cx="968" cy="372" r="12" fill="#4F46E5"/>
+    <path d="M968 366v12M962 372h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>
+    <rect x="994" y="266" width="104" height="128" rx="14" fill="#FFFFFF" stroke="#E6E6EF"/>
+    <rect x="1002" y="274" width="88" height="60" rx="10" fill="#EEEDFD"/>
+    <rect x="1002" y="344" width="62" height="8" rx="4" fill="#D3D3E0"/>
+    <rect x="1002" y="362" width="38" height="8" rx="4" fill="#1B1B2E" opacity=".8"/>
+    <g class=""><circle cx="1080" cy="372" r="12" fill="#4F46E5"/>
+    <path d="M1080 366v12M1074 372h12" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>
+    <g class="cart"><rect x="882" y="382" width="216" height="40" rx="20" fill="#1B1B2E"/>
+    <text x="990" y="407" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">View order · 1 item</text></g>
+  </g>
+  <g class="scene s2">
+    <rect x="870" y="46" width="240" height="60" fill="#0F766E"/>
+    <circle cx="900" cy="78" r="13" fill="#fff" opacity=".3"/>
+    <text x="922" y="83" font-size="15" font-weight="700" fill="#fff">La Esquina</text>
+    <g class="bubble">
+      <rect x="906" y="130" width="190" height="164" rx="14" fill="#DCF5E3"/>
+      <text x="920" y="158" font-size="13" font-weight="800" fill="#1B1B2E">New order #K7Q2MX</text>
+      <text x="920" y="186" font-size="13" fill="#1B1B2E">2× Croissant</text>
+      <text x="920" y="208" font-size="13" fill="#1B1B2E">1× Coffee</text>
+      <text x="920" y="230" font-size="13" fill="#1B1B2E">Pickup · 4:30 pm</text>
+      <text x="920" y="260" font-size="14" font-weight="800" fill="#1B1B2E">Total ₡7 500</text>
+      <text class="ticks" x="1082" y="284" text-anchor="end" font-size="12" font-weight="700" fill="#2563EB">✓✓</text>
+    </g>
+    <rect x="882" y="382" width="216" height="40" rx="20" fill="#FFFFFF" stroke="#E6E6EF"/>
+  </g>
+  <g class="scene s3">
+    <text x="886" y="88" font-size="16" font-weight="800" fill="#1B1B2E">Payment receipt</text>
+    <rect x="900" y="110" width="180" height="200" rx="14" fill="#FFFFFF" stroke="#E6E6EF"/>
+    <rect x="920" y="134" width="80" height="8" rx="4" fill="#D3D3E0"/>
+    <text x="990" y="196" text-anchor="middle" font-size="30" font-weight="800" fill="#1B1B2E">₡7 500</text>
+    <rect x="920" y="222" width="140" height="8" rx="4" fill="#E6E6EF"/>
+    <rect x="920" y="242" width="110" height="8" rx="4" fill="#E6E6EF"/>
+    <rect x="920" y="262" width="124" height="8" rx="4" fill="#E6E6EF"/>
+    <circle cx="990" cy="346" r="28" fill="#16865A"/>
+    <path class="check" d="M977 346l9 9 17-18" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="verdict" x="990" y="402" text-anchor="middle" font-size="15" font-weight="800" fill="#16865A">Looks right</text>
+  </g>
+  <g class="scene s4">
+    <text x="886" y="88" font-size="16" font-weight="800" fill="#1B1B2E">Order #K7Q2MX</text>
+    <rect x="904" y="146" width="4" height="140" rx="2" fill="#E6E6EF"/>
+    <rect class="progress" x="904" y="146" width="4" height="140" rx="2" fill="#4F46E5"/>
+    <circle cx="906" cy="146" r="11" fill="#4F46E5"/>
+    <circle class="d2" cx="906" cy="216" r="11"/>
+    <circle class="d3" cx="906" cy="286" r="11"/>
+    <text x="932" y="151" font-size="15" font-weight="700" fill="#1B1B2E">Received</text>
+    <text x="932" y="221" font-size="15" font-weight="700" fill="#1B1B2E">Preparing</text>
+    <text x="932" y="291" font-size="15" font-weight="700" fill="#1B1B2E">Ready</text>
+    <g class="ready"><rect x="910" y="346" width="160" height="40" rx="20" fill="#E3F6EE"/>
+    <text x="990" y="371" text-anchor="middle" font-size="14" font-weight="800" fill="#16865A">Ready for pickup</text></g>
+  </g>
+</g>
+</svg>

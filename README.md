@@ -1,234 +1,95 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-banner.svg">
-    <img src="docs/assets/hero-banner.svg" alt="Booth - Open Source Commerce Platform" width="100%">
-  </picture>
-</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.svg">
+  <img src="docs/assets/hero-light.svg" alt="Booth: your online catalog, orders through WhatsApp" width="100%">
+</picture>
 
 <p align="center">
-  <a href="https://github.com/keylorpineda/booth/actions/workflows/ci.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/keylorpineda/booth/ci.yml?branch=develop&style=flat-square&label=CI%20Pipeline&logo=githubactions&logoColor=white" alt="CI Status">
-  </a>
-  <a href="#test-suite">
-    <img src="https://img.shields.io/badge/Playwright-E2E%20Tested-2EAD33?style=flat-square&logo=playwright&logoColor=white" alt="Playwright Tested">
-  </a>
-  <a href="#architecture">
-    <img src="https://img.shields.io/badge/Architecture-Monorepo%20(NestJS%20%2B%20React)-4F46E5?style=flat-square&logo=turborepo&logoColor=white" alt="Architecture">
-  </a>
-  <a href="#ai-verification">
-    <img src="https://img.shields.io/badge/Gemini%20Vision-Multimodal%20OCR-8B5CF6?style=flat-square&logo=google&logoColor=white" alt="Gemini Vision">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License">
-  </a>
+  <a href="https://github.com/keylorpineda/booth/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/keylorpineda/booth/ci.yml?branch=develop&event=push&style=flat-square&label=CI" alt="CI"></a>
+  <img src="https://img.shields.io/badge/React-19-4F46E5?style=flat-square" alt="React 19">
+  <img src="https://img.shields.io/badge/NestJS-12-4F46E5?style=flat-square" alt="NestJS 12">
+  <img src="https://img.shields.io/badge/PostgreSQL-Prisma%207-4F46E5?style=flat-square" alt="PostgreSQL with Prisma 7">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-4F46E5?style=flat-square" alt="MIT license"></a>
 </p>
 
----
+Small businesses already sell through WhatsApp, but every order is a chat: prices typed by hand,
+totals added up on a calculator, transfer screenshots checked one by one. **Booth** gives each
+store one link with its catalog, turns the cart into a clean WhatsApp message, and keeps the order,
+the payment and its status in one place.
 
-## The Problem with Selling Online Today
+## How it works
 
-For artisan bakeries, specialty coffee roasters, neighborhood eateries, and independent creators, selling on modern digital channels is broken in two distinct ways:
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/flow-dark.svg">
+  <img src="docs/assets/flow-light.svg" alt="Catalog, WhatsApp, receipt, ready" width="100%">
+</picture>
 
-1. **Marketplace Platforms (Delivery Apps):** Take 15% to 30% of every sale in fees, withhold customer contact data, and force small businesses into margin-crushing competition.
-2. **Traditional E-Commerce (Shopify / WooCommerce):** Built for desktop shipping workflows, requires monthly subscriptions, asks customers to fill complex account registration forms, and fails to support the fast, conversational WhatsApp purchasing habits that dominate Latin America, Southern Europe, and emerging markets.
+1. **Catalog.** Shoppers open the store link: no app to install, no account to create.
+2. **WhatsApp.** The order is saved as pending with its stock reserved, then WhatsApp opens with
+   the full message and a private tracking link.
+3. **Receipt.** For bank transfers the shopper uploads the receipt. Gemini reads the amount and
+   the recipient and tells the owner whether it looks right; the owner confirms the payment.
+4. **Ready.** The owner moves the order along from the dashboard and the shopper follows it live.
 
-The result? Merchants resort to taking orders via unstructured WhatsApp text messages: _“What sizes do you have? How much is delivery? Send me the total.”_ The business owner spends hours each day answering the same questions, calculating subtotals by hand, manually checking bank apps to verify mobile transfer screenshots, and typing order statuses back to customers.
+## Screenshots
 
-**Booth is the alternative.** A self-hosted, commission-free commerce engine that turns chaotic WhatsApp sales into an automated, structured, and verified digital workflow.
+| Storefront                                                           | Checkout                                                                 |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| <img src="docs/screenshots/storefront-desktop.png" alt="Storefront"> | <img src="docs/screenshots/checkout.png" alt="Checkout">                 |
+| **Order tracking**                                                   | **Owner dashboard**                                                      |
+| <img src="docs/screenshots/order-tracking.png" alt="Order tracking"> | <img src="docs/screenshots/dashboard-orders.png" alt="Orders dashboard"> |
 
----
+## Features
 
-## How It Works
+- **Stores:** brand color, logo and cover, opening hours, delivery zones, subdomains and custom domains.
+- **Payments:** presets per country (SINPE Móvil, SPEI, Pix, Nequi, Yape, Zelle, Bizum and more) or cash.
+- **Orders:** server-computed totals, atomic stock reservation, automatic expiry that releases stock.
+- **Team:** owner, staff and catalog manager roles; read-only demo accounts.
+- **Languages and money:** Spanish and English, every currency in integer minor units.
 
-<p align="center">
-  <img src="docs/assets/flow-order-journey.svg" alt="Booth Order to Fulfillment Lifecycle" width="100%">
-</p>
+## Architecture
 
-1. **Frictionless Shopping:** Customers open the merchant's store (`store.booth.app` or custom domain) on their phone with zero app download or account creation required.
-2. **Options & Stock:** Shoppers configure products (variants, sizes, extras, notes), see live prices with calculated delivery fees, and reserve inventory atomically.
-3. **1-Click WhatsApp Order:** Checkout compiles the cart into a saved `PENDING` order with a unique reference code (`#PLE-8492`) and launches WhatsApp with a pre-filled, itemized message and tracking link.
-4. **AI-Powered Receipt Verification:** When the customer pays via mobile bank transfer (SINPE Móvil, SPEI, Pix, Zelle, Bizum), they upload the receipt screenshot. Google Gemini Vision AI extracts the amount, phone number, and reference code to auto-approve the payment.
-5. **Live Tracking & Fulfillment:** The customer monitors order progress on an unguessable tracking timeline, while the merchant and staff manage the kitchen workflow from a dedicated dashboard.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/architecture-dark.svg">
+  <img src="docs/assets/architecture-light.svg" alt="Browser, Vercel, Render, Neon, Cloudinary, Gemini" width="100%">
+</picture>
 
----
+| Workspace         | Stack                                              |
+| ----------------- | -------------------------------------------------- |
+| `apps/web`        | React 19, Vite, Tailwind 4, TanStack Query, Motion |
+| `apps/api`        | NestJS 12, Prisma 7, PostgreSQL                    |
+| `packages/shared` | Zod contracts and money helpers used by both apps  |
 
-## App Screenshots
+Every owner query is scoped to the store in the signed-in user's token, and each owner endpoint has
+a test proving one store cannot read or change another.
 
-### 1. Digital Storefront Experience
+## Run it locally
 
-The storefront provides an ultra-fast, mobile-first catalog that adapts to the merchant's custom branding, brand color, operating hours, and regional currency.
-
-<p align="center">
-  <img src="docs/screenshots/storefront-desktop.png" alt="Booth Desktop Storefront" width="100%">
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/storefront-mobile.png" alt="Booth Mobile Storefront" width="380">
-</p>
-
-- **Zero-friction browsing:** Mobile-optimized categorized catalog with high-resolution imagery and badge indicators for available units.
-- **Branded identity:** Custom logo, cover banner, brand accents, and operating schedule with automatic "Open Now" or "Closed" detection.
-- **Smart cart drawer:** Real-time subtotal computation, quantity adjustment, and automatic order expiration countdowns.
-
----
-
-### 2. Streamlined Checkout & Instant Order Tracking
-
-Customers never have to create an account, remember passwords, or download an external application.
-
-<p align="center">
-  <img src="docs/screenshots/checkout.png" alt="Booth Checkout Form" width="85%">
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/order-tracking.png" alt="Customer Order Tracking Page" width="85%">
-</p>
-
-- **Fulfillment options:** Support for in-store pickup and granular delivery zones with localized fees.
-- **Payment presets:** Built-in presets for SINPE Móvil (CR), SPEI (MX), Pix (BR), Nequi / Daviplata (CO), Yape / Plin (PE), Zelle / Venmo / Cash App (US), Bizum (ES), and cash on delivery.
-- **Live customer tracking:** Secure unguessable token link where customers monitor the order timeline from `Pedido recibido` to `En preparación` and `Listo`, with copyable payment account numbers and reference codes.
-
----
-
-### 3. Merchant Dashboard & Gemini AI Receipt Verification
-
-Store owners and kitchen staff receive incoming orders in real time with automated payment verification powered by Google Gemini Vision.
-
-<p align="center">
-  <img src="docs/screenshots/dashboard-orders.png" alt="Owner Dashboard Orders List" width="100%">
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/ai-receipt-verification.png" alt="Gemini Vision AI Receipt Verification Card" width="100%">
-</p>
-
-- **Real-time orders board:** Filter by active orders, delivered, cancelled, or expired with live status badges.
-- **Multimodal OCR validation:** Google Gemini Vision extracts transfer amounts, recipient phone numbers, and reference numbers directly from voucher images.
-- **Automated reconciliation:** Matches transaction amounts against order totals with confidence scoring (`HIGH`, `MEDIUM`, `LOW`) and duplicate voucher detection.
-- **Staff roles & permissions:** Multi-user store access with granular role separation (Owner, Manager, Staff / Cook).
-
----
-
-## Architecture & Technology Stack
-
-<p align="center">
-  <img src="docs/assets/architecture.svg" alt="Booth System Architecture" width="100%">
-</p>
-
-### Monorepo Structure
-
-| Workspace             | Technology                     | Responsibility                                                                                                                                         |
-| :-------------------- | :----------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`packages/shared`** | TypeScript, Zod                | Shared validation schemas, type definitions, ISO 4217 minor-units money engine, payment presets, and internationalization rules.                       |
-| **`apps/api`**        | NestJS, Prisma ORM, PostgreSQL | Strict REST API, multi-tenant row-level isolation, JWT + rotating refresh cookie authentication, atomic stock reservations, and Gemini Vision service. |
-| **`apps/web`**        | React 19, Vite, Tailwind CSS   | High-performance Single Page Application (SPA), storefront, checkout, live tracking, and merchant administration dashboard.                            |
-| **`apps/web/e2e`**    | Playwright, Chromium, WebKit   | End-to-end browser automation suite testing full purchase flows across desktop and mobile viewports.                                                   |
-
-### Engineering Highlights
-
-- **Tenant Isolation:** Stores are isolated at the database level with scoped queries and unique code generations per store. Supports dynamic subdomains (`:slug.booth.app`) and custom CNAME domains.
-- **Atomic Stock Management:** Products with inventory tracking reserve units upon checkout with time-to-live (TTL) auto-expiration to prevent overselling.
-- **Tamper-Proof Pricing:** The client sends product identifiers and chosen options only; the server computes all unit prices, discounts, delivery fees, and order totals.
-- **Zero ESLint Warnings:** Strict code quality enforcement across the entire codebase (`--max-warnings 0`) with automated formatting and lint-staged hooks.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- **Node.js:** `v24.x` LTS (managed via `.nvmrc`)
-- **Package Manager:** `pnpm` (`v9.x` or newer)
-- **Database:** PostgreSQL `v16+` (or Docker for local container)
-
-### Quickstart
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/keylorpineda/booth.git
-   cd booth
-   ```
-
-2. **Install workspace dependencies:**
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Configure environment variables:**
-
-   ```bash
-   cp apps/api/.env.example apps/api/.env
-   cp apps/web/.env.example apps/web/.env
-   ```
-
-4. **Start local database & run migrations:**
-
-   ```bash
-   pnpm db:up
-   pnpm --filter @booth/api prisma:migrate
-   pnpm --filter @booth/api db:seed
-   ```
-
-5. **Start development servers:**
-   ```bash
-   pnpm dev
-   ```
-
-- **Web Application:** `http://localhost:5173`
-- **Backend API:** `http://localhost:3000` (Swagger documentation at `http://localhost:3000/api/docs`)
-
----
-
-## Demo Stores & Credentials
-
-The local database seed includes two fully configured demo businesses:
-
-| Store Name                | Country / Currency | Storefront URL      | Owner Email                | Password    |
-| :------------------------ | :----------------- | :------------------ | :------------------------- | :---------- |
-| **Panadería La Esquina**  | Costa Rica (`CRC`) | `/s/panaderia-demo` | `panaderia@demo.booth.app` | `Demo1234!` |
-| **Bruma Coffee Roasters** | Colombia (`COP`)   | `/s/cafe-demo`      | `cafe@demo.booth.app`      | `Demo1234!` |
-
----
-
-## Test Suite
-
-Booth maintains comprehensive automated testing covering unit, contract, API integration, and browser end-to-end flows:
+Requires Node 24, pnpm and Docker.
 
 ```bash
-# Run unit and contract tests across all packages
-pnpm test
-
-# Run tests with code coverage reporting
-pnpm test:cov
-
-# Run Playwright browser end-to-end tests
-pnpm --filter @booth/web test:e2e
-
-# Run TypeScript typechecking across all workspaces
-pnpm typecheck
-
-# Run strict linter (zero warnings allowed)
-pnpm lint
+pnpm install
+cp apps/api/.env.example apps/api/.env
+pnpm db:up
+pnpm --filter api prisma:migrate
+pnpm --filter api db:seed
+pnpm dev
 ```
 
----
+Web on <http://localhost:5173>, API on <http://localhost:3000> (docs at `/api/docs`).
 
-## Documentation Index
+The seed creates two demo stores, `/s/panaderia-demo` and `/s/cafe-demo`. Their owners
+(`panaderia@demo.booth.app`, `cafe@demo.booth.app`, password `Demo1234!`) are read-only.
 
-Detailed architectural and operational documentation is available in the [`docs/`](docs/) directory:
+```bash
+pnpm lint && pnpm typecheck && pnpm test   # all workspaces
+pnpm test:e2e                              # Playwright, desktop and 360 px mobile
+```
 
-- [Architecture & Monorepo Design](docs/ARCHITECTURE.md)
-- [Data Model & Prisma Schema](docs/DATA_MODEL.md)
-- [API Specification](docs/API.md)
-- [Production Deployment Guide](docs/DEPLOYMENT.md)
-- [Product Roadmap & Milestones](docs/ROADMAP.md)
-- [Engineering Devlog](docs/DEVLOG.md)
-- [Payment Credentials Setup (Spanish)](docs/CREDENTIALS_SETUP.es.md)
+## Docs
 
----
+[Architecture](docs/ARCHITECTURE.md) · [Data model](docs/DATA_MODEL.md) · [API](docs/API.md) ·
+[Deployment](docs/DEPLOYMENT.md) · [Roadmap](docs/ROADMAP.md) · [Devlog](docs/DEVLOG.md)
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)
