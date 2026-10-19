@@ -1,66 +1,48 @@
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { m } from 'motion/react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 
-import { OrderPreview } from './order-preview';
+import { FlowPhone } from './flow/flow-phone';
+import { FlowSteps } from './flow/flow-steps';
 import { buttonVariants } from '../../../components/ui/button';
-import { cn } from '../../../lib/cn';
 import { fadeUp, staggerChildren } from '../../../lib/motion';
+import { useFlowStep } from '../use-flow-step';
 
+/** Headline, two actions and the animated ordering flow that explains the product. */
 export function Hero() {
   const { t } = useTranslation();
+  const [step, setStep] = useFlowStep();
 
   return (
-    <section className="relative isolate overflow-hidden">
-      <div aria-hidden="true" className="hero-backdrop absolute inset-0 -z-10" />
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-12 pb-16 sm:pt-20 lg:grid-cols-[1.1fr_1fr] lg:pb-24">
-        <m.div
-          variants={staggerChildren(0.08)}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col items-center text-center lg:items-start lg:text-left"
+    <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-10 pb-20 sm:pt-16 lg:grid-cols-[1fr_auto] lg:gap-20">
+      <m.div variants={staggerChildren(0.08)} initial="hidden" animate="visible">
+        <m.h1
+          variants={fadeUp}
+          className="max-w-xl text-4xl leading-[1.08] font-bold text-balance sm:text-5xl"
         >
-          <m.span
-            variants={fadeUp}
-            className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand-soft px-3 py-1 text-xs font-semibold text-brand-ink"
+          {t('home.title')}
+        </m.h1>
+        <m.p variants={fadeUp} className="mt-4 max-w-md text-lg text-ink-muted">
+          {t('home.subtitle')}
+        </m.p>
+        <m.div variants={fadeUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link to="/register" className={buttonVariants({ size: 'lg' })}>
+            {t('home.ctaCreate')}
+            <ArrowRight className="size-4" />
+          </Link>
+          <Link
+            to="/s/panaderia-demo"
+            className={buttonVariants({ size: 'lg', variant: 'outline' })}
           >
-            <Sparkles className="size-3.5" />
-            {t('home.badge')}
-          </m.span>
-          <m.h1
-            variants={fadeUp}
-            className="mt-5 text-4xl leading-[1.05] font-extrabold text-balance sm:text-6xl"
-          >
-            <Trans
-              i18nKey="home.title"
-              components={{ accent: <span className="text-gradient-brand" /> }}
-            />
-          </m.h1>
-          <m.p variants={fadeUp} className="mt-5 max-w-xl text-lg text-pretty text-ink-muted">
-            {t('home.subtitle')}
-          </m.p>
-          <m.div
-            variants={fadeUp}
-            className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
-          >
-            <Link to="/register" className={cn(buttonVariants({ size: 'lg' }), 'shadow-glow')}>
-              {t('home.ctaCreate')}
-              <ArrowRight className="size-4" />
-            </Link>
-            <Link
-              to="/s/panaderia-demo"
-              className={buttonVariants({ size: 'lg', variant: 'outline' })}
-            >
-              {t('home.demoBakery')}
-            </Link>
-          </m.div>
-          <m.p variants={fadeUp} className="mt-4 text-sm text-ink-subtle">
-            {t('home.noFees')}
-          </m.p>
+            {t('home.demoBakery')}
+          </Link>
         </m.div>
-        <OrderPreview />
-      </div>
+        <m.div variants={fadeUp} className="mt-10 max-w-sm">
+          <FlowSteps current={step} onSelect={setStep} />
+        </m.div>
+      </m.div>
+      <FlowPhone step={step} />
     </section>
   );
 }
