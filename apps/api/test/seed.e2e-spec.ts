@@ -65,7 +65,7 @@ describe('demo seed (e2e)', () => {
       products: 27,
       zones: 6,
       hours: 18,
-      methods: 3,
+      methods: 4, // bakery: SINPE Móvil + IBAN; cafe: Nequi + Daviplata
       orders: 16,
       items: 26,
       events: 40,
