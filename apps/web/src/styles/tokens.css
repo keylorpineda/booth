@@ -44,7 +44,6 @@
   --brand-strong: color-mix(in oklab, var(--brand) 82%, black);
   /* Brand-tinted text that stays readable on the surfaces. */
   --brand-ink: color-mix(in oklab, var(--brand) 75%, var(--ink));
-  --glow: 0 8px 24px -8px color-mix(in oklab, var(--brand) 60%, transparent);
 }
 
 /*
