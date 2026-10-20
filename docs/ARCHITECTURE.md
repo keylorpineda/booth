@@ -57,6 +57,7 @@ booth/
 
 - **Public side**: the tenant is resolved by a `TenantResolver` chain. MVP registers `PathTenantResolver` (`/s/:slug` in the web app, `/api/public/stores/:slug/...` in the API). A future `SubdomainTenantResolver` reads `Host` (`slug.domain.com`) and is added to the chain without touching controllers, which only consume `@CurrentTenant()`.
 - **Owner side**: one owner = one store in the MVP. `storeId` comes **only** from the authenticated user (`@CurrentStore()`), never from body, params or query. Repositories take `storeId` as their first argument and always include it in `where`.
+- **Database backstop (row-level security)**: `StoreScopeInterceptor` runs each request of a member with a store inside a transaction that sets `booth.store_id` from the token and `SET LOCAL ROLE booth_app`. Postgres policies then only expose that store's rows, so a query that forgets its `where` still cannot leak another store. `PrismaService` routes every query of the request through that transaction (AsyncLocalStorage), nested `$transaction` included. Public routes, sign in, jobs and the seed have no store and run as the owner role; owner routes that must look across stores use `@CrossStore()` or `prisma.unscoped` (slug and custom-domain availability, creating a store). A failed request keeps its earlier writes, as without the scope.
 - Isolation is proven by tests: every owner endpoint has an A-vs-B test (read, update, delete must return 404, never another store's data).
 
 ## Auth
