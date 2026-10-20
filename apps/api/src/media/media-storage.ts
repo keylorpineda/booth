@@ -21,11 +21,6 @@ export type ImageUrls = ProductImage['urls'];
 export interface MediaStorage {
   /** Uploads a validated image into `folder` (e.g. `booth/<storeId>/products`). */
   uploadImage(file: Buffer, folder: string): Promise<StoredImage>;
-  /**
-   * Copies a remote image into storage under a fixed public id. If that id already exists, the
-   * stored image is reused (nothing is uploaded again). Used for the demo stores' photos.
-   */
-  importImage(sourceUrl: string, publicId: string): Promise<StoredImage>;
   deleteImage(publicId: string): Promise<void>;
   /** Optimized delivery URLs (auto format and quality, limited width). */
   imageUrls(publicId: string): ImageUrls;
