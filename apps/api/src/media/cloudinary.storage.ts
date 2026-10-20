@@ -52,6 +52,23 @@ export class CloudinaryStorage implements MediaStorage {
     });
   }
 
+  async importImage(sourceUrl: string, publicId: string): Promise<StoredImage> {
+    const result = await cloudinary.uploader.upload(sourceUrl, {
+      ...this.auth(),
+      public_id: publicId,
+      // An existing asset is returned as is: the nightly demo reset never uploads twice.
+      overwrite: false,
+      resource_type: 'image',
+      transformation: [{ width: 2400, height: 2400, crop: 'limit' }, { flags: 'strip_profile' }],
+    });
+    return {
+      publicId: result.public_id,
+      width: result.width,
+      height: result.height,
+      bytes: result.bytes,
+    };
+  }
+
   async deleteImage(publicId: string): Promise<void> {
     try {
       await cloudinary.uploader.destroy(publicId, { ...this.auth(), invalidate: true });
