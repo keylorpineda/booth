@@ -1,14 +1,16 @@
 import { type ReactNode } from 'react';
 
+import { StatusScreen } from './status-screen';
 import { LostSearchIllustration } from '../illustrations/lost-search';
-import { EmptyState } from '../ui/empty-state';
 
 interface NotFoundStateProps {
   title: string;
   description?: string;
   action?: ReactNode;
-  /** Centers the state on the whole viewport (standalone pages). */
+  /** Takes the whole viewport with the logo on top (standalone pages). */
   fullPage?: boolean;
+  /** Small label above the title, e.g. "Error 404". */
+  code?: string;
 }
 
 /** Shared "this does not exist" state: says what is missing and offers one way forward. */
@@ -17,16 +19,19 @@ export function NotFoundState({
   description,
   action,
   fullPage = false,
+  code,
 }: NotFoundStateProps) {
   return (
-    <div className={fullPage ? 'grid min-h-dvh place-items-center' : 'grid place-items-center'}>
+    <>
       <title>{`${title} · Booth`}</title>
-      <EmptyState
+      <StatusScreen
+        fullPage={fullPage}
         illustration={<LostSearchIllustration />}
+        code={code}
         title={title}
         description={description}
-        action={action}
+        actions={action}
       />
-    </div>
+    </>
   );
 }

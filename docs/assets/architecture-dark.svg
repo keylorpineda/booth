@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" width="1200" height="440" role="img" aria-label="Booth architecture: browser, Vercel, Render API, Neon Postgres, Cloudinary, Gemini, GitHub Actions">
+<style>
+  text{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}
+  .flowline{stroke-dasharray:4 12;animation:dash 1.2s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-16}}
+  @media (prefers-reduced-motion:reduce){.flowline{animation:none;display:none}}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#3A3A52"/></marker></defs>
+<rect x=".5" y=".5" width="1199" height="439" rx="24" fill="#0E0E18" stroke="#2A2A3D"/>
+
+    <path d="M260 208H326" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M260 208H326" fill="none" stroke="#6366F1" stroke-width="2"/>
+    <text x="293" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#A3A3B8">HTTPS</text>
+
+    <path d="M560 208H626" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M560 208H626" fill="none" stroke="#6366F1" stroke-width="2"/>
+    <text x="593" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#A3A3B8">/api/*</text>
+
+    <path d="M830 208H896" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M830 208H896" fill="none" stroke="#6366F1" stroke-width="2"/>
+    <text x="863" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#A3A3B8">Prisma</text>
+
+    <path d="M730 122V156" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M730 122V156" fill="none" stroke="#6366F1" stroke-width="2"/>
+    
+
+    <path d="M700 256C700 296 570 290 570 326" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M700 256C700 296 570 290 570 326" fill="none" stroke="#6366F1" stroke-width="2"/>
+    
+
+    <path d="M760 256C760 296 880 290 880 326" fill="none" stroke="#3A3A52" stroke-width="2" marker-end="url(#arrow)"/>
+    <path class="flowline" d="M760 256C760 296 880 290 880 326" fill="none" stroke="#6366F1" stroke-width="2"/>
+    
+
+    <rect x="40" y="160" width="220" height="96" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="60" y="198" font-size="18" font-weight="800" fill="#F3F3F8">Shoppers &amp; owners</text>
+    <text x="60" y="222" font-size="13" fill="#A3A3B8">Phone or desktop browser</text>
+
+    <rect x="330" y="160" width="230" height="96" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="350" y="198" font-size="18" font-weight="800" fill="#F3F3F8">Vercel</text>
+    <text x="350" y="222" font-size="13" fill="#A3A3B8">React 19 SPA · /api rewrite</text>
+
+    <rect x="630" y="160" width="200" height="96" rx="16" fill="#25244D" stroke="#6366F1" stroke-width="1.5"/>
+    <text x="650" y="198" font-size="18" font-weight="800" fill="#F3F3F8">Render</text>
+    <text x="650" y="222" font-size="13" fill="#A3A3B8">NestJS API</text>
+
+    <rect x="900" y="160" width="260" height="96" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="920" y="198" font-size="18" font-weight="800" fill="#F3F3F8">Neon</text>
+    <text x="920" y="222" font-size="13" fill="#A3A3B8">PostgreSQL · Prisma 7</text>
+
+    <rect x="630" y="40" width="200" height="80" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="650" y="78" font-size="18" font-weight="800" fill="#F3F3F8">GitHub Actions</text>
+    <text x="650" y="102" font-size="13" fill="#A3A3B8">CI · order expiry job</text>
+
+    <rect x="440" y="330" width="260" height="88" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="460" y="368" font-size="18" font-weight="800" fill="#F3F3F8">Cloudinary</text>
+    <text x="460" y="392" font-size="13" fill="#A3A3B8">Product images · private receipts</text>
+
+    <rect x="760" y="330" width="240" height="88" rx="16" fill="#161625" stroke="#2A2A3D" stroke-width="1.5"/>
+    <text x="780" y="368" font-size="18" font-weight="800" fill="#F3F3F8">Gemini</text>
+    <text x="780" y="392" font-size="13" fill="#A3A3B8">Reads payment receipts</text>
+</svg>
