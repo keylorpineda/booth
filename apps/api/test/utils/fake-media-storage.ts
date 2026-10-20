@@ -12,7 +12,6 @@ export class FakeMediaStorage implements MediaStorage {
   readonly uploads: { publicId: string; folder: string; bytes: number }[] = [];
   readonly privateUploads: { publicId: string; folder: string; format: PrivateFileFormat }[] = [];
   readonly deleted: string[] = [];
-  readonly imports: { sourceUrl: string; publicId: string }[] = [];
   private counter = 0;
 
   uploadImage(file: Buffer, folder: string): Promise<StoredImage> {
@@ -20,11 +19,6 @@ export class FakeMediaStorage implements MediaStorage {
     const publicId = `${folder}/img-${this.counter}`;
     this.uploads.push({ publicId, folder, bytes: file.length });
     return Promise.resolve({ publicId, width: 1200, height: 900, bytes: file.length });
-  }
-
-  importImage(sourceUrl: string, publicId: string): Promise<StoredImage> {
-    this.imports.push({ sourceUrl, publicId });
-    return Promise.resolve({ publicId, width: 1600, height: 1067, bytes: 0 });
   }
 
   deleteImage(publicId: string): Promise<void> {
@@ -65,7 +59,6 @@ export class FakeMediaStorage implements MediaStorage {
     this.uploads.length = 0;
     this.privateUploads.length = 0;
     this.deleted.length = 0;
-    this.imports.length = 0;
   }
 }
 

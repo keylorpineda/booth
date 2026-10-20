@@ -1,23 +1,14 @@
-import { Logger } from '@nestjs/common';
-
-import { DEMO_COVER_PHOTOS, DEMO_PRODUCT_PHOTOS, unsplashUrl } from './demo-photos';
+import { DEMO_COVER_PHOTOS, DEMO_PRODUCT_PHOTOS } from './demo-photos';
 import { type PrismaClient } from '../generated/prisma/client';
-import { type MediaStorage } from '../media/media-storage';
-
-/** Parallel imports: enough to finish fast without hammering the media service. */
-const CONCURRENCY = 5;
 
 /**
- * Gives every demo product its photo and every demo store its cover. Needs the media storage, so it
- * runs from the API (demo reset job), not from the database-only seed CLI. Idempotent: fixed public
- * ids in storage and fixed row ids here.
+ * Points every demo product at its photo and every demo store at its cover. The files already live
+ * in the media storage (see demo-photos.ts), so this only writes database rows: it cannot fail on
+ * the media service and is idempotent (fixed row ids). Runs from the demo reset job when media
+ * storage is configured, since the rows are useless without it.
  */
-export async function importDemoImages(
-  prisma: PrismaClient,
-  storage: MediaStorage,
-): Promise<number> {
-  const products = Object.entries(DEMO_PRODUCT_PHOTOS).map(([productId, photo]) => async () => {
-    const image = await storage.importImage(unsplashUrl(photo), `booth/demo/${productId}`);
+export async function attachDemoImages(prisma: PrismaClient): Promise<number> {
+  for (const [productId, image] of Object.entries(DEMO_PRODUCT_PHOTOS)) {
     const data = {
       publicId: image.publicId,
       width: image.width,
@@ -29,25 +20,9 @@ export async function importDemoImages(
       update: data,
       create: { id: `demo-img-${productId}`, productId, ...data },
     });
-  });
-  const covers = Object.entries(DEMO_COVER_PHOTOS).map(([slug, photo]) => async () => {
-    const image = await storage.importImage(unsplashUrl(photo), `booth/demo/cover-${slug}`);
-    await prisma.store.update({ where: { slug }, data: { coverPublicId: image.publicId } });
-  });
-
-  // One failing photo must not fail the whole reset: it is retried on the next run.
-  const tasks = [...products, ...covers];
-  let imported = 0;
-  for (let start = 0; start < tasks.length; start += CONCURRENCY) {
-    const results = await Promise.allSettled(
-      tasks.slice(start, start + CONCURRENCY).map((task) => task()),
-    );
-    for (const result of results) {
-      if (result.status === 'fulfilled') imported += 1;
-      else logger.warn({ err: result.reason as unknown }, 'Demo photo import failed');
-    }
   }
-  return imported;
+  for (const [slug, coverPublicId] of Object.entries(DEMO_COVER_PHOTOS)) {
+    await prisma.store.update({ where: { slug }, data: { coverPublicId } });
+  }
+  return Object.keys(DEMO_PRODUCT_PHOTOS).length + Object.keys(DEMO_COVER_PHOTOS).length;
 }
-
-const logger = new Logger('DemoImages');
