@@ -29,7 +29,13 @@ const VALID_REQUEST_ID = /^[\w-]{8,64}$/;
             res.setHeader('X-Request-Id', id);
             return id;
           },
-          redact: ['req.headers.authorization', 'req.headers.cookie', 'res.headers["set-cookie"]'],
+          // Credentials never reach the logs (the job secret is sent by the scheduled GitHub Actions).
+          redact: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'req.headers["x-job-secret"]',
+            'res.headers["set-cookie"]',
+          ],
           autoLogging: { ignore: (req) => req.url === '/health' },
         },
       }),

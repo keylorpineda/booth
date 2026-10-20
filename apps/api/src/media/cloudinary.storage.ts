@@ -23,11 +23,47 @@ export class CloudinaryStorage implements MediaStorage {
   constructor(private readonly credentials: CloudinaryCredentials) {}
 
   uploadImage(file: Buffer, folder: string): Promise<StoredImage> {
+    return this.upload(file, { folder });
+  }
+
+  /**
+   * Reuses the asset when the id exists; otherwise the API downloads the source itself and uploads
+   * it (Cloudinary's own remote fetch was refused by the image host).
+   */
+  async importImage(sourceUrl: string, publicId: string): Promise<StoredImage> {
+    const existing = await this.findImage(publicId);
+    if (existing) return existing;
+
+    const response = await fetch(sourceUrl);
+    if (!response.ok) throw new Error(`Image download failed (${response.status}): ${sourceUrl}`);
+    const file = Buffer.from(await response.arrayBuffer());
+    return this.upload(file, { public_id: publicId, overwrite: false });
+  }
+
+  private async findImage(publicId: string): Promise<StoredImage | null> {
+    try {
+      const found = (await cloudinary.api.resource(publicId, this.auth())) as UploadApiResponse;
+      return {
+        publicId: found.public_id,
+        width: found.width,
+        height: found.height,
+        bytes: found.bytes,
+      };
+    } catch (error) {
+      if ((error as { error?: { http_code?: number } }).error?.http_code === 404) return null;
+      throw error instanceof Error ? error : new Error('Cloudinary lookup failed');
+    }
+  }
+
+  private upload(
+    file: Buffer,
+    target: { folder: string } | { public_id: string; overwrite: false },
+  ): Promise<StoredImage> {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           ...this.auth(),
-          folder,
+          ...target,
           resource_type: 'image',
           // Strip EXIF (location data from phone photos) and cap the stored original size.
           transformation: [
@@ -50,23 +86,6 @@ export class CloudinaryStorage implements MediaStorage {
       );
       stream.end(file);
     });
-  }
-
-  async importImage(sourceUrl: string, publicId: string): Promise<StoredImage> {
-    const result = await cloudinary.uploader.upload(sourceUrl, {
-      ...this.auth(),
-      public_id: publicId,
-      // An existing asset is returned as is: the nightly demo reset never uploads twice.
-      overwrite: false,
-      resource_type: 'image',
-      transformation: [{ width: 2400, height: 2400, crop: 'limit' }, { flags: 'strip_profile' }],
-    });
-    return {
-      publicId: result.public_id,
-      width: result.width,
-      height: result.height,
-      bytes: result.bytes,
-    };
   }
 
   async deleteImage(publicId: string): Promise<void> {
