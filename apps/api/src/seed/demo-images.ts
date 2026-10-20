@@ -1,3 +1,5 @@
+import { Logger } from '@nestjs/common';
+
 import { DEMO_COVER_PHOTOS, DEMO_PRODUCT_PHOTOS, unsplashUrl } from './demo-photos';
 import { type PrismaClient } from '../generated/prisma/client';
 import { type MediaStorage } from '../media/media-storage';
@@ -33,9 +35,19 @@ export async function importDemoImages(
     await prisma.store.update({ where: { slug }, data: { coverPublicId: image.publicId } });
   });
 
+  // One failing photo must not fail the whole reset: it is retried on the next run.
   const tasks = [...products, ...covers];
+  let imported = 0;
   for (let start = 0; start < tasks.length; start += CONCURRENCY) {
-    await Promise.all(tasks.slice(start, start + CONCURRENCY).map((task) => task()));
+    const results = await Promise.allSettled(
+      tasks.slice(start, start + CONCURRENCY).map((task) => task()),
+    );
+    for (const result of results) {
+      if (result.status === 'fulfilled') imported += 1;
+      else logger.warn({ err: result.reason as unknown }, 'Demo photo import failed');
+    }
   }
-  return tasks.length;
+  return imported;
 }
+
+const logger = new Logger('DemoImages');
