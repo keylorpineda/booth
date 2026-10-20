@@ -84,7 +84,12 @@
               slug = sub;
               isStoreDomain = true;
             }
-          } else if (host !== 'localhost' && host !== '127.0.0.1' && host !== 'booth.app') {
+          } else if (
+            host !== 'localhost' &&
+            host !== '127.0.0.1' &&
+            host !== 'booth.app' &&
+            !host.endsWith('.vercel.app')
+          ) {
             isStoreDomain = true;
           }
         }

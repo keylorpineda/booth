@@ -60,6 +60,16 @@ describe('getDomainInfo', () => {
     });
   });
 
+  it('treats Vercel deployments as the app, not as a store domain', () => {
+    for (const host of ['booth-tawny.vercel.app', 'booth-git-develop-team.vercel.app']) {
+      expect(getDomainInfo(host)).toEqual({
+        isStoreDomain: false,
+        subdomain: null,
+        isCustomDomain: false,
+      });
+    }
+  });
+
   it('identifies custom domains', () => {
     expect(getDomainInfo('tiendita.com')).toEqual({
       isStoreDomain: true,
