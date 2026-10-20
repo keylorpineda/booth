@@ -23,47 +23,11 @@ export class CloudinaryStorage implements MediaStorage {
   constructor(private readonly credentials: CloudinaryCredentials) {}
 
   uploadImage(file: Buffer, folder: string): Promise<StoredImage> {
-    return this.upload(file, { folder });
-  }
-
-  /**
-   * Reuses the asset when the id exists; otherwise the API downloads the source itself and uploads
-   * it (Cloudinary's own remote fetch was refused by the image host).
-   */
-  async importImage(sourceUrl: string, publicId: string): Promise<StoredImage> {
-    const existing = await this.findImage(publicId);
-    if (existing) return existing;
-
-    const response = await fetch(sourceUrl);
-    if (!response.ok) throw new Error(`Image download failed (${response.status}): ${sourceUrl}`);
-    const file = Buffer.from(await response.arrayBuffer());
-    return this.upload(file, { public_id: publicId, overwrite: false });
-  }
-
-  private async findImage(publicId: string): Promise<StoredImage | null> {
-    try {
-      const found = (await cloudinary.api.resource(publicId, this.auth())) as UploadApiResponse;
-      return {
-        publicId: found.public_id,
-        width: found.width,
-        height: found.height,
-        bytes: found.bytes,
-      };
-    } catch (error) {
-      if ((error as { error?: { http_code?: number } }).error?.http_code === 404) return null;
-      throw error instanceof Error ? error : new Error('Cloudinary lookup failed');
-    }
-  }
-
-  private upload(
-    file: Buffer,
-    target: { folder: string } | { public_id: string; overwrite: false },
-  ): Promise<StoredImage> {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
           ...this.auth(),
-          ...target,
+          folder,
           resource_type: 'image',
           // Strip EXIF (location data from phone photos) and cap the stored original size.
           transformation: [
@@ -73,7 +37,7 @@ export class CloudinaryStorage implements MediaStorage {
         },
         (error, result?: UploadApiResponse) => {
           if (error || !result) {
-            reject(error instanceof Error ? error : new Error('Cloudinary upload failed'));
+            reject(uploadError(error));
             return;
           }
           resolve({
@@ -118,7 +82,7 @@ export class CloudinaryStorage implements MediaStorage {
         { ...this.auth(), folder, resource_type: 'image', type: 'authenticated' },
         (error, result?: UploadApiResponse) => {
           if (error || !result) {
-            reject(error instanceof Error ? error : new Error('Cloudinary upload failed'));
+            reject(uploadError(error));
             return;
           }
           resolve({ publicId: result.public_id, bytes: result.bytes });
@@ -157,4 +121,16 @@ export class CloudinaryStorage implements MediaStorage {
       api_secret: this.credentials.apiSecret,
     };
   }
+}
+
+/**
+ * Cloudinary rejects with plain objects (`{ message, http_code }`), not Errors: keep their message,
+ * otherwise a misconfiguration only shows up as "upload failed" in the logs.
+ */
+function uploadError(error: unknown): Error {
+  if (error instanceof Error) return error;
+  const { message, http_code: status } = (error ?? {}) as { message?: string; http_code?: number };
+  return new Error(
+    `Cloudinary upload failed${status ? ` (${status})` : ''}: ${message ?? 'no details'}`,
+  );
 }

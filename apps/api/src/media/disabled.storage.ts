@@ -14,10 +14,6 @@ export class DisabledStorage implements MediaStorage {
     return Promise.reject(notConfigured());
   }
 
-  importImage(): Promise<StoredImage> {
-    return Promise.reject(notConfigured());
-  }
-
   deleteImage(): Promise<void> {
     return Promise.resolve();
   }
