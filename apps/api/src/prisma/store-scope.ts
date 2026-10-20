@@ -15,6 +15,10 @@ export const storeScope = new AsyncLocalStorage<StoreScope>();
  * Opens a transaction in which Postgres row-level security only exposes `storeId`'s rows: the role
  * becomes `booth_app` (subject to the policies) and `booth.store_id` names the store. Both settings
  * end with the transaction, so the pooled connection goes back unrestricted.
+ *
+ * A failing request still commits what it wrote before the error (e.g. an order expired lazily
+ * before a refused status change), exactly as without the scope: the transaction is a security
+ * boundary, not a unit of work. Postgres itself discards the writes of a failed statement.
  */
 export async function inStoreScope<T>(
   client: {
@@ -26,13 +30,19 @@ export async function inStoreScope<T>(
   storeId: string,
   work: () => Promise<T>,
 ): Promise<T> {
-  return client.$transaction(
-    async (tx) => {
+  const outcome = await client.$transaction(
+    async (tx): Promise<{ ok: true; value: T } | { ok: false; error: unknown }> => {
       await tx.$executeRaw`SELECT set_config('booth.store_id', ${storeId}, true)`;
       await tx.$executeRawUnsafe('SET LOCAL ROLE booth_app');
-      return storeScope.run({ storeId, tx }, work);
+      try {
+        return { ok: true, value: await storeScope.run({ storeId, tx }, work) };
+      } catch (error) {
+        return { ok: false, error };
+      }
     },
     // Owner requests may upload images to the media service while the transaction is open.
     { maxWait: 10_000, timeout: 30_000 },
   );
+  if (!outcome.ok) throw outcome.error;
+  return outcome.value;
 }
