@@ -36,6 +36,8 @@ export class StoresController {
   ) {}
 
   @Post()
+  // A new store lies outside the caller's current store by definition.
+  @CrossStore()
   @ApiOperation({ summary: 'Onboarding: create the store for the signed-in owner' })
   @ApiZodBody(createStoreSchema)
   create(

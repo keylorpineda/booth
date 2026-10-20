@@ -28,7 +28,11 @@ describe('CustomDomainsService', () => {
       verifyTxtRecord: jest.fn(),
     };
 
-    service = new CustomDomainsService(prisma as unknown as PrismaService, dns);
+    // Cross-store lookups go through `unscoped`; in this unit test it is the same mock.
+    service = new CustomDomainsService(
+      { ...prisma, unscoped: prisma } as unknown as PrismaService,
+      dns,
+    );
   });
 
   it('gets custom domain for a store', async () => {
