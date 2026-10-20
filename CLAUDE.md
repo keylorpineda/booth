@@ -23,7 +23,7 @@ pnpm --filter api db:seed          # idempotent demo seed (Phase 7)
 
 ## Non-negotiable rules
 
-1. **Tenant scoping.** Owner-side queries use `storeId` from the authenticated user (JWT → `@CurrentStore()`), never from body, params or query. Every owner endpoint has a test proving store A cannot read or modify store B.
+1. **Tenant scoping.** Owner-side queries use `storeId` from the authenticated user (JWT → `@CurrentStore()`), never from body, params or query. Every owner endpoint has a test proving store A cannot read or modify store B. Postgres row-level security backs this up: a new tenant table needs its RLS policy in the same migration, and cross-store lookups go through `@CrossStore()` or `prisma.unscoped` only.
 2. **Money.** Integer minor units (ISO 4217 exponent per currency). Convert and format only through `packages/shared/money`. Never hardcode a currency or use floats for amounts.
 3. **Server computes totals.** The client sends product ids and quantities only.
 4. **Snapshots.** Order items store product name and unit price at order time. Never recompute historical orders from current product data.
