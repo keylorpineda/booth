@@ -6,6 +6,7 @@ import { createTestApp } from './utils/create-test-app';
 import { resetDatabase } from './utils/database';
 import { createOwnerWithStore, type TestStoreOwner } from './utils/stores';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { inStoreScope } from '../src/prisma/store-scope';
 
 /**
  * The database itself enforces tenant isolation for the restricted `booth_app` role, independently
@@ -89,6 +90,38 @@ describe('row-level security (database)', () => {
 
   it('leaves the owner role (public routes, jobs, migrations) unrestricted', async () => {
     expect(await prisma.store.count()).toBe(2);
+  });
+
+  describe('owner request scope (API)', () => {
+    it('catches a service query that forgets its store filter', async () => {
+      // What an owner request runs in: the app's PrismaService inside the store scope.
+      const leaked = await inStoreScope(prisma.unscoped, storeA.store.id, () =>
+        prisma.category.findMany({ select: { storeId: true } }),
+      );
+      expect(leaked.map((row) => row.storeId)).toEqual([storeA.store.id]);
+    });
+
+    it('runs owner endpoints as the restricted role', async () => {
+      const role = await inStoreScope(
+        prisma.unscoped,
+        storeA.store.id,
+        () => prisma.$queryRaw<{ role: string }[]>`SELECT current_user AS role`,
+      );
+      expect(role).toEqual([{ role: 'booth_app' }]);
+    });
+
+    it("still answers 404 when store B asks for store A's category", async () => {
+      const [categoryA] = await prisma.category.findMany({ where: { storeId: storeA.store.id } });
+      await request(app.getHttpServer())
+        .patch(`/api/me/categories/${categoryA?.id ?? ''}`)
+        .set('Authorization', storeB.auth)
+        .send({ name: 'Taken over' })
+        .expect(404);
+      const unchanged = await prisma.category.findUniqueOrThrow({
+        where: { id: categoryA?.id ?? '' },
+      });
+      expect(unchanged.name).toBe('Breads');
+    });
   });
 });
 

@@ -7,6 +7,9 @@ Draft Prisma schema for the MVP. It becomes `apps/api/prisma/schema.prisma` in P
 - IDs: `cuid2` strings.
 - Money: `BigInt` columns with the `Minor` suffix, in ISO 4217 minor units of the store currency. Serialized to JSON numbers (all realistic values are below 2^53).
 - Every tenant-owned table has `storeId` and an index starting with `storeId`.
+- Every tenant-owned table has row-level security: its migration enables RLS and adds a policy for
+  `booth_app` (`"storeId" = booth_current_store()`, or through the parent row for child tables). See
+  `20261019230000_row_level_security`.
 - Snapshot columns on orders and order items are never updated from current product/store data.
 - Timestamps in UTC (`timestamptz`).
 

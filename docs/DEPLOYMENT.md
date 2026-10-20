@@ -181,7 +181,16 @@ New Prisma migrations committed to `apps/api/prisma/migrations/` run automatical
 To run migrations manually from a local machine pointing to Neon:
 
 ```bash
-DATABASE_URL="postgresql://...pooler...neon.tech/neondb?sslmode=require" pnpm --filter @booth/api prisma:deploy
+DATABASE_URL="postgresql://...neon.tech/neondb?sslmode=require" pnpm --filter @booth/api prisma:deploy
+```
+
+The row-level security migration creates the `booth_app` role (no login, no password) and lets the
+migrating role switch to it. Nothing to configure: `DATABASE_URL` keeps the owner role, and the API
+switches to `booth_app` only inside owner requests. To check it on Neon:
+
+```sql
+SELECT rolname, rolcanlogin, rolbypassrls FROM pg_roles WHERE rolname = 'booth_app';
+SELECT tablename, policyname FROM pg_policies ORDER BY tablename;
 ```
 
 ### Rollback Procedure
