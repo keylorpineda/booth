@@ -57,8 +57,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     },
     credentials: true,
   });
-  // /health stays at the root for the Render health check.
-  app.setGlobalPrefix(API_PREFIX, { exclude: ['health'] });
+  // /health (and /health/db) stay at the root for the Render health check.
+  app.setGlobalPrefix(API_PREFIX, { exclude: ['health', 'health/db'] });
   setupSwagger(app);
   app.enableShutdownHooks();
 }
