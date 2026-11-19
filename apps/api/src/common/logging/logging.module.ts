@@ -36,7 +36,7 @@ const VALID_REQUEST_ID = /^[\w-]{8,64}$/;
             'req.headers["x-job-secret"]',
             'res.headers["set-cookie"]',
           ],
-          autoLogging: { ignore: (req) => req.url === '/health' },
+          autoLogging: { ignore: (req) => req.url === '/health' || req.url === '/health/db' },
         },
       }),
     }),
