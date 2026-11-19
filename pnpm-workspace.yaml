@@ -13,3 +13,8 @@ allowBuilds:
   '@parcel/watcher': false
   '@scarf/scarf': false # install telemetry from swagger-ui-dist
 
+# Patched versions of vulnerable transitive dependencies (pnpm audit --prod, high severity).
+overrides:
+  body-parser@>=2.0.0 <2.4.0: ^2.4.0 # via express (@nestjs/platform-express)
+  multer@>=2.0.0 <2.5.0: ^2.5.0 # via @nestjs/platform-express
+  effect@<=3.22.0: ^3.22.1 # via @hookform/resolvers

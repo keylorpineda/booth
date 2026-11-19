@@ -121,7 +121,7 @@ Configured in repository **Settings → Secrets and variables → Actions**:
      ```
    - **Instance Type**: `Free`
 4. In **Advanced**:
-   - **Health Check Path**: `/health`
+   - **Health Check Path**: `/health` (never queries the database, so pings and Render checks let Neon suspend when idle; `/health/db` checks the database on demand)
 5. Under **Environment Variables**, add the variables listed in the Render table above.
 6. Click **Create Web Service**. Render will build the monorepo, apply migrations via `prisma migrate deploy`, and start NestJS.
 7. Under **Settings → Deploy Hook**, click **Add Deploy Hook** and copy the generated URL.
